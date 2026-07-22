@@ -1,0 +1,71 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  email     String    @unique
+  password  String
+  transactions  Transaction[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Category {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  color     String? // Guarda o código da cor (ex: #EF4444) para usar nos gráficos
+  isDefault Boolean   @default(false) // Se é categoria padrão ou se o usuário que criou
+  isBusiness Boolean @default(false) 
+  userId    String?   @db.ObjectId // Opcional: para categorias personalizadas de um usuário
+  transactions  Transaction[]
+}
+
+model Transaction {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  description   String
+  note          String?
+  amount        Float
+  date          DateTime // Data da compra (competência)
+  paymentDate   DateTime? // Data do pagamento real (caixa)
+  constType      String? // "FIXED" ou "VARIABLE"
+  paymentMethod PaymentMethod
+  installments  Int? // Número de parcelas (opcional)
+  transactionType TransactionType
+  isBusiness    Boolean   @default(false) // Define se é gasto pessoal ou de negócio (MEI)
+
+  // Relacionamento com Usuário (Se o usuário for deletado, apaga suas despesas)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @db.ObjectId
+
+  // Relacionamento com Categoria
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId String   @db.ObjectId
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum TransactionType {
+  INCOME
+  EXPENSE
+}
+
+enum PaymentMethod {
+  PIX
+  CREDIT_CARD
+  DEBIT_CARD
+  CASH
+  BOLETO
+}

@@ -1,0 +1,17 @@
+# Node dependencies
+node_modules/
+
+# Environment variables (senhas e URLs de banco de dados)
+.env
+.env.*
+
+# Build output
+dist/
+
+# IDE / Editor files
+.vscode/
+.idea/
+
+# System files
+.DS_Store
+Thumbs.db
