@@ -50,9 +50,14 @@ function getWhereCondition(
     }
 
     return whereCondition;
+};
+
+const formatYearMonth = (date: Date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+
+    return `${year}-${month}`;
 }
-
-
 
 export const getSummary = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -140,3 +145,61 @@ export const getTopExpenses = async (req: Request, res: Response, next: NextFunc
     }
 
 };
+
+export const getMonthlyTrend = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const userId = getAuthUserId(req);
+        const months = Number(req.query.months) || 6;
+        const now = new Date();
+        const startDate = new Date(now.getFullYear(), now.getMonth() - (months - 1), 1);
+        const endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
+
+        const transactions = await prisma.transaction.findMany({
+            where: {
+                userId: userId,
+                date: {
+                    gte: startDate,
+                    lte: endDate
+                },
+            },
+            select: {
+                amount: true,
+                date: true,
+                transactionType: true
+            },
+            orderBy: { date: 'asc' }
+        });
+
+        const monthlyMap: Record<string, { month: string, income: number, expense: number }> = {};
+
+        for (let i = months - 1; i >= 0; i--) {
+            const d = new Date(now.getFullYear(), now.getMonth() - i, 1)
+
+            const monthKey = formatYearMonth(d);
+
+            monthlyMap[monthKey] = { month: monthKey, income: 0, expense: 0 };
+        };
+
+        transactions.forEach(t => {
+            const monthKey = formatYearMonth(t.date); 
+
+            if (monthlyMap[monthKey]) {
+                if (t.transactionType === 'INCOME') {
+                    monthlyMap[monthKey].income += t.amount;
+                } else {
+                    monthlyMap[monthKey].expense += t.amount;
+                }
+            };
+        });
+
+        const result = Object.values(monthlyMap).map(item => ({
+            ...item,
+            balance: item.income - item.expense
+        }));
+
+        res.status(200).json(result);
+
+    } catch (error) {
+        next(error);
+    }
+}
