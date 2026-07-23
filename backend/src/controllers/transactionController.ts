@@ -1,13 +1,11 @@
 import type { Request, Response, NextFunction } from 'express';    
+import { getAuthUserId } from '../utils/auth.utils.js';
 import prisma from '../config/db.js';
 import type { Prisma } from '@prisma/client';
-import type { AuthRequest } from '../middlewares/authMiddleware.js';
-
-
 
 export const createTransaction = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const reqAuth = req as AuthRequest;
+       const userId = getAuthUserId(req);
         const { description, amount, date, paymentMethod, transactionType, categoryId } = req.body;
 
         if (!description || !amount || !date || !paymentMethod || !transactionType || !categoryId) {
@@ -17,7 +15,7 @@ export const createTransaction = async (req: Request, res: Response, next: NextF
 
         const transaction = await prisma.transaction.create({
             data: {
-                userId: reqAuth.user.id,
+                userId: userId,
                 description,
                 amount,
                 date: new Date(date),
@@ -36,10 +34,10 @@ export const createTransaction = async (req: Request, res: Response, next: NextF
 
 export const getTransactions = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const reqAuth = req as AuthRequest;
+        const userId = getAuthUserId(req);
         const transactions = await prisma.transaction.findMany({
             where: {
-                userId: reqAuth.user.id
+                userId: userId
             },
             include: {
                 category: true
@@ -54,7 +52,7 @@ export const getTransactions = async (req: Request, res: Response, next: NextFun
 
 export const updateTransaction = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const reqAuth = req as AuthRequest;
+        const userId = getAuthUserId(req);
         const { id } =  req.params;
         const { description, note, amount, date, paymentMethod, transactionType, categoryId } = req.body;
         const updateData: Prisma.TransactionUncheckedUpdateInput = {};
@@ -83,7 +81,7 @@ export const updateTransaction = async (req: Request, res: Response, next: NextF
             return;
         }
 
-        if (transaction.userId !== reqAuth.user.id) {
+        if (transaction.userId !== userId) {
             res.status(403).json({ error: "Você não tem permissão para atualizar esta transação." });
             return;
         }
@@ -104,7 +102,7 @@ export const updateTransaction = async (req: Request, res: Response, next: NextF
 
 export const deleteTransaction = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const reqAuth = req as AuthRequest;
+        const userId = getAuthUserId(req);
         const { id } = req.params;
 
         const transaction = await prisma.transaction.findUnique({
@@ -118,7 +116,7 @@ export const deleteTransaction = async (req: Request, res: Response, next: NextF
             return;
         }
 
-        if (transaction.userId !== reqAuth.user.id) {
+        if (transaction.userId !== userId) {
             res.status(403).json({ error: "Você não tem permissão para excluir esta transação." });
             return;
         }

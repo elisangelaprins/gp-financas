@@ -1,11 +1,11 @@
 import type { Request, Response, NextFunction } from 'express';
+import { getAuthUserId } from '../utils/auth.utils.js';
 import type { Prisma } from '@prisma/client';
 import prisma from '../config/db.js';
-import type { AuthRequest } from '../middlewares/authMiddleware.js';
 
 export const createCategory = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const reqAuth = req as AuthRequest;
+        const userId = getAuthUserId(req);
         const { name, color, isBusiness } = req.body;
 
         if (!name) {
@@ -15,7 +15,7 @@ export const createCategory = async (req: Request, res: Response, next: NextFunc
 
         const category = await prisma.category.create({
             data: {
-                userId: reqAuth.user.id,
+                userId: userId,
                 name: name,
                 color: color || '#FFFFFF',
                 isBusiness: isBusiness || false
@@ -30,12 +30,12 @@ export const createCategory = async (req: Request, res: Response, next: NextFunc
 
 export const getCategories = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const reqAuth = req as AuthRequest;
+        const userId = getAuthUserId(req);
         const { isBusiness } = req.query;
         const whereCondition: Prisma.CategoryWhereInput = {
             OR: [
                 { isDefault: true },
-                { userId: reqAuth.user.id }
+                { userId: userId }
             ]
         };
 
@@ -58,7 +58,7 @@ export const getCategories = async (req: Request, res: Response, next: NextFunct
 
 export const updateCategory = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const reqAuth = req as AuthRequest;
+        const userId = getAuthUserId(req);
         const { id } = req.params;
         const { name, color, isBusiness } = req.body;
         const updateData: Prisma.CategoryUncheckedUpdateInput = {};
@@ -81,7 +81,7 @@ export const updateCategory = async (req: Request, res: Response, next: NextFunc
             return;
         };
 
-        if (category.userId !== reqAuth.user.id) {
+        if (category.userId !== userId) {
             res.status(403).json({ error: 'Você não tem permissão para atualizar esta categoria.' });
             return;
         };
@@ -102,7 +102,7 @@ export const updateCategory = async (req: Request, res: Response, next: NextFunc
 
 export const deleteCategory = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const reqAuth = req as AuthRequest;
+        const userId = getAuthUserId(req);
         const { id } = req.params;
 
         const category = await prisma.category.findUnique({
@@ -119,7 +119,7 @@ export const deleteCategory = async (req: Request, res: Response, next: NextFunc
             return;
         }
 
-        if (category.userId !== reqAuth.user.id) {
+        if (category.userId !== userId) {
             res.status(403).json({ error: "Você não tem permissão para excluir esta categoria." });
             return;
         }

@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
+import { getAuthUserId } from "../utils/auth.utils.js";
 import { Prisma, TransactionType } from "@prisma/client";
 import prisma from "../config/db.js";
-import type { AuthRequest } from "../middlewares/authMiddleware.js";
 
 interface DataQueryParams {
     month?: string;
@@ -56,8 +56,7 @@ function getWhereCondition(
 
 export const getSummary = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const reqAuth = req as AuthRequest;
-        const userId = reqAuth.user.id;
+        const userId = getAuthUserId(req);
         const { start, end } = getDateRange(req.query);
         const whereCondition = getWhereCondition(userId, req.query);
 
@@ -90,8 +89,7 @@ export const getSummary = async (req: Request, res: Response, next: NextFunction
 
 export const getByCategory = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const reqAuth = req as AuthRequest;
-        const userId = reqAuth.user.id;
+        const userId = getAuthUserId(req);
         const { transactionType } = req.query;
         const type = (transactionType as string)?.toUpperCase() === "INCOME" ? TransactionType.INCOME : TransactionType.EXPENSE;
         const whereCondition = getWhereCondition(userId, req.query, type);
@@ -126,8 +124,7 @@ export const getByCategory = async (req: Request, res: Response, next: NextFunct
 
 export const getTopExpenses = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const reqAuth = req as AuthRequest;
-        const userId = reqAuth.user.id;
+        const userId = getAuthUserId(req);
         const whereCondition = getWhereCondition(userId, req.query, TransactionType.EXPENSE);
 
         const topExpenses = await prisma.transaction.findMany({
