@@ -3,6 +3,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import prisma from './config/db.js';
+import { apiLimiter, authLimiter } from './middlewares/rateLimitMiddleware.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 import authRoutes from './routes/authRoutes.js';
 import transactionRoutes from './routes/transactionRoutes.js';
@@ -16,16 +17,14 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middlewares
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
-app.use('/api/auth', authRoutes);
-app.use('/api/transactions', transactionRoutes);
-app.use('/api/categories', categoryRoutes);
-app.use('/api/dashboard', dashboardRoutes)
+app.use('/api/auth', authLimiter, authRoutes);
+app.use('/api/transactions', apiLimiter, transactionRoutes);
+app.use('/api/categories', apiLimiter, categoryRoutes);
+app.use('/api/dashboard', apiLimiter, dashboardRoutes)
 
-// Rota de teste inicial (Health Check)
 app.get('/', async (req, res) => {
   try {
     await prisma.user.findFirst();

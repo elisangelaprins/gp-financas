@@ -1,15 +1,31 @@
-import type { Request, Response, NextFunction } from 'express';    
+import type { Request, Response, NextFunction } from 'express';
 import { getAuthUserId } from '../utils/auth.utils.js';
 import prisma from '../config/db.js';
 import type { Prisma } from '@prisma/client';
 
 export const createTransaction = async (req: Request, res: Response, next: NextFunction) => {
     try {
-       const userId = getAuthUserId(req);
+        const userId = getAuthUserId(req);
         const { description, amount, date, paymentMethod, transactionType, categoryId } = req.body;
 
         if (!description || !amount || !date || !paymentMethod || !transactionType || !categoryId) {
             res.status(400).json({ error: "Todos os campos são obrigatórios." });
+            return;
+        }
+
+        // Valida se a categoria existe e pertence ao usuário autenticado ou se é padrão do sistema
+        const category = await prisma.category.findFirst({
+            where: {
+                id: categoryId,
+                OR: [
+                    { isDefault: true },
+                    { userId: userId }
+                ]
+            }
+        });
+
+        if (!category) {
+            res.status(404).json({ message: "Categoria não encontrada ou inválida." });
             return;
         }
 
@@ -25,7 +41,7 @@ export const createTransaction = async (req: Request, res: Response, next: NextF
             }
         });
 
-        res.status(201).json(transaction);  
+        res.status(201).json(transaction);
 
     } catch (error) {
         next(error);
@@ -53,7 +69,7 @@ export const getTransactions = async (req: Request, res: Response, next: NextFun
 export const updateTransaction = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const userId = getAuthUserId(req);
-        const { id } =  req.params;
+        const { id } = req.params;
         const { description, note, amount, date, paymentMethod, transactionType, categoryId } = req.body;
         const updateData: Prisma.TransactionUncheckedUpdateInput = {};
 
@@ -86,6 +102,22 @@ export const updateTransaction = async (req: Request, res: Response, next: NextF
             return;
         }
 
+        if (categoryId) {
+            const category = await prisma.category.findFirst({
+                where: {
+                    id: categoryId,
+                    OR: [
+                        { isDefault: true },
+                        { userId: userId }
+                    ]
+                },
+            })
+
+            if (!category) {
+                res.status(400).json({ error: "Categoria informada é inválida." });
+                return;
+            }
+        }
         const updatedTransaction = await prisma.transaction.update({
             where: {
                 id: String(id)

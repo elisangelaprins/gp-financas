@@ -21,6 +21,7 @@ export const createCategory = async (req: Request, res: Response, next: NextFunc
                 isBusiness: isBusiness || false
             }
         })
+
         res.status(201).json(category);
 
     } catch (error) {
@@ -106,16 +107,16 @@ export const deleteCategory = async (req: Request, res: Response, next: NextFunc
         const { id } = req.params;
 
         const category = await prisma.category.findUnique({
-            where: { id: String(id)}
+            where: { id: String(id) }
         })
 
         if (!category) {
-            res.status(404).json({ error: "Categoria não encontrada."});
+            res.status(404).json({ error: "Categoria não encontrada." });
             return;
         }
 
         if (category.isDefault) {
-            res.status(403).json({ error: "Categorias padrão do sistema não podem ser excluídas."});
+            res.status(403).json({ error: "Categorias padrão do sistema não podem ser excluídas." });
             return;
         }
 
@@ -130,7 +131,7 @@ export const deleteCategory = async (req: Request, res: Response, next: NextFunc
             }
         });
 
-        res.status(200).json({ message: "Categoria excluída com sucesso."})
+        res.status(200).json({ message: "Categoria excluída com sucesso." })
 
     } catch (error) {
         next(error)
