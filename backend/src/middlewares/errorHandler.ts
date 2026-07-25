@@ -5,12 +5,12 @@ export const errorHandler = (
     err: unknown,
     req: Request,
     res: Response,
-    next: NextFunction
+    _next: NextFunction
 ): void => {
     const errorMessage = err instanceof Error ? err.message : "Erro desconhecido";
     const errorStack = err instanceof Error ? err.stack : "";
     console.error(`[Global Error]: ${errorMessage}`, { stack: errorStack }); // Registro do erro no console do servidor
     res.status(500).json({
         message: "Ocorreu um erro inesperado. Por favor, tente novamente mais tarde."
-    }); // Registtro de resposta genérica para o cliente
+    }); // Registro de resposta genérica para o cliente
 };

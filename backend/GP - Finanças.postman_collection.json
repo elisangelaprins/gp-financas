@@ -37,6 +37,67 @@
         }
       },
       "response": []
+    },
+    {
+      "name": "transaçãoes",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{supabase_service_role_api_key_1cbf}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"description\": \"Salário Mensal\",\r\n  \"amount\": 5000.0,\r\n  \"date\": \"2026-07-17\",\r\n  \"paymentMethod\": \"PIX\",\r\n  \"transactionType\": \"INCOME\",\r\n  \"categoryId\": \"6a5aa33a7ee6869267e9c983\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:3000/api/transactions",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3000",
+          "path": [
+            "api",
+            "transactions"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GP Finanças - Verify",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "supabase_service_role_api_key_1cbf",
+      "secret": true
+    },
+    {
+      "key": "auth_secret_1cbf",
+      "secret": true
+    },
+    {
+      "key": "json_web_token_1cbf",
+      "secret": true
     }
   ]
 }

@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import prisma from './config/db.js';
 import { errorHandler } from './middlewares/errorHandler.js';
@@ -18,14 +19,15 @@ const PORT = process.env.PORT || 3000;
 // Middlewares
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
 app.use('/api/auth', authRoutes);
 app.use('/api/transactions', transactionRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/dashboard', dashboardRoutes)
+
 // Rota de teste inicial (Health Check)
 app.get('/', async (req, res) => {
   try {
-    // Testa a conexão básica com o banco buscando um usuário (deve retornar vazio, mas sem erro)
     await prisma.user.findFirst();
     res.json({ message: "Servidor rodando e conectado ao MongoDB Atlas com sucesso!" });
   } catch (error) {

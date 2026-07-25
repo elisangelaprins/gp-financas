@@ -9,17 +9,12 @@ export interface AuthRequest extends Request {
 }
 
 export const verifyUser = ( req: Request, res: Response, next: NextFunction): void => {
-    const tokenHeader = req.headers.authorization;
 
-    if (!tokenHeader) {
+    // Recupera o token diretamente dos cookies (injetados pelo cookie-parser).
+    const token = req.cookies?.token;
+
+    if (!token) {
         res.status(401).json({ error: "Acesso negado. Token não fornecido." });
-        return;
-    };
-
-    const [scheme, token] = tokenHeader.split(' ');
-
-    if (scheme !== 'Bearer' || !token) { 
-        res.status(401).json({ error: "Acesso negado. Token inválido." });
         return;
     };
 
@@ -30,7 +25,7 @@ export const verifyUser = ( req: Request, res: Response, next: NextFunction): vo
 
         next();
 
-    } catch (error) {
+    } catch {
         res.status(401).json({ error: "Acesso negado. Token inválido ou expirado." });
     };
 }

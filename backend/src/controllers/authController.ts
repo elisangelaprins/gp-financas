@@ -71,17 +71,24 @@ export const login = async (req: Request, res: Response, next: NextFunction): Pr
             process.env.JWT_SECRET as string,
             { expiresIn: "1h" }
         );
+        // Armazena o JWT em cookie HTTP-Only para proteção contra vulnerabilidades XSS e CSRF
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+            maxAge: 3600000
+        })
 
-        res.json({ 
-            "token": token,
+        //JSON final de resposta contendo apenas o objeto do usuário (sem o token!)
+        res.json({
             "user": {
                 "id": user.id,
                 "name": user.name,
-                "email": user.email,
+                "email": user.email
             }
-         });
+        });
 
     } catch (error) {
         next(error);
     }
-}
+};
