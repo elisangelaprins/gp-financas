@@ -13,6 +13,7 @@ model User {
   email        String        @unique
   password     String
   transactions Transaction[]
+  budget  Budget[]
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
 }
@@ -25,6 +26,7 @@ model Category {
   isBusiness   Boolean       @default(false)
   userId       String?       @db.ObjectId
   transactions Transaction[]
+  budget  Budget[]
 }
 
 model Transaction {
@@ -48,6 +50,24 @@ model Transaction {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Budget {
+  id  String  @id   @default(auto()) @map("_id") @db.ObjectId
+  amountLimit Float
+  month   Int
+  year    Int
+
+  user    User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String   @db.ObjectId
+
+  category  Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  categoryId  String  @db.ObjectId
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@unique([userId, categoryId, month, year])
 }
 
 enum TransactionType {
