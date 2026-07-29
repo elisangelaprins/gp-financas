@@ -92,3 +92,19 @@ export const login = async (req: Request, res: Response, next: NextFunction): Pr
         next(error);
     }
 };
+
+export const forgotPassword = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { email } = req.body;
+
+        const user = await prisma.user.findUnique({
+            where: { email },
+        })
+    } catch (error) {
+        next(error);
+    }
+
+}
+
+
+//em construção

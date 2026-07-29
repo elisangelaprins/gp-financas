@@ -8,14 +8,16 @@ datasource db {
 }
 
 model User {
-  id           String        @id @default(auto()) @map("_id") @db.ObjectId
-  name         String
-  email        String        @unique
-  password     String
-  transactions Transaction[]
-  budget  Budget[]
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
+  id            String @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  email         String        @unique
+  password      String
+  resetToken    String?
+  resetExpires  DateTime? 
+  transactions  Transaction[]
+  budget        Budget[]
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
 }
 
 model Category {
