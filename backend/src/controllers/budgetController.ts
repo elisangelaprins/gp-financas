@@ -6,7 +6,7 @@ import prisma from "../config/db.js";
 export const createBudget = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const userId = getAuthUserId(req);
-        const { amountLimit, month, year, categoryId } = req.body;
+        const { amountLimit, description, month, year, categoryId } = req.body;
 
         if (!categoryId || !amountLimit || !month || !year) {
             res.status(400).json({ message: "Por favor, preencha todos os campos obrigatórios: categoria, limite, mês e ano." });
@@ -45,6 +45,7 @@ export const createBudget = async (req: Request, res: Response, next: NextFuncti
         const budget = await prisma.budget.create({
             data: {
                 userId: userId,
+                description: description || null,
                 amountLimit,
                 categoryId,
                 month: Number(month),
@@ -105,6 +106,7 @@ export const getBudget = async (req: Request, res: Response, next: NextFunction)
 
             return {
                 id: budget.id,
+                description: budget.description || null,
                 amountLimit: budget.amountLimit,
                 spent,
                 remaining,
@@ -126,7 +128,7 @@ export const updateBudget = async (req: Request, res: Response, next: NextFuncti
     try {
         const userId = getAuthUserId(req);
         const { id } = req.params;
-        const { amountLimit } = req.body;
+        const { description, amountLimit } = req.body;
 
         const existingBudget = await prisma.budget.findFirst({
             where: { id: String(id), userId }
@@ -137,18 +139,20 @@ export const updateBudget = async (req: Request, res: Response, next: NextFuncti
             return;
         }
 
+        const updateData: Prisma.BudgetUpdateInput = {};
+
+        if (description !== undefined) updateData.description = description;
+
+        if (amountLimit !== undefined) updateData.amountLimit = Number(amountLimit);
+
         const updateBudget = await prisma.budget.update({
-            where: {
-                id: String(id)
-            }, 
-            data: {
-                amountLimit: Number(amountLimit)
-            }
-        });
+            where: { id: String(id) }, 
+            data: updateData
+        })
 
         res.status(200).json(updateBudget);
-
     } catch (error) {
+
         next(error);
     }
 };
@@ -163,7 +167,7 @@ export const deleteBudget = async (req: Request, res: Response, next: NextFuncti
         })
 
         if (!budget) {
-            res.status(404).json({ message: "Orçamento não encontrado."} )
+            res.status(404).json({ message: "Orçamento não encontrado." })
             return;
         };
 
