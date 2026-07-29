@@ -10,6 +10,7 @@ import transactionRoutes from './routes/transactionRoutes.js';
 import categoryRoutes from './routes/categoryRoutes.js';
 import dashboardRoutes from './routes/dashboardRoutes.js';
 import budgetRoutes from './routes/budgetRoutes.js';
+import exportRoutes from './routes/exportRoutes.js'
 
 
 
@@ -26,6 +27,7 @@ app.use('/api/transactions', apiLimiter, transactionRoutes);
 app.use('/api/categories', apiLimiter, categoryRoutes);
 app.use('/api/dashboard', apiLimiter, dashboardRoutes)
 app.use('/api/budgets', apiLimiter, budgetRoutes);
+app.use('/api/export', apiLimiter, exportRoutes);
 
 app.get('/', async (req, res) => {
   try {
