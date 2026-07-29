@@ -9,81 +9,223 @@
   },
   "item": [
     {
-      "name": "GP Finanças - Auth",
-      "request": {
-        "method": "POST",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\r\n  \"email\": \"elisangela@teste.com\",\r\n  \"senha\": \"senhaSegura123\"\r\n}",
-          "options": {
-            "raw": {
-              "language": "json"
+      "name": "1. Autenticação (Register, Login)",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"elisangela@teste.com\",\r\n  \"senha\": \"senhaSegura123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/auth/login",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
             }
-          }
+          },
+          "response": []
         },
-        "url": {
-          "raw": "http://localhost:3000/api/auth/login",
-          "protocol": "http",
-          "host": [
-            "localhost"
-          ],
-          "port": "3000",
-          "path": [
-            "api",
-            "auth",
-            "login"
-          ]
+        {
+          "name": "Cadastrar Usuário",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": []
         }
-      },
-      "response": []
+      ]
     },
     {
-      "name": "transaçãoes",
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "{{supabase_service_role_api_key_1cbf}}",
-              "type": "string"
+      "name": "2. Transações (Cookie automático)",
+      "item": [
+        {
+          "name": "1 - Criar Transação",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{supabase_service_role_api_key_1cbf}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"description\": \"Salário Mensal\",\r\n  \"amount\": 5000.0,\r\n  \"date\": \"2026-07-17\",\r\n  \"paymentMethod\": \"PIX\",\r\n  \"transactionType\": \"INCOME\",\r\n  \"categoryId\": \"6a5aa33a7ee6869267e9c983\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/transactions",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "api",
+                "transactions"
+              ]
             }
-          ]
+          },
+          "response": []
         },
-        "method": "POST",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\r\n  \"description\": \"Salário Mensal\",\r\n  \"amount\": 5000.0,\r\n  \"date\": \"2026-07-17\",\r\n  \"paymentMethod\": \"PIX\",\r\n  \"transactionType\": \"INCOME\",\r\n  \"categoryId\": \"6a5aa33a7ee6869267e9c983\"\r\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
+        {
+          "name": "2 - Criar Transação",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": []
         },
-        "url": {
-          "raw": "http://localhost:3000/api/transactions",
-          "protocol": "http",
-          "host": [
-            "localhost"
-          ],
-          "port": "3000",
-          "path": [
-            "api",
-            "transactions"
-          ]
+        {
+          "name": "Listar Transações",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": []
+        },
+        {
+          "name": "Atualizar Transação",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": []
+        },
+        {
+          "name": "Deletar Transação",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": []
         }
-      },
-      "response": []
+      ]
     },
     {
-      "name": "GP Finanças - Verify",
-      "request": {
-        "method": "GET",
-        "header": []
-      },
-      "response": []
+      "name": "3. Categorias",
+      "item": [
+        {
+          "name": "Listar Categorias",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": []
+        },
+        {
+          "name": "Criar Categoria",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "4. Orçamentos",
+      "item": [
+        {
+          "name": "Criar Orçamento",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": []
+        },
+        {
+          "name": "Listar Orçamentos",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": []
+        },
+        {
+          "name": "Atualizar Orçamento",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "5. Dashboard",
+      "item": [
+        {
+          "name": "Resumo Geral",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": []
+        },
+        {
+          "name": "Por Categoria",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": []
+        },
+        {
+          "name": "Tendência Mensal",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "6. Exportações",
+      "item": [
+        {
+          "name": "Exportar CSV",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": []
+        },
+        {
+          "name": "Exportar PDF",
+          "request": {
+            "method": "GET",
+            "header": []
+          },
+          "response": []
+        }
+      ]
     }
   ],
   "variable": [
