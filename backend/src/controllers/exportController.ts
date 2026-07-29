@@ -2,6 +2,7 @@ import type { Request, Response, NextFunction } from "express";
 import prisma from "../config/db.js";
 import { getAuthUserId } from "../utils/auth.utils.js";
 import { generateCSV } from "../utils/csv.utils.js";
+import { generatePDF } from "../utils/pdf.utils.js";
 
 export const exportCSV = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -23,3 +24,24 @@ export const exportCSV = async (req: Request, res: Response, next: NextFunction)
         next(error)
     }
 };
+
+export const exportPDF = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const userId = getAuthUserId(req);
+
+        const transactions = await prisma.transaction.findMany({
+            where: { userId },
+            include: { category: true },
+            orderBy: { date: 'desc' }
+        });
+
+         res.setHeader('Content-Type', 'application/pdf');
+         res.setHeader('Content-Disposition', 'attachment, filename="transacoes.pdf');
+
+
+        const pdf = await generatePDF(transactions);
+        res.status(200).send(pdf)
+    } catch(error) {
+        next(error)
+    }
+}

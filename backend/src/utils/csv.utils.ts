@@ -34,5 +34,7 @@ export const generateCSV = (transactions: TransactionWithCategory[]): string => 
 
     const header = columns.map(col => col.title).join("|");
     const rows = transactions.map(t => columns.map(col => col.getItem(t)).join("|"));
+
+    // Adiciona BOM UTF-8 para garantir acentuação correta no Microsoft Excel
     return "\uFEFF" + [header, ...rows].join("\n");
 }
