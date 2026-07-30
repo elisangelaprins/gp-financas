@@ -2,7 +2,7 @@
   "info": {
     "_postman_id": "00d5cd94-6152-45b3-9fe6-468b265caafc",
     "name": "GP - Finanças",
-    "description": "Coleção completa de requisições HTTP da API GP - Finanças (Autenticação, Transações, Categorias, Orçamentos, Dashboard e Exportações).",
+    "description": "Searched for \"\"name\":\"\n\nAqui está o texto atualizado com as **7 pastas** exatas da sua coleção:\n\n``` markdown\n# 💰 GP - Finanças API\nColeção oficial de requisições e testes da API do **GP - Finanças**, um sistema completo de gerenciamento financeiro pessoal.\n## 🚀 Tecnologias Utilizadas\n- **Node.js & Express** (TypeScript)\n- **Prisma ORM** (Banco de dados relacional)\n- **JWT & Cookies HTTP-only** (Autenticação segura)\n- **PDFKit** (Geração de relatórios em PDF)\n## 📌 Módulos da API (7 Pastas)\n1. **Autenticação**: Registro, Login e Logout de usuários.\n2. **Transações**: CRUD de receitas e despesas com categorização e métodos de pagamento.\n3. **Categorias**: Gerenciamento de categorias personalizadas e padrão do sistema.\n4. **Orçamentos**: Criação, listagem e acompanhamento de metas financeiras.\n5. **Dashboard**: Resumos estatísticos, visão por categoria e tendências mensais.\n6. **Exportações**: Download de relatórios em **PDF** e **CSV** filtrados por data, categoria, tipo e forma de pagamento.\n7. **Redefinir Senha**: Solicitação de código/token por e-mail e redefinição de senha segura.\n## 🧪 Testes Automatizados\nAs requisições possuem scripts de testes no Postman que validam:\n- Código de status da resposta HTTP (200, 201).\n- Integridade e assinatura dos arquivos PDF gerados.\n- Tempo de resposta da API (< 10s).\n\n ```",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "56634920",
     "_collection_link": "https://go.postman.co/collection/56634920-00d5cd94-6152-45b3-9fe6-468b265caafc?source=collection_link"
@@ -26,12 +26,12 @@
               }
             },
             "url": {
-              "raw": "http://localhost:3000/api/auth/login",
-              "protocol": "http",
+              "raw": "{{baseUrl}}/api/auth/login",
+
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "3000",
+
               "path": [
                 "api",
                 "auth",
@@ -55,12 +55,12 @@
                   }
                 },
                 "url": {
-                  "raw": "http://localhost:3000/api/auth/login",
-                  "protocol": "http",
+                  "raw": "{{baseUrl}}/api/auth/login",
+    
                   "host": [
-                    "localhost"
+                    "{{baseUrl}}"
                   ],
-                  "port": "3000",
+    
                   "path": [
                     "api",
                     "auth",
@@ -131,12 +131,12 @@
                   }
                 },
                 "url": {
-                  "raw": "http://localhost:3000/api/auth/login",
-                  "protocol": "http",
+                  "raw": "{{baseUrl}}/api/auth/login",
+    
                   "host": [
-                    "localhost"
+                    "{{baseUrl}}"
                   ],
-                  "port": "3000",
+    
                   "path": [
                     "api",
                     "auth",
@@ -220,12 +220,12 @@
                   }
                 },
                 "url": {
-                  "raw": "http://localhost:3000/api/auth/register",
-                  "protocol": "http",
+                  "raw": "{{baseUrl}}/api/auth/register",
+    
                   "host": [
-                    "localhost"
+                    "{{baseUrl}}"
                   ],
-                  "port": "3000",
+    
                   "path": [
                     "api",
                     "auth",
@@ -296,12 +296,12 @@
                   }
                 },
                 "url": {
-                  "raw": "http://localhost:3000/api/auth/register",
-                  "protocol": "http",
+                  "raw": "{{baseUrl}}/api/auth/register",
+    
                   "host": [
-                    "localhost"
+                    "{{baseUrl}}"
                   ],
-                  "port": "3000",
+    
                   "path": [
                     "api",
                     "auth",
@@ -365,7 +365,7 @@
       "name": "2. Transações (Cookie automático)",
       "item": [
         {
-          "name": "1 - Criar Transação",
+          "name": "Criar Transação (Receita)",
           "request": {
             "auth": {
               "type": "bearer",
@@ -389,12 +389,12 @@
               }
             },
             "url": {
-              "raw": "http://localhost:3000/api/transactions",
-              "protocol": "http",
+              "raw": "{{baseUrl}}/api/transactions",
+
               "host": [
-                "localhost"
+                "{{baseUrl}}"
               ],
-              "port": "3000",
+
               "path": [
                 "api",
                 "transactions"
@@ -403,7 +403,7 @@
           },
           "response": [
             {
-              "name": "1 - Criar Transação",
+              "name": "Criar Transação (Receita)",
               "originalRequest": {
                 "method": "POST",
                 "header": [],
@@ -417,12 +417,12 @@
                   }
                 },
                 "url": {
-                  "raw": "http://localhost:3000/api/transactions/",
-                  "protocol": "http",
+                  "raw": "{{baseUrl}}/api/transactions/",
+    
                   "host": [
-                    "localhost"
+                    "{{baseUrl}}"
                   ],
-                  "port": "3000",
+    
                   "path": [
                     "api",
                     "transactions",
@@ -481,14 +481,14 @@
           ]
         },
         {
-          "name": "2 - Criar Transação",
+          "name": "Criar Transação (Despesa)",
           "request": {
             "method": "GET",
             "header": []
           },
           "response": [
             {
-              "name": "2 - Criar Transação",
+              "name": "Criar Transação (Despesa)",
               "originalRequest": {
                 "method": "POST",
                 "header": [],
@@ -502,12 +502,12 @@
                   }
                 },
                 "url": {
-                  "raw": "http://localhost:3000/api/transactions",
-                  "protocol": "http",
+                  "raw": "{{baseUrl}}/api/transactions",
+    
                   "host": [
-                    "localhost"
+                    "{{baseUrl}}"
                   ],
-                  "port": "3000",
+    
                   "path": [
                     "api",
                     "transactions"
@@ -586,12 +586,12 @@
                   }
                 },
                 "url": {
-                  "raw": "http://localhost:3000/api/transactions/",
-                  "protocol": "http",
+                  "raw": "{{baseUrl}}/api/transactions/",
+    
                   "host": [
-                    "localhost"
+                    "{{baseUrl}}"
                   ],
-                  "port": "3000",
+    
                   "path": [
                     "api",
                     "transactions",
@@ -671,12 +671,12 @@
                   }
                 },
                 "url": {
-                  "raw": "http://localhost:3000/api/transactions/6a6bb338d8107ecacb280019",
-                  "protocol": "http",
+                  "raw": "{{baseUrl}}/api/transactions/6a6bb338d8107ecacb280019",
+    
                   "host": [
-                    "localhost"
+                    "{{baseUrl}}"
                   ],
-                  "port": "3000",
+    
                   "path": [
                     "api",
                     "transactions",
@@ -760,12 +760,12 @@
                 "method": "GET",
                 "header": [],
                 "url": {
-                  "raw": "http://localhost:3000/api/categories",
-                  "protocol": "http",
+                  "raw": "{{baseUrl}}/api/categories",
+    
                   "host": [
-                    "localhost"
+                    "{{baseUrl}}"
                   ],
-                  "port": "3000",
+    
                   "path": [
                     "api",
                     "categories"
@@ -844,12 +844,12 @@
                   }
                 },
                 "url": {
-                  "raw": "http://localhost:3000/api/categories",
-                  "protocol": "http",
+                  "raw": "{{baseUrl}}/api/categories",
+    
                   "host": [
-                    "localhost"
+                    "{{baseUrl}}"
                   ],
-                  "port": "3000",
+    
                   "path": [
                     "api",
                     "categories"
@@ -933,12 +933,12 @@
                   }
                 },
                 "url": {
-                  "raw": "http://localhost:3000/api/budgets",
-                  "protocol": "http",
+                  "raw": "{{baseUrl}}/api/budgets",
+    
                   "host": [
-                    "localhost"
+                    "{{baseUrl}}"
                   ],
-                  "port": "3000",
+    
                   "path": [
                     "api",
                     "budgets"
@@ -1008,12 +1008,12 @@
                 "method": "GET",
                 "header": [],
                 "url": {
-                  "raw": "http://localhost:3000/api/budgets?month=7&year=2026",
-                  "protocol": "http",
+                  "raw": "{{baseUrl}}/api/budgets?month=7&year=2026",
+    
                   "host": [
-                    "localhost"
+                    "{{baseUrl}}"
                   ],
-                  "port": "3000",
+    
                   "path": [
                     "api",
                     "budgets"
@@ -1102,12 +1102,12 @@
                   }
                 },
                 "url": {
-                  "raw": "http://localhost:3000/api/budgets/6a6a4fe7a307b0b4cb3e3cc6",
-                  "protocol": "http",
+                  "raw": "{{baseUrl}}/api/budgets/6a6a4fe7a307b0b4cb3e3cc6",
+    
                   "host": [
-                    "localhost"
+                    "{{baseUrl}}"
                   ],
-                  "port": "3000",
+    
                   "path": [
                     "api",
                     "budgets",
@@ -1212,12 +1212,12 @@
                 "method": "GET",
                 "header": [],
                 "url": {
-                  "raw": "http://localhost:3000/api/export/csv",
-                  "protocol": "http",
+                  "raw": "{{baseUrl}}/api/export/csv",
+    
                   "host": [
-                    "localhost"
+                    "{{baseUrl}}"
                   ],
-                  "port": "3000",
+    
                   "path": [
                     "api",
                     "export",
@@ -1277,11 +1277,130 @@
         },
         {
           "name": "Exportar PDF",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is successful', function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 202, 204]);",
+                  "});",
+                  "",
+                  "pm.test('Response time is under 10 seconds', function () {",
+                  "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+                  "});",
+                  "",
+                  "pm.test('Content-Type indicates PDF when header is present', function () {",
+                  "    const contentType = pm.response.headers.get('Content-Type');",
+                  "    pm.expect(contentType, 'Content-Type header should be present').to.exist;",
+                  "    pm.expect(contentType.toLowerCase()).to.include('pdf');",
+                  "});",
+                  "",
+                  "pm.test('Response is not empty', function () {",
+                  "    const text = pm.response.text();",
+                  "    const hasBodyText = typeof text === 'string' && text.length > 0;",
+                  "    const contentLength = pm.response.headers.get('Content-Length');",
+                  "    const hasPositiveContentLength = contentLength !== null && !Number.isNaN(Number(contentLength)) && Number(contentLength) > 0;",
+                  "",
+                  "    pm.expect(hasBodyText || hasPositiveContentLength, 'Expected a non-empty response body or a positive Content-Length header').to.be.true;",
+                  "});",
+                  "",
+                  "pm.test('PDF signature or PDF content type is present', function () {",
+                  "    const text = pm.response.text();",
+                  "    const contentType = (pm.response.headers.get('Content-Type') || '').toLowerCase();",
+                  "    const looksLikePdf = typeof text === 'string' && text.startsWith('%PDF');",
+                  "    const headerIndicatesPdf = contentType.includes('pdf');",
+                  "",
+                  "    pm.expect(looksLikePdf || headerIndicatesPdf, 'Expected PDF signature in body or a PDF content type header').to.be.true;",
+                  "});",
+                  "",
+                  "pm.test('Content-Disposition is valid when header is present', function () {",
+                  "    const contentDisposition = pm.response.headers.get('Content-Disposition');",
+                  "",
+                  "    if (!contentDisposition) {",
+                  "        pm.expect(true).to.be.true;",
+                  "        return;",
+                  "    }",
+                  "",
+                  "    const normalized = contentDisposition.toLowerCase();",
+                  "    pm.expect(normalized).to.satisfy(function (value) {",
+                  "        return value.includes('attachment') || value.includes('inline');",
+                  "    });",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
           "request": {
             "method": "GET",
-            "header": []
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/export/pdf?transactionType=EXPENSE&startDate=2026-07-01",
+
+              "host": [
+                "{{baseUrl}}"
+              ],
+
+              "path": [
+                "api",
+                "export",
+                "pdf"
+              ],
+              "query": [
+                {
+                  "key": "transactionType",
+                  "value": "EXPENSE",
+                  "type": "text"
+                },
+                {
+                  "key": "startDate",
+                  "value": "2026-07-01",
+                  "type": "text"
+                }
+              ]
+            }
           },
-          "response": []
+          "response": [
+            {
+              "name": "Exportar PDF",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/export/pdf?transactionType=EXPENSE&startDate=2026-07-01",
+    
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+    
+                  "path": [
+                    "api",
+                    "export",
+                    "pdf"
+                  ],
+                  "query": [
+                    {
+                      "key": "transactionType",
+                      "value": "EXPENSE",
+                      "type": "text"
+                    },
+                    {
+                      "key": "startDate",
+                      "value": "2026-07-01",
+                      "type": "text"
+                    }
+                  ]
+                }
+              },
+              "_postman_previewlanguage": null,
+              "header": null,
+              "cookie": [],
+              "body": null
+            }
+          ]
         }
       ]
     },
@@ -1310,12 +1429,12 @@
                   }
                 },
                 "url": {
-                  "raw": "http://localhost:3000/api/auth/forgot-password",
-                  "protocol": "http",
+                  "raw": "{{baseUrl}}/api/auth/forgot-password",
+    
                   "host": [
-                    "localhost"
+                    "{{baseUrl}}"
                   ],
-                  "port": "3000",
+    
                   "path": [
                     "api",
                     "auth",
@@ -1395,12 +1514,12 @@
                   }
                 },
                 "url": {
-                  "raw": "http://localhost:3000/api/auth/reset-password",
-                  "protocol": "http",
+                  "raw": "{{baseUrl}}/api/auth/reset-password",
+    
                   "host": [
-                    "localhost"
+                    "{{baseUrl}}"
                   ],
-                  "port": "3000",
+    
                   "path": [
                     "api",
                     "auth",
@@ -1462,6 +1581,11 @@
     }
   ],
   "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
     {
       "key": "supabase_service_role_api_key_1cbf",
       "secret": true
