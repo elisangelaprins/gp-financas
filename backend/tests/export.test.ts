@@ -49,8 +49,28 @@ describe('Módulo de Exportação de Relatórios API', () => {
 
     it('Deve negar acesso ao PDF se o usuário não estiver autenticado (Status 401)', async () => {
         const res = await request(app).get('/api/export/pdf');
-        
+
         expect(res.status).toBe(401);
+    });
+
+    it('Deve exportar relatório PDF aplicando filtros de busca (Status 200)', async () => {
+        const res = await request(app)
+            .get('/api/export/pdf?transactionType=EXPENSE&startDate=2026-01-01&isBusiness=true')
+            .set('Cookie', authCookie);
+
+        expect(res.status).toBe(200);
+        expect(res.headers['content-type']).toContain('pdf');
+
+    });
+
+        it('Deve exportar relatório CSV aplicando filtros de busca (Status 200)', async () => {
+        const res = await request(app)
+            .get('/api/export/csv?transactionType=EXPENSE&startDate=2026-01-01&isBusiness=true')
+            .set('Cookie', authCookie);
+
+        expect(res.status).toBe(200);
+        expect(res.headers['content-type']).toContain('csv');
+        
     });
 
 });

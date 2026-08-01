@@ -9,6 +9,7 @@ describe('Módulo de Categorias API', () => {
     let authCookie: string[];
     let userEmail: string;
     let defaultCategoryId: string;
+    let customCategoryId: string;
 
     beforeAll(async () => {
         const context = await createTestUserAndLogin(app, 'category');
@@ -22,6 +23,7 @@ describe('Módulo de Categorias API', () => {
             });
         }
         defaultCategoryId = defaultCategory.id;
+
     });
 
     afterAll(async () => {
@@ -50,7 +52,32 @@ describe('Módulo de Categorias API', () => {
 
         expect(res.status).toBe(201);
         expect(res.body).toHaveProperty('id');
+        customCategoryId = res.body.id;
         expect(res.body.name).toBe('Viagens & Lazer');
+
+    });
+
+    it('Deve atualizar uma categoria personalizada (Status 200)', async () => {
+        const res = await request(app)
+            .put(`/api/categories/${customCategoryId}`)
+            .set('Cookie', authCookie)
+            .send({
+                name: 'Viagens & Lazer Reajustado',
+                color: '#10B981',
+            });
+
+        expect(res.status).toBe(200);
+        expect(res.body.name).toBe('Viagens & Lazer Reajustado');
+
+    });
+
+    it('Deve excluir uma categoria personalizada do usuário (Status 200)', async () => {
+        const res = await request(app)
+            .delete(`/api/categories/${customCategoryId}`)
+            .set('Cookie', authCookie);
+
+        expect(res.status).toBe(200);
+        expect(res.body).toHaveProperty('message');
 
     });
 
@@ -60,6 +87,7 @@ describe('Módulo de Categorias API', () => {
             .set('Cookie', authCookie);
 
         expect(res.status).toBe(403);
+        
     });
 
 });

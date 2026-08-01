@@ -55,8 +55,18 @@ describe('Módulo do Dashboard API', () => {
 
     it('Deve negar acesso se o usuário não estiver autenticado (Status 401)', async () => {
         const res = await request(app).get('/api/dashboard/summary');
-        
+
         expect(res.status).toBe(401);
+    });
+
+    it('Deve retornar os maiores gastos no top-expenses (Status 200)', async () => {
+        const res = await request(app)
+            .get('/api/dashboard/top-expenses')
+            .set('Cookie', authCookie);
+
+        expect(res.status).toBe(200);
+        expect(Array.isArray(res.body)).toBe(true);
+        
     });
 
 });

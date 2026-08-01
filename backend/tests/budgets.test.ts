@@ -9,6 +9,7 @@ describe('Módulo de Orçamentos API', () => {
     let authCookie: string[];
     let categoryId: string;
     let userEmail: string;
+    let budgetId: string;
 
     beforeAll(async () => {
         const context = await createTestUserAndLogin(app, 'budget');
@@ -46,6 +47,7 @@ describe('Módulo de Orçamentos API', () => {
 
         expect(res.status).toBe(201);
         expect(res.body).toHaveProperty('id');
+        budgetId = res.body.id;
         expect(res.body.amountLimit).toBe(1500.0);
 
     });
@@ -63,7 +65,7 @@ describe('Módulo de Orçamentos API', () => {
 
         expect(res.status).toBe(409);
         expect(res.body).toHaveProperty('message');
-        
+
     });
 
     it('Deve listar os orçamentos do mês (Status 200)', async () => {
@@ -74,6 +76,27 @@ describe('Módulo de Orçamentos API', () => {
         expect(res.status).toBe(200);
         expect(Array.isArray(res.body)).toBe(true);
 
+    });
+
+    it('Deve atualizar o limite de um orçamento existente (Status 200)', async () => {
+        const res = await request(app)
+            .put(`/api/budgets/${budgetId}`)
+            .set('Cookie', authCookie)
+            .send({ amountLimit: 2500.0 });
+
+        expect(res.status).toBe(200);
+        expect(res.body.amountLimit).toBe(2500.0);
+
+    });
+
+    it('Deve excluir um orçamento existente (Status 200)', async () => {
+        const res = await request(app)
+            .delete(`/api/budgets/${budgetId}`)
+            .set('Cookie', authCookie);
+
+        expect(res.status).toBe(200);
+        expect(res.body).toHaveProperty('message');
+        
     });
 
 });
