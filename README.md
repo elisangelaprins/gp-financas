@@ -117,6 +117,10 @@ http://localhost:3000/api-docs
 
 Todas as **16 rotas** da API estão mapeadas com parâmetros, exemplos de corpo de requisição e possíveis respostas, organizadas por módulo (Autenticação, Transações, Categorias, Orçamentos, Dashboard e Exportação). É possível testar as requisições diretamente pela interface do Swagger UI.
 
+<p align="center">
+    <img src="./backend/docs/images/swagger-ui.png.png" alt="Swagger UI" width="700" />
+</p>
+
 ## 🧪 Testes
 
 ```bash
@@ -132,6 +136,10 @@ npm test
 - Exportação de relatórios em CSV e PDF
 
 Cada módulo cria e limpa seus próprios dados de teste automaticamente (`beforeAll`/`afterAll`), sem deixar registros residuais no banco.
+
+<p align="center">
+    <img src="./backend/docs/images/tests-passing.png" alt="Testes Jest Passando" width="650" />
+</p>
 
 ## 📮 Testando a API (Postman)
 
@@ -216,9 +224,13 @@ tests/
 - [ ] Front-end (React)
 - [ ] Expandir cobertura de testes para novos módulos conforme o projeto crescer
 
+## 📝 Licença
+
+Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](./LICENSE) para mais detalhes.
+
 ## 👤 Autor
 
 Desenvolvido por **Elisangela Prins** como projeto de portfólio.
 
 [![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/elisangelaprins)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/elisangela-prins)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/elisangela-prins)
