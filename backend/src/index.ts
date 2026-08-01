@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import helmet from 'helmet';
 import dotenv from 'dotenv';
 import prisma from './config/db.js';
 import { apiLimiter, authLimiter } from './middlewares/rateLimitMiddleware.js';
@@ -17,6 +18,7 @@ import exportRoutes from './routes/exportRoutes.js'
 dotenv.config();
 
 const app = express();
+app.use(helmet());
 const PORT = process.env.PORT || 3000;
 
 app.use(cors({
@@ -38,7 +40,7 @@ app.get('/', async (req, res) => {
     await prisma.user.findFirst();
     res.json({ message: "Servidor rodando e conectado ao MongoDB Atlas com sucesso!" });
   } catch (error) {
-    res.status(500).json({ error: "Erro ao conectar com o banco de dados.", details: error });
+    res.status(500).json({ error: "Erro ao conectar com o banco de dados."});
   }
 });
 

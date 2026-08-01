@@ -77,7 +77,7 @@ export const login = async (req: Request, res: Response, next: NextFunction): Pr
         res.cookie('token', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: 'lax',
+            sameSite:  process.env.NODE_ENV === 'production' ? 'none' : 'lax',
             maxAge: 3600000
         })
 
@@ -109,7 +109,8 @@ export const forgotPassword = async (req: Request, res: Response, next: NextFunc
         });
 
         if (!user) {
-            return res.status(404).json({ message: "Usuário não localizado." })
+            return res.status(200).json({ message: "Se o e-mail estiver cadastrado, enviamos as instruções para redefinição de senha."  });
+            return;
         };
 
         const resetToken = crypto.randomBytes(32).toString('hex');
