@@ -2,33 +2,30 @@ import { describe, it, expect, beforeAll, afterAll } from '@jest/globals';
 import request from 'supertest';
 import app from '../src/index.js';
 import prisma from '../src/config/db.js';
+import { createTestUserAndLogin, cleanupTestUser } from './helpers/auth.helper.js';
 
 describe('Módulo de Categorias API', () => {
 
     let authCookie: string[];
-
-    const testUser = {
-        name: 'Usuario Categoria Jest',
-        email: 'category.jest@exemplo.com',
-        senha: 'senhaSegura123',
-    };
+    let userEmail: string;
+    let defaultCategoryId: string;
 
     beforeAll(async () => {
-        await prisma.user.deleteMany({
-            where: { email: testUser.email }
-        });
+        const context = await createTestUserAndLogin(app, 'category');
+        authCookie = context.authCookie;
+        userEmail = context.testUser.email;
 
-        await request(app).post('/api/auth/register').send(testUser);
-
-        const loginRes = await request(app).post('/api/auth/login').send({
-            email: testUser.email,
-            senha: testUser.senha,
-        });
-
-        authCookie = loginRes.headers['set-cookie'] as unknown as string[];
+        let defaultCategory = await prisma.category.findFirst({ where: { isDefault: true } });
+        if (!defaultCategory) {
+            defaultCategory = await prisma.category.create({
+                data: { name: 'Categoria Padrão Jest', isDefault: true },
+            });
+        }
+        defaultCategoryId = defaultCategory.id;
     });
 
     afterAll(async () => {
+        await cleanupTestUser(userEmail);
         await prisma.$disconnect();
     });
 
@@ -48,14 +45,21 @@ describe('Módulo de Categorias API', () => {
             .set('Cookie', authCookie)
             .send({
                 name: 'Viagens & Lazer',
-                icon: 'plane',
                 color: '#3B82F6',
             });
 
         expect(res.status).toBe(201);
         expect(res.body).toHaveProperty('id');
         expect(res.body.name).toBe('Viagens & Lazer');
-        
+
+    });
+
+    it('Deve recusar a exclusão de uma categoria padrão do sistema (Status 403)', async () => {
+        const res = await request(app)
+            .delete(`/api/categories/${defaultCategoryId}`)
+            .set('Cookie', authCookie);
+
+        expect(res.status).toBe(403);
     });
 
 });

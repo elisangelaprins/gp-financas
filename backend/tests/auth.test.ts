@@ -2,8 +2,10 @@ import { describe, it, expect, afterAll, beforeAll } from '@jest/globals';
 import request from 'supertest';
 import app from '../src/index.js';
 import prisma from '../src/config/db.js';
+import { cleanupTestUser } from './helpers/auth.helper.js';
 
 afterAll(async () => {
+    await cleanupTestUser('jest.user@exemplo.com');
     await prisma.$disconnect();
 });
 

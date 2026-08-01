@@ -38,7 +38,6 @@ model Transaction {
   amount          Float
   date            DateTime
   paymentDate     DateTime?
-  constType       String?
   paymentMethod   PaymentMethod
   installments    Int?
   transactionType TransactionType

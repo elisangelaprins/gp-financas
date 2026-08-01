@@ -2,33 +2,18 @@ import { describe, it, expect, beforeAll, afterAll } from '@jest/globals';
 import request from 'supertest';
 import app from '../src/index';
 import prisma from '../src/config/db.js';
+import { createTestUserAndLogin, cleanupTestUser } from './helpers/auth.helper.js';
 
 describe('Módulo de transações API', () => {
     let authCookie: string[];
     let categoryId: string;
     let transactionId: string;
-
-    const testUser = {
-        name: 'Usuario Transação Jest',
-        email: 'transaction.jest@exemplo.com',
-        senha: 'senhaSegura123',
-    };
+    let userEmail: string;
 
     beforeAll(async () => {
-        await prisma.user.deleteMany({
-            where: { email: testUser.email }
-        });
-
-        await
-            request(app).post('/api/auth/register').send(testUser);
-
-        const loginRes = await
-            request(app).post('/api/auth/login').send({
-                email: testUser.email,
-                senha: testUser.senha,
-            });
-
-        authCookie = loginRes.headers['set-cookie'] as unknown as string[];
+        const context = await createTestUserAndLogin(app, 'transaction');
+        authCookie = context.authCookie;
+        userEmail = context.testUser.email;
 
         let category = await prisma.category.findFirst({
             where: { isDefault: true },
@@ -37,7 +22,7 @@ describe('Módulo de transações API', () => {
         if (!category) {
             category = await prisma.category.create({
                 data: {
-                    name: 'Categoria Teste Jest',
+                    name: 'Categoria Test Jest',
                     isDefault: true,
                 },
             });
@@ -46,6 +31,7 @@ describe('Módulo de transações API', () => {
     });
 
     afterAll(async () => {
+        await cleanupTestUser(userEmail);
         await prisma.$disconnect();
     });
 
@@ -97,7 +83,7 @@ describe('Módulo de transações API', () => {
 
     });
 
-        it('Deve atualizar uma transação existente (Status 200)', async () => {
+    it('Deve atualizar uma transação existente (Status 200)', async () => {
         const res = await request(app)
             .put(`/api/transactions/${transactionId}`)
             .set('Cookie', authCookie)
@@ -109,7 +95,7 @@ describe('Módulo de transações API', () => {
         expect(res.status).toBe(200);
         expect(res.body.description).toBe('Salário Mensal Reajustado');
         expect(res.body.amount).toBe(5500.0);
-        
+
     });
 
     it('Deve excluir uma transação existente (Status 200)', async () => {
@@ -120,6 +106,11 @@ describe('Módulo de transações API', () => {
         expect(res.status).toBe(200);
         expect(res.body).toHaveProperty('message');
 
+    });
+
+    it('Deve negar acesso se o usuário não estiver autenticado (Status 401)', async () => {
+        const res = await request(app).get('/api/transactions');
+        expect(res.status).toBe(401);
     });
 
 });

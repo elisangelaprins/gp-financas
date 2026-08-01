@@ -5,6 +5,10 @@ import type { TransactionWithCategory } from './csv.utils.js';
  * Gera o buffer binário do relatório em PDF acumulando os pedaços (chunks) de stream do PDFKit.
  */
 
+const truncateText = (str: string, maxLength: number): string => {
+    return str.length > maxLength ? str.substring(0, maxLength - 3) + '...' : str;
+};
+
 export const generatePDF = (transactions: TransactionWithCategory[]): Promise<Buffer> => {
 
     return new Promise<Buffer>((resolve, reject) => {
@@ -47,8 +51,8 @@ export const generatePDF = (transactions: TransactionWithCategory[]): Promise<Bu
 
             doc.font('Helvetica').fillColor('#334155').fontSize(9);
             doc.text(date, 35, y);
-            doc.text(transaction.description.substring(0, 22), 110, y);
-            doc.text(transaction.category.name.substring(0, 18), 270, y);
+            doc.text(truncateText(transaction.description, 22), 110, y);
+            doc.text(truncateText(transaction.category.name, 18), 270, y);
             doc.text(`R$ ${transaction.amount.toFixed(2)}`, 400, y);
             doc.fillColor(amountColor).text(isIncome ? 'Receita' : 'Despesa', 500, y);
 

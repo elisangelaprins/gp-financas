@@ -2,36 +2,21 @@ import { describe, it, expect, beforeAll, afterAll } from '@jest/globals';
 import request from 'supertest';
 import app from '../src/index.js';
 import prisma from '../src/config/db.js';
+import { createTestUserAndLogin, cleanupTestUser } from './helpers/auth.helper.js';
 
 describe('Módulo de Orçamentos API', () => {
 
     let authCookie: string[];
     let categoryId: string;
-
-    const testUser = {
-        name: 'Usuario Orcamento Jest',
-        email: 'budget.jest@exemplo.com',
-        senha: 'senhaSegura123',
-    };
+    let userEmail: string;
 
     beforeAll(async () => {
-        await prisma.user.deleteMany({
-            where: { email: testUser.email }
-        });
-
-        await request(app).post('/api/auth/register').send(testUser);
-
-        const loginRes = await request(app).post('/api/auth/login').send({
-            email: testUser.email,
-            senha: testUser.senha,
-        });
-
-        authCookie = loginRes.headers['set-cookie'] as unknown as string[];
-
+        const context = await createTestUserAndLogin(app, 'budget');
+        authCookie = context.authCookie;
+        userEmail = context.testUser.email;
         let category = await prisma.category.findFirst({
             where: { isDefault: true },
         });
-
         if (!category) {
             category = await prisma.category.create({
                 data: {
@@ -44,6 +29,7 @@ describe('Módulo de Orçamentos API', () => {
     });
 
     afterAll(async () => {
+        await cleanupTestUser(userEmail);
         await prisma.$disconnect();
     });
 
@@ -62,6 +48,22 @@ describe('Módulo de Orçamentos API', () => {
         expect(res.body).toHaveProperty('id');
         expect(res.body.amountLimit).toBe(1500.0);
 
+    });
+
+    it('Deve recusar a criação de orçamento duplicado no mesmo mês (Status 409)', async () => {
+        const res = await request(app)
+            .post('/api/budgets')
+            .set('Cookie', authCookie)
+            .send({
+                amountLimit: 2000.0,
+                month: 7,
+                year: 2026,
+                categoryId: categoryId,
+            });
+
+        expect(res.status).toBe(409);
+        expect(res.body).toHaveProperty('message');
+        
     });
 
     it('Deve listar os orçamentos do mês (Status 200)', async () => {

@@ -1,744 +1,208 @@
 {
   "info": {
-    "_postman_id": "00d5cd94-6152-45b3-9fe6-468b265caafc",
-    "name": "GP - Finanças",
-    "description": "Searched for \"\"name\":\"\n\nAqui está o texto atualizado com as **7 pastas** exatas da sua coleção:\n\n``` markdown\n# 💰 GP - Finanças API\nColeção oficial de requisições e testes da API do **GP - Finanças**, um sistema completo de gerenciamento financeiro pessoal.\n## 🚀 Tecnologias Utilizadas\n- **Node.js & Express** (TypeScript)\n- **Prisma ORM** (Banco de dados relacional)\n- **JWT & Cookies HTTP-only** (Autenticação segura)\n- **PDFKit** (Geração de relatórios em PDF)\n## 📌 Módulos da API (7 Pastas)\n1. **Autenticação**: Registro, Login e Logout de usuários.\n2. **Transações**: CRUD de receitas e despesas com categorização e métodos de pagamento.\n3. **Categorias**: Gerenciamento de categorias personalizadas e padrão do sistema.\n4. **Orçamentos**: Criação, listagem e acompanhamento de metas financeiras.\n5. **Dashboard**: Resumos estatísticos, visão por categoria e tendências mensais.\n6. **Exportações**: Download de relatórios em **PDF** e **CSV** filtrados por data, categoria, tipo e forma de pagamento.\n7. **Redefinir Senha**: Solicitação de código/token por e-mail e redefinição de senha segura.\n## 🧪 Testes Automatizados\nAs requisições possuem scripts de testes no Postman que validam:\n- Código de status da resposta HTTP (200, 201).\n- Integridade e assinatura dos arquivos PDF gerados.\n- Tempo de resposta da API (< 10s).\n\n ```",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "56634920",
-    "_collection_link": "https://go.postman.co/collection/56634920-00d5cd94-6152-45b3-9fe6-468b265caafc?source=collection_link"
+    "_postman_id": "gp-financas-api-collection-v1",
+    "name": "GP - Finanças API",
+    "description": "Coleção oficial da API RESTful do GP Finanças. Inclui autenticação por Cookie HttpOnly, gestão completa de transações, categorias, orçamentos, dashboard analítico e exportação de relatórios em CSV e PDF.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
     {
-      "name": "1. Autenticação (Register, Login)",
+      "name": "1. Autenticação",
       "item": [
-        {
-          "name": "Login",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\r\n  \"email\": \"elisangela@teste.com\",\r\n  \"senha\": \"senhaSegura123\"\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{baseUrl}}/api/auth/login",
-
-              "host": [
-                "{{baseUrl}}"
-              ],
-
-              "path": [
-                "api",
-                "auth",
-                "login"
-              ]
-            }
-          },
-          "response": [
-            {
-              "name": "Login",
-              "originalRequest": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\r\n  \"email\": \"elisangela@teste.com\",\r\n  \"senha\": \"novaSenhaSegura123\"\r\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/auth/login",
-    
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-    
-                  "path": [
-                    "api",
-                    "auth",
-                    "login"
-                  ]
-                }
-              },
-              "status": "Bad Request",
-              "code": 400,
-              "_postman_previewlanguage": null,
-              "header": [
-                {
-                  "key": "X-Powered-By",
-                  "value": "Express"
-                },
-                {
-                  "key": "Access-Control-Allow-Origin",
-                  "value": "*"
-                },
-                {
-                  "key": "RateLimit-Policy",
-                  "value": "10;w=60"
-                },
-                {
-                  "key": "RateLimit",
-                  "value": "limit=10, remaining=9, reset=60"
-                },
-                {
-                  "key": "Content-Type",
-                  "value": "application/json; charset=utf-8"
-                },
-                {
-                  "key": "Content-Length",
-                  "value": "38"
-                },
-                {
-                  "key": "ETag",
-                  "value": "W/\"26-d3tVPDcKrVVQIjGndETZuV01Dho\""
-                },
-                {
-                  "key": "Date",
-                  "value": "Thu, 30 Jul 2026 20:21:53 GMT"
-                },
-                {
-                  "key": "Connection",
-                  "value": "keep-alive"
-                },
-                {
-                  "key": "Keep-Alive",
-                  "value": "timeout=5"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n    \"error\": \"Email ou senha incorretos.\"\n}"
-            },
-            {
-              "name": "Login",
-              "originalRequest": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\r\n  \"email\": \"elisangela@teste.com\",\r\n  \"senha\": \"novaSenhaSegura1243\"\r\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/auth/login",
-    
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-    
-                  "path": [
-                    "api",
-                    "auth",
-                    "login"
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": null,
-              "header": [
-                {
-                  "key": "X-Powered-By",
-                  "value": "Express"
-                },
-                {
-                  "key": "Access-Control-Allow-Origin",
-                  "value": "*"
-                },
-                {
-                  "key": "RateLimit-Policy",
-                  "value": "10;w=60"
-                },
-                {
-                  "key": "RateLimit",
-                  "value": "limit=10, remaining=8, reset=49"
-                },
-                {
-                  "key": "Set-Cookie",
-                  "value": "token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjZhNTZjNGExMWY3NzBkYTllNWI2Y2FkOSIsImVtYWlsIjoiZWxpc2FuZ2VsYUB0ZXN0ZS5jb20iLCJpYXQiOjE3ODU0NDI5MjUsImV4cCI6MTc4NTQ0NjUyNX0.aHA62qFgY24TUcPmDGL4FTemIrAoYJgLikBGtA7T69M; Max-Age=3600; Path=/; Expires=Thu, 30 Jul 2026 21:22:05 GMT; HttpOnly; SameSite=Lax"
-                },
-                {
-                  "key": "Content-Type",
-                  "value": "application/json; charset=utf-8"
-                },
-                {
-                  "key": "Content-Length",
-                  "value": "99"
-                },
-                {
-                  "key": "ETag",
-                  "value": "W/\"63-x/UhQ+zbKmheit6VKLaPrf+h5qE\""
-                },
-                {
-                  "key": "Date",
-                  "value": "Thu, 30 Jul 2026 20:22:05 GMT"
-                },
-                {
-                  "key": "Connection",
-                  "value": "keep-alive"
-                },
-                {
-                  "key": "Keep-Alive",
-                  "value": "timeout=5"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n    \"user\": {\n        \"id\": \"6a56c4a11f770da9e5b6cad9\",\n        \"name\": \"Elisangela Teste\",\n        \"email\": \"elisangela@teste.com\"\n    }\n}"
-            }
-          ]
-        },
         {
           "name": "Cadastrar Usuário",
           "request": {
-            "method": "GET",
-            "header": []
-          },
-          "response": [
-            {
-              "name": "Cadastrar Usuário",
-              "originalRequest": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\r\n  \"name\": \"Elisangela\",\r\n  \"email\": \"eli@email.com\",\r\n  \"senha\": \"123\"\r\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/auth/register",
-    
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-    
-                  "path": [
-                    "api",
-                    "auth",
-                    "register"
-                  ]
-                }
-              },
-              "status": "Bad Request",
-              "code": 400,
-              "_postman_previewlanguage": null,
-              "header": [
-                {
-                  "key": "X-Powered-By",
-                  "value": "Express"
-                },
-                {
-                  "key": "Access-Control-Allow-Origin",
-                  "value": "*"
-                },
-                {
-                  "key": "RateLimit-Policy",
-                  "value": "10;w=60"
-                },
-                {
-                  "key": "RateLimit",
-                  "value": "limit=10, remaining=9, reset=60"
-                },
-                {
-                  "key": "Content-Type",
-                  "value": "application/json; charset=utf-8"
-                },
-                {
-                  "key": "Content-Length",
-                  "value": "33"
-                },
-                {
-                  "key": "ETag",
-                  "value": "W/\"21-+7HHFfFT5cNTh3xzIQS+DGwctdU\""
-                },
-                {
-                  "key": "Date",
-                  "value": "Thu, 30 Jul 2026 20:24:22 GMT"
-                },
-                {
-                  "key": "Connection",
-                  "value": "keep-alive"
-                },
-                {
-                  "key": "Keep-Alive",
-                  "value": "timeout=5"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n    \"error\": \"Email já cadastrado.\"\n}"
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Elisangela Prins\",\n  \"email\": \"elisangela@exemplo.com\",\n  \"senha\": \"senhaSegura123\"\n}"
             },
-            {
-              "name": "Cadastrar Usuário",
-              "originalRequest": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\r\n  \"name\": \"ElisangelaP\",\r\n  \"email\": \"elis@email.com\",\r\n  \"senha\": \"123\"\r\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/auth/register",
-    
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-    
-                  "path": [
-                    "api",
-                    "auth",
-                    "register"
-                  ]
-                }
-              },
-              "status": "Created",
-              "code": 201,
-              "_postman_previewlanguage": null,
-              "header": [
-                {
-                  "key": "X-Powered-By",
-                  "value": "Express"
-                },
-                {
-                  "key": "Access-Control-Allow-Origin",
-                  "value": "*"
-                },
-                {
-                  "key": "RateLimit-Policy",
-                  "value": "10;w=60"
-                },
-                {
-                  "key": "RateLimit",
-                  "value": "limit=10, remaining=8, reset=39"
-                },
-                {
-                  "key": "Content-Type",
-                  "value": "application/json; charset=utf-8"
-                },
-                {
-                  "key": "Content-Length",
-                  "value": "157"
-                },
-                {
-                  "key": "ETag",
-                  "value": "W/\"9d-jX5aEajp2LAiPU8OMfxvFJvOUns\""
-                },
-                {
-                  "key": "Date",
-                  "value": "Thu, 30 Jul 2026 20:24:44 GMT"
-                },
-                {
-                  "key": "Connection",
-                  "value": "keep-alive"
-                },
-                {
-                  "key": "Keep-Alive",
-                  "value": "timeout=5"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n    \"id\": \"6a6bb30bd8107ecacb280018\",\n    \"name\": \"ElisangelaP\",\n    \"email\": \"elis@email.com\",\n    \"createdAt\": \"2026-07-30T20:24:43.968Z\",\n    \"updatedAt\": \"2026-07-30T20:24:43.968Z\"\n}"
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "register"]
             }
-          ]
+          },
+          "response": []
+        },
+        {
+          "name": "Fazer Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"elisangela@exemplo.com\",\n  \"senha\": \"senhaSegura123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Solicitar Redefinição de Senha",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"elisangela@exemplo.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/forgot-password",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "forgot-password"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Redefinir Senha",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"resetToken\": \"SEU_TOKEN_AQUI\",\n  \"newPassword\": \"novaSenhaSegura123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/reset-password",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "reset-password"]
+            }
+          },
+          "response": []
         }
       ]
     },
     {
-      "name": "2. Transações (Cookie automático)",
+      "name": "2. Transações (Cookie Automático)",
       "item": [
         {
-          "name": "Criar Transação (Receita)",
+          "name": "Criar Receita",
           "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{supabase_service_role_api_key_1cbf}}",
-                  "type": "string"
-                }
-              ]
-            },
             "method": "POST",
-            "header": [],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
-              "raw": "{\r\n  \"description\": \"Salário Mensal\",\r\n  \"amount\": 5000.0,\r\n  \"date\": \"2026-07-17\",\r\n  \"paymentMethod\": \"PIX\",\r\n  \"transactionType\": \"INCOME\",\r\n  \"categoryId\": \"6a5aa33a7ee6869267e9c983\"\r\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
+              "raw": "{\n  \"description\": \"Salário Mensal\",\n  \"amount\": 5000.00,\n  \"date\": \"2026-07-31T00:00:00.000Z\",\n  \"paymentMethod\": \"PIX\",\n  \"transactionType\": \"INCOME\",\n  \"categoryId\": \"ID_DA_CATEGORIA_AQUI\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/transactions",
-
-              "host": [
-                "{{baseUrl}}"
-              ],
-
-              "path": [
-                "api",
-                "transactions"
-              ]
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "transactions"]
             }
           },
-          "response": [
-            {
-              "name": "Criar Transação (Receita)",
-              "originalRequest": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\r\n  \"description\": \"Rendimento\",\r\n  \"amount\": 100.0,\r\n  \"date\": \"2026-07-17\",\r\n  \"paymentMethod\": \"PIX\",\r\n  \"transactionType\": \"INCOME\",\r\n  \"categoryId\": \"6a6a44d5599a112e0a59d631\"\r\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/transactions/",
-    
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-    
-                  "path": [
-                    "api",
-                    "transactions",
-                    ""
-                  ]
-                }
-              },
-              "status": "Created",
-              "code": 201,
-              "_postman_previewlanguage": null,
-              "header": [
-                {
-                  "key": "X-Powered-By",
-                  "value": "Express"
-                },
-                {
-                  "key": "Access-Control-Allow-Origin",
-                  "value": "*"
-                },
-                {
-                  "key": "RateLimit-Policy",
-                  "value": "50;w=300"
-                },
-                {
-                  "key": "RateLimit",
-                  "value": "limit=50, remaining=49, reset=300"
-                },
-                {
-                  "key": "Content-Type",
-                  "value": "application/json; charset=utf-8"
-                },
-                {
-                  "key": "Content-Length",
-                  "value": "397"
-                },
-                {
-                  "key": "ETag",
-                  "value": "W/\"18d-KlvgAO0Jp9+7hvZtbMrLy8LlYgY\""
-                },
-                {
-                  "key": "Date",
-                  "value": "Thu, 30 Jul 2026 20:25:28 GMT"
-                },
-                {
-                  "key": "Connection",
-                  "value": "keep-alive"
-                },
-                {
-                  "key": "Keep-Alive",
-                  "value": "timeout=5"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n    \"id\": \"6a6bb338d8107ecacb280019\",\n    \"description\": \"Rendimento\",\n    \"note\": null,\n    \"amount\": 100,\n    \"date\": \"2026-07-17T00:00:00.000Z\",\n    \"paymentDate\": null,\n    \"constType\": null,\n    \"paymentMethod\": \"PIX\",\n    \"installments\": null,\n    \"transactionType\": \"INCOME\",\n    \"isBusiness\": false,\n    \"userId\": \"6a56c4a11f770da9e5b6cad9\",\n    \"categoryId\": \"6a6a44d5599a112e0a59d631\",\n    \"createdAt\": \"2026-07-30T20:25:28.253Z\",\n    \"updatedAt\": \"2026-07-30T20:25:28.253Z\"\n}"
-            }
-          ]
+          "response": []
         },
         {
-          "name": "Criar Transação (Despesa)",
+          "name": "Criar Despesa",
           "request": {
-            "method": "GET",
-            "header": []
-          },
-          "response": [
-            {
-              "name": "Criar Transação (Despesa)",
-              "originalRequest": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{ \"description\": \"Mercado\",\r\n   \"amount\": 150.5,\r\n   \"date\": \"2026-07-25\",\r\n   \"paymentMethod\": \"CREDIT_CARD\",\r\n   \"transactionType\": \"EXPENSE\",\r\n   \"categoryId\": \"6a6a44bc599a112e0a59d630\"\r\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/transactions",
-    
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-    
-                  "path": [
-                    "api",
-                    "transactions"
-                  ]
-                }
-              },
-              "status": "Created",
-              "code": 201,
-              "_postman_previewlanguage": null,
-              "header": [
-                {
-                  "key": "X-Powered-By",
-                  "value": "Express"
-                },
-                {
-                  "key": "Access-Control-Allow-Origin",
-                  "value": "*"
-                },
-                {
-                  "key": "RateLimit-Policy",
-                  "value": "50;w=300"
-                },
-                {
-                  "key": "RateLimit",
-                  "value": "limit=50, remaining=48, reset=260"
-                },
-                {
-                  "key": "Content-Type",
-                  "value": "application/json; charset=utf-8"
-                },
-                {
-                  "key": "Content-Length",
-                  "value": "405"
-                },
-                {
-                  "key": "ETag",
-                  "value": "W/\"195-OwZ78q+hpoxeQumZPp7Tk8iXqqs\""
-                },
-                {
-                  "key": "Date",
-                  "value": "Thu, 30 Jul 2026 20:26:09 GMT"
-                },
-                {
-                  "key": "Connection",
-                  "value": "keep-alive"
-                },
-                {
-                  "key": "Keep-Alive",
-                  "value": "timeout=5"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n    \"id\": \"6a6bb361d8107ecacb28001a\",\n    \"description\": \"Mercado\",\n    \"note\": null,\n    \"amount\": 150.5,\n    \"date\": \"2026-07-25T00:00:00.000Z\",\n    \"paymentDate\": null,\n    \"constType\": null,\n    \"paymentMethod\": \"CREDIT_CARD\",\n    \"installments\": null,\n    \"transactionType\": \"EXPENSE\",\n    \"isBusiness\": false,\n    \"userId\": \"6a56c4a11f770da9e5b6cad9\",\n    \"categoryId\": \"6a6a44bc599a112e0a59d630\",\n    \"createdAt\": \"2026-07-30T20:26:09.140Z\",\n    \"updatedAt\": \"2026-07-30T20:26:09.140Z\"\n}"
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Supermercado\",\n  \"amount\": 450.50,\n  \"date\": \"2026-07-31T00:00:00.000Z\",\n  \"paymentMethod\": \"CREDIT_CARD\",\n  \"transactionType\": \"EXPENSE\",\n  \"categoryId\": \"ID_DA_CATEGORIA_AQUI\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/transactions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "transactions"]
             }
-          ]
+          },
+          "response": []
         },
         {
           "name": "Listar Transações",
           "request": {
             "method": "GET",
-            "header": []
-          },
-          "response": [
-            {
-              "name": "Listar Transações",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/transactions/",
-    
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-    
-                  "path": [
-                    "api",
-                    "transactions",
-                    ""
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": null,
-              "header": [
-                {
-                  "key": "X-Powered-By",
-                  "value": "Express"
-                },
-                {
-                  "key": "Access-Control-Allow-Origin",
-                  "value": "*"
-                },
-                {
-                  "key": "RateLimit-Policy",
-                  "value": "50;w=300"
-                },
-                {
-                  "key": "RateLimit",
-                  "value": "limit=50, remaining=47, reset=245"
-                },
-                {
-                  "key": "Content-Type",
-                  "value": "application/json; charset=utf-8"
-                },
-                {
-                  "key": "Content-Length",
-                  "value": "2252"
-                },
-                {
-                  "key": "ETag",
-                  "value": "W/\"8cc-Rm2+UqvDqXgpdtBzN4QXVdFueaw\""
-                },
-                {
-                  "key": "Date",
-                  "value": "Thu, 30 Jul 2026 20:26:23 GMT"
-                },
-                {
-                  "key": "Connection",
-                  "value": "keep-alive"
-                },
-                {
-                  "key": "Keep-Alive",
-                  "value": "timeout=5"
-                }
-              ],
-              "cookie": [],
-              "body": "[\n    {\n        \"id\": \"6a6a44f2599a112e0a59d632\",\n        \"description\": \"Salário Mensal Atualizado\",\n        \"note\": null,\n        \"amount\": 5500,\n        \"date\": \"2026-07-17T00:00:00.000Z\",\n        \"paymentDate\": null,\n        \"constType\": null,\n        \"paymentMethod\": \"PIX\",\n        \"installments\": null,\n        \"transactionType\": \"INCOME\",\n        \"isBusiness\": false,\n        \"userId\": \"6a56c4a11f770da9e5b6cad9\",\n        \"categoryId\": \"6a6a44d5599a112e0a59d631\",\n        \"createdAt\": \"2026-07-29T18:22:42.499Z\",\n        \"updatedAt\": \"2026-07-29T18:31:12.517Z\",\n        \"category\": {\n            \"id\": \"6a6a44d5599a112e0a59d631\",\n            \"name\": \"Salário\",\n            \"color\": \"#FFFFFF\",\n            \"isDefault\": false,\n            \"isBusiness\": false,\n            \"userId\": \"6a56c4a11f770da9e5b6cad9\"\n        }\n    },\n    {\n        \"id\": \"6a6a4743599a112e0a59d634\",\n        \"description\": \"Mercado\",\n        \"note\": null,\n        \"amount\": 150.5,\n        \"date\": \"2026-07-25T00:00:00.000Z\",\n        \"paymentDate\": null,\n        \"constType\": null,\n        \"paymentMethod\": \"CREDIT_CARD\",\n        \"installments\": null,\n        \"transactionType\": \"EXPENSE\",\n        \"isBusiness\": false,\n        \"userId\": \"6a56c4a11f770da9e5b6cad9\",\n        \"categoryId\": \"6a6a44bc599a112e0a59d630\",\n        \"createdAt\": \"2026-07-29T18:32:35.229Z\",\n        \"updatedAt\": \"2026-07-29T18:32:35.229Z\",\n        \"category\": {\n            \"id\": \"6a6a44bc599a112e0a59d630\",\n            \"name\": \"Alimentação\",\n            \"color\": \"#FFFFFF\",\n            \"isDefault\": false,\n            \"isBusiness\": false,\n            \"userId\": \"6a56c4a11f770da9e5b6cad9\"\n        }\n    },\n    {\n        \"id\": \"6a6bb338d8107ecacb280019\",\n        \"description\": \"Rendimento\",\n        \"note\": null,\n        \"amount\": 100,\n        \"date\": \"2026-07-17T00:00:00.000Z\",\n        \"paymentDate\": null,\n        \"constType\": null,\n        \"paymentMethod\": \"PIX\",\n        \"installments\": null,\n        \"transactionType\": \"INCOME\",\n        \"isBusiness\": false,\n        \"userId\": \"6a56c4a11f770da9e5b6cad9\",\n        \"categoryId\": \"6a6a44d5599a112e0a59d631\",\n        \"createdAt\": \"2026-07-30T20:25:28.253Z\",\n        \"updatedAt\": \"2026-07-30T20:25:28.253Z\",\n        \"category\": {\n            \"id\": \"6a6a44d5599a112e0a59d631\",\n            \"name\": \"Salário\",\n            \"color\": \"#FFFFFF\",\n            \"isDefault\": false,\n            \"isBusiness\": false,\n            \"userId\": \"6a56c4a11f770da9e5b6cad9\"\n        }\n    },\n    {\n        \"id\": \"6a6bb361d8107ecacb28001a\",\n        \"description\": \"Mercado\",\n        \"note\": null,\n        \"amount\": 150.5,\n        \"date\": \"2026-07-25T00:00:00.000Z\",\n        \"paymentDate\": null,\n        \"constType\": null,\n        \"paymentMethod\": \"CREDIT_CARD\",\n        \"installments\": null,\n        \"transactionType\": \"EXPENSE\",\n        \"isBusiness\": false,\n        \"userId\": \"6a56c4a11f770da9e5b6cad9\",\n        \"categoryId\": \"6a6a44bc599a112e0a59d630\",\n        \"createdAt\": \"2026-07-30T20:26:09.140Z\",\n        \"updatedAt\": \"2026-07-30T20:26:09.140Z\",\n        \"category\": {\n            \"id\": \"6a6a44bc599a112e0a59d630\",\n            \"name\": \"Alimentação\",\n            \"color\": \"#FFFFFF\",\n            \"isDefault\": false,\n            \"isBusiness\": false,\n            \"userId\": \"6a56c4a11f770da9e5b6cad9\"\n        }\n    }\n]"
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/transactions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "transactions"]
             }
-          ]
+          },
+          "response": []
         },
         {
           "name": "Atualizar Transação",
           "request": {
-            "method": "GET",
-            "header": []
-          },
-          "response": [
-            {
-              "name": "Atualizar Transação",
-              "originalRequest": {
-                "method": "PUT",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\r\n  \"description\": \"\",\r\n  \"amount\": 105.0\r\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/transactions/6a6bb338d8107ecacb280019",
-    
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-    
-                  "path": [
-                    "api",
-                    "transactions",
-                    "6a6bb338d8107ecacb280019"
-                  ]
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Supermercado Semanal\",\n  \"amount\": 480.00\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/transactions/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "transactions", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "ID_DA_TRANSACAO"
                 }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": null,
-              "header": [
-                {
-                  "key": "X-Powered-By",
-                  "value": "Express"
-                },
-                {
-                  "key": "Access-Control-Allow-Origin",
-                  "value": "*"
-                },
-                {
-                  "key": "RateLimit-Policy",
-                  "value": "50;w=300"
-                },
-                {
-                  "key": "RateLimit",
-                  "value": "limit=50, remaining=45, reset=191"
-                },
-                {
-                  "key": "Content-Type",
-                  "value": "application/json; charset=utf-8"
-                },
-                {
-                  "key": "Content-Length",
-                  "value": "397"
-                },
-                {
-                  "key": "ETag",
-                  "value": "W/\"18d-PbQnoirlljOAGWwhOxczim0vIfc\""
-                },
-                {
-                  "key": "Date",
-                  "value": "Thu, 30 Jul 2026 20:27:18 GMT"
-                },
-                {
-                  "key": "Connection",
-                  "value": "keep-alive"
-                },
-                {
-                  "key": "Keep-Alive",
-                  "value": "timeout=5"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n    \"id\": \"6a6bb338d8107ecacb280019\",\n    \"description\": \"Rendimento\",\n    \"note\": null,\n    \"amount\": 105,\n    \"date\": \"2026-07-17T00:00:00.000Z\",\n    \"paymentDate\": null,\n    \"constType\": null,\n    \"paymentMethod\": \"PIX\",\n    \"installments\": null,\n    \"transactionType\": \"INCOME\",\n    \"isBusiness\": false,\n    \"userId\": \"6a56c4a11f770da9e5b6cad9\",\n    \"categoryId\": \"6a6a44d5599a112e0a59d631\",\n    \"createdAt\": \"2026-07-30T20:25:28.253Z\",\n    \"updatedAt\": \"2026-07-30T20:27:17.846Z\"\n}"
+              ]
             }
-          ]
+          },
+          "response": []
         },
         {
           "name": "Deletar Transação",
           "request": {
-            "method": "GET",
-            "header": []
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/transactions/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "transactions", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "ID_DA_TRANSACAO"
+                }
+              ]
+            }
           },
           "response": []
         }
@@ -751,160 +215,36 @@
           "name": "Listar Categorias",
           "request": {
             "method": "GET",
-            "header": []
-          },
-          "response": [
-            {
-              "name": "Listar Categorias",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/categories",
-    
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-    
-                  "path": [
-                    "api",
-                    "categories"
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": null,
-              "header": [
-                {
-                  "key": "X-Powered-By",
-                  "value": "Express"
-                },
-                {
-                  "key": "Access-Control-Allow-Origin",
-                  "value": "*"
-                },
-                {
-                  "key": "RateLimit-Policy",
-                  "value": "50;w=300"
-                },
-                {
-                  "key": "RateLimit",
-                  "value": "limit=50, remaining=44, reset=172"
-                },
-                {
-                  "key": "Content-Type",
-                  "value": "application/json; charset=utf-8"
-                },
-                {
-                  "key": "Content-Length",
-                  "value": "292"
-                },
-                {
-                  "key": "ETag",
-                  "value": "W/\"124-kgOBAMY1xQHfjS6TzmHlJxZtxUQ\""
-                },
-                {
-                  "key": "Date",
-                  "value": "Thu, 30 Jul 2026 20:27:36 GMT"
-                },
-                {
-                  "key": "Connection",
-                  "value": "keep-alive"
-                },
-                {
-                  "key": "Keep-Alive",
-                  "value": "timeout=5"
-                }
-              ],
-              "cookie": [],
-              "body": "[\n    {\n        \"id\": \"6a6a44bc599a112e0a59d630\",\n        \"name\": \"Alimentação\",\n        \"color\": \"#FFFFFF\",\n        \"isDefault\": false,\n        \"isBusiness\": false,\n        \"userId\": \"6a56c4a11f770da9e5b6cad9\"\n    },\n    {\n        \"id\": \"6a6a44d5599a112e0a59d631\",\n        \"name\": \"Salário\",\n        \"color\": \"#FFFFFF\",\n        \"isDefault\": false,\n        \"isBusiness\": false,\n        \"userId\": \"6a56c4a11f770da9e5b6cad9\"\n    }\n]"
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/categories",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "categories"]
             }
-          ]
+          },
+          "response": []
         },
         {
-          "name": "Criar Categoria",
+          "name": "Criar Categoria Personalizada",
           "request": {
-            "method": "GET",
-            "header": []
-          },
-          "response": [
-            {
-              "name": "Criar Categoria",
-              "originalRequest": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\r\n  \"name\": \"Cursos\",\r\n  \"isBusiness\": false\r\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/categories",
-    
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-    
-                  "path": [
-                    "api",
-                    "categories"
-                  ]
-                }
-              },
-              "status": "Created",
-              "code": 201,
-              "_postman_previewlanguage": null,
-              "header": [
-                {
-                  "key": "X-Powered-By",
-                  "value": "Express"
-                },
-                {
-                  "key": "Access-Control-Allow-Origin",
-                  "value": "*"
-                },
-                {
-                  "key": "RateLimit-Policy",
-                  "value": "50;w=300"
-                },
-                {
-                  "key": "RateLimit",
-                  "value": "limit=50, remaining=43, reset=150"
-                },
-                {
-                  "key": "Content-Type",
-                  "value": "application/json; charset=utf-8"
-                },
-                {
-                  "key": "Content-Length",
-                  "value": "140"
-                },
-                {
-                  "key": "ETag",
-                  "value": "W/\"8c-Zu2TW3ex6bWFMnLNnBy7RSLF9cs\""
-                },
-                {
-                  "key": "Date",
-                  "value": "Thu, 30 Jul 2026 20:27:58 GMT"
-                },
-                {
-                  "key": "Connection",
-                  "value": "keep-alive"
-                },
-                {
-                  "key": "Keep-Alive",
-                  "value": "timeout=5"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n    \"id\": \"6a6bb3ced8107ecacb28001b\",\n    \"name\": \"Cursos\",\n    \"color\": \"#FFFFFF\",\n    \"isDefault\": false,\n    \"isBusiness\": false,\n    \"userId\": \"6a56c4a11f770da9e5b6cad9\"\n}"
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Viagens & Lazer\",\n  \"color\": \"#3B82F6\",\n  \"isBusiness\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/categories",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "categories"]
             }
-          ]
+          },
+          "response": []
         }
       ]
     },
@@ -912,258 +252,96 @@
       "name": "4. Orçamentos",
       "item": [
         {
-          "name": "Criar Orçamento",
+          "name": "Criar/Definir Orçamento",
           "request": {
-            "method": "GET",
-            "header": []
-          },
-          "response": [
-            {
-              "name": "Criar Orçamento",
-              "originalRequest": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\r\n  \"description\": \"Meta de Mercado e Alimentação\",\r\n  \"amountLimit\": 600.0,\r\n  \"month\": 7,\r\n  \"year\": 2026,\r\n  \"categoryId\": \"6a6a44bc599a112e0a59d630\"\r\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/budgets",
-    
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-    
-                  "path": [
-                    "api",
-                    "budgets"
-                  ]
-                }
-              },
-              "status": "Conflict",
-              "code": 409,
-              "_postman_previewlanguage": null,
-              "header": [
-                {
-                  "key": "X-Powered-By",
-                  "value": "Express"
-                },
-                {
-                  "key": "Access-Control-Allow-Origin",
-                  "value": "*"
-                },
-                {
-                  "key": "RateLimit-Policy",
-                  "value": "50;w=300"
-                },
-                {
-                  "key": "RateLimit",
-                  "value": "limit=50, remaining=42, reset=115"
-                },
-                {
-                  "key": "Content-Type",
-                  "value": "application/json; charset=utf-8"
-                },
-                {
-                  "key": "Content-Length",
-                  "value": "95"
-                },
-                {
-                  "key": "ETag",
-                  "value": "W/\"5f-oV0xpi3vUH5Lct9PtwPWgaNOPIM\""
-                },
-                {
-                  "key": "Date",
-                  "value": "Thu, 30 Jul 2026 20:28:33 GMT"
-                },
-                {
-                  "key": "Connection",
-                  "value": "keep-alive"
-                },
-                {
-                  "key": "Keep-Alive",
-                  "value": "timeout=5"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n    \"message\": \"Já existe um orçamento para esta categoria neste período. Deseja atualizá-lo?\"\n}"
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amountLimit\": 1500.00,\n  \"month\": 7,\n  \"year\": 2026,\n  \"categoryId\": \"ID_DA_CATEGORIA_AQUI\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/budgets",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "budgets"]
             }
-          ]
+          },
+          "response": []
         },
         {
-          "name": "Listar Orçamentos",
+          "name": "Listar Orçamentos por Mês",
           "request": {
             "method": "GET",
-            "header": []
-          },
-          "response": [
-            {
-              "name": "Listar Orçamentos",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/budgets?month=7&year=2026",
-    
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-    
-                  "path": [
-                    "api",
-                    "budgets"
-                  ],
-                  "query": [
-                    {
-                      "key": "month",
-                      "value": "7"
-                    },
-                    {
-                      "key": "year",
-                      "value": "2026"
-                    }
-                  ]
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/budgets?month=7&year=2026",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "budgets"],
+              "query": [
+                {
+                  "key": "month",
+                  "value": "7"
+                },
+                {
+                  "key": "year",
+                  "value": "2026"
                 }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": null,
-              "header": [
-                {
-                  "key": "X-Powered-By",
-                  "value": "Express"
-                },
-                {
-                  "key": "Access-Control-Allow-Origin",
-                  "value": "*"
-                },
-                {
-                  "key": "RateLimit-Policy",
-                  "value": "50;w=300"
-                },
-                {
-                  "key": "RateLimit",
-                  "value": "limit=50, remaining=41, reset=98"
-                },
-                {
-                  "key": "Content-Type",
-                  "value": "application/json; charset=utf-8"
-                },
-                {
-                  "key": "Content-Length",
-                  "value": "324"
-                },
-                {
-                  "key": "ETag",
-                  "value": "W/\"144-3ptN4L74vBvC/3idbqSur9SL0rU\""
-                },
-                {
-                  "key": "Date",
-                  "value": "Thu, 30 Jul 2026 20:28:51 GMT"
-                },
-                {
-                  "key": "Connection",
-                  "value": "keep-alive"
-                },
-                {
-                  "key": "Keep-Alive",
-                  "value": "timeout=5"
-                }
-              ],
-              "cookie": [],
-              "body": "[\n    {\n        \"id\": \"6a6a4fe7a307b0b4cb3e3cc6\",\n        \"description\": \"Gastos com Alimentação\",\n        \"amountLimit\": 700,\n        \"spent\": 301,\n        \"remaining\": 399,\n        \"percentageSpent\": 43,\n        \"month\": 7,\n        \"year\": 2026,\n        \"category\": {\n            \"id\": \"6a6a44bc599a112e0a59d630\",\n            \"name\": \"Alimentação\",\n            \"color\": \"#FFFFFF\",\n            \"isDefault\": false,\n            \"isBusiness\": false,\n            \"userId\": \"6a56c4a11f770da9e5b6cad9\"\n        }\n    }\n]"
+              ]
             }
-          ]
+          },
+          "response": []
         },
         {
           "name": "Atualizar Orçamento",
           "request": {
-            "method": "GET",
-            "header": []
-          },
-          "response": [
-            {
-              "name": "Atualizar Orçamento",
-              "originalRequest": {
-                "method": "PUT",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\r\n  \"description\": \"Gastos com Alimentação\",\r\n  \"amountLimit\": 800.0\r\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/budgets/6a6a4fe7a307b0b4cb3e3cc6",
-    
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-    
-                  "path": [
-                    "api",
-                    "budgets",
-                    "6a6a4fe7a307b0b4cb3e3cc6"
-                  ]
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amountLimit\": 1800.00\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/budgets/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "budgets", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "ID_DO_ORCAMENTO"
                 }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": null,
-              "header": [
-                {
-                  "key": "X-Powered-By",
-                  "value": "Express"
-                },
-                {
-                  "key": "Access-Control-Allow-Origin",
-                  "value": "*"
-                },
-                {
-                  "key": "RateLimit-Policy",
-                  "value": "50;w=300"
-                },
-                {
-                  "key": "RateLimit",
-                  "value": "limit=50, remaining=40, reset=82"
-                },
-                {
-                  "key": "Content-Type",
-                  "value": "application/json; charset=utf-8"
-                },
-                {
-                  "key": "Content-Length",
-                  "value": "268"
-                },
-                {
-                  "key": "ETag",
-                  "value": "W/\"10c-+0A3OB8Gsil2z/W+vjJOfcNWKFc\""
-                },
-                {
-                  "key": "Date",
-                  "value": "Thu, 30 Jul 2026 20:29:06 GMT"
-                },
-                {
-                  "key": "Connection",
-                  "value": "keep-alive"
-                },
-                {
-                  "key": "Keep-Alive",
-                  "value": "timeout=5"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n    \"id\": \"6a6a4fe7a307b0b4cb3e3cc6\",\n    \"description\": \"Gastos com Alimentação\",\n    \"amountLimit\": 800,\n    \"month\": 7,\n    \"year\": 2026,\n    \"userId\": \"6a56c4a11f770da9e5b6cad9\",\n    \"categoryId\": \"6a6a44bc599a112e0a59d630\",\n    \"createdAt\": \"2026-07-29T19:09:27.250Z\",\n    \"updatedAt\": \"2026-07-30T20:29:06.277Z\"\n}"
+              ]
             }
-          ]
+          },
+          "response": []
+        },
+        {
+          "name": "Deletar Orçamento",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/budgets/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "budgets", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "ID_DO_ORCAMENTO"
+                }
+              ]
+            }
+          },
+          "response": []
         }
       ]
     },
@@ -1174,408 +352,71 @@
           "name": "Resumo Geral",
           "request": {
             "method": "GET",
-            "header": []
-          },
-          "response": []
-        },
-        {
-          "name": "Por Categoria",
-          "request": {
-            "method": "GET",
-            "header": []
-          },
-          "response": []
-        },
-        {
-          "name": "Tendência Mensal",
-          "request": {
-            "method": "GET",
-            "header": []
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "6. Exportações",
-      "item": [
-        {
-          "name": "Exportar CSV",
-          "request": {
-            "method": "GET",
-            "header": []
-          },
-          "response": [
-            {
-              "name": "Exportar CSV",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/export/csv",
-    
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-    
-                  "path": [
-                    "api",
-                    "export",
-                    "csv"
-                  ]
-                }
-              },
-              "status": "Unauthorized",
-              "code": 401,
-              "_postman_previewlanguage": null,
-              "header": [
-                {
-                  "key": "X-Powered-By",
-                  "value": "Express"
-                },
-                {
-                  "key": "Access-Control-Allow-Origin",
-                  "value": "*"
-                },
-                {
-                  "key": "RateLimit-Policy",
-                  "value": "50;w=300"
-                },
-                {
-                  "key": "RateLimit",
-                  "value": "limit=50, remaining=49, reset=300"
-                },
-                {
-                  "key": "Content-Type",
-                  "value": "application/json; charset=utf-8"
-                },
-                {
-                  "key": "Content-Length",
-                  "value": "48"
-                },
-                {
-                  "key": "ETag",
-                  "value": "W/\"30-0QsUsLUNcXdOHkIy17wL2KaFqf0\""
-                },
-                {
-                  "key": "Date",
-                  "value": "Thu, 30 Jul 2026 20:17:42 GMT"
-                },
-                {
-                  "key": "Connection",
-                  "value": "keep-alive"
-                },
-                {
-                  "key": "Keep-Alive",
-                  "value": "timeout=5"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n    \"error\": \"Acesso negado. Token não fornecido.\"\n}"
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard/summary",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "dashboard", "summary"]
             }
-          ]
+          },
+          "response": []
         },
         {
-          "name": "Exportar PDF",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('Status code is successful', function () {",
-                  "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 202, 204]);",
-                  "});",
-                  "",
-                  "pm.test('Response time is under 10 seconds', function () {",
-                  "    pm.expect(pm.response.responseTime).to.be.below(10000);",
-                  "});",
-                  "",
-                  "pm.test('Content-Type indicates PDF when header is present', function () {",
-                  "    const contentType = pm.response.headers.get('Content-Type');",
-                  "    pm.expect(contentType, 'Content-Type header should be present').to.exist;",
-                  "    pm.expect(contentType.toLowerCase()).to.include('pdf');",
-                  "});",
-                  "",
-                  "pm.test('Response is not empty', function () {",
-                  "    const text = pm.response.text();",
-                  "    const hasBodyText = typeof text === 'string' && text.length > 0;",
-                  "    const contentLength = pm.response.headers.get('Content-Length');",
-                  "    const hasPositiveContentLength = contentLength !== null && !Number.isNaN(Number(contentLength)) && Number(contentLength) > 0;",
-                  "",
-                  "    pm.expect(hasBodyText || hasPositiveContentLength, 'Expected a non-empty response body or a positive Content-Length header').to.be.true;",
-                  "});",
-                  "",
-                  "pm.test('PDF signature or PDF content type is present', function () {",
-                  "    const text = pm.response.text();",
-                  "    const contentType = (pm.response.headers.get('Content-Type') || '').toLowerCase();",
-                  "    const looksLikePdf = typeof text === 'string' && text.startsWith('%PDF');",
-                  "    const headerIndicatesPdf = contentType.includes('pdf');",
-                  "",
-                  "    pm.expect(looksLikePdf || headerIndicatesPdf, 'Expected PDF signature in body or a PDF content type header').to.be.true;",
-                  "});",
-                  "",
-                  "pm.test('Content-Disposition is valid when header is present', function () {",
-                  "    const contentDisposition = pm.response.headers.get('Content-Disposition');",
-                  "",
-                  "    if (!contentDisposition) {",
-                  "        pm.expect(true).to.be.true;",
-                  "        return;",
-                  "    }",
-                  "",
-                  "    const normalized = contentDisposition.toLowerCase();",
-                  "    pm.expect(normalized).to.satisfy(function (value) {",
-                  "        return value.includes('attachment') || value.includes('inline');",
-                  "    });",
-                  "});"
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
+          "name": "Gastos por Categoria",
           "request": {
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/export/pdf?transactionType=EXPENSE&startDate=2026-07-01",
-
-              "host": [
-                "{{baseUrl}}"
-              ],
-
-              "path": [
-                "api",
-                "export",
-                "pdf"
-              ],
-              "query": [
-                {
-                  "key": "transactionType",
-                  "value": "EXPENSE",
-                  "type": "text"
-                },
-                {
-                  "key": "startDate",
-                  "value": "2026-07-01",
-                  "type": "text"
-                }
-              ]
+              "raw": "{{baseUrl}}/api/dashboard/by-category",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "dashboard", "by-category"]
             }
           },
-          "response": [
-            {
-              "name": "Exportar PDF",
-              "originalRequest": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{baseUrl}}/api/export/pdf?transactionType=EXPENSE&startDate=2026-07-01",
-    
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-    
-                  "path": [
-                    "api",
-                    "export",
-                    "pdf"
-                  ],
-                  "query": [
-                    {
-                      "key": "transactionType",
-                      "value": "EXPENSE",
-                      "type": "text"
-                    },
-                    {
-                      "key": "startDate",
-                      "value": "2026-07-01",
-                      "type": "text"
-                    }
-                  ]
-                }
-              },
-              "_postman_previewlanguage": null,
-              "header": null,
-              "cookie": [],
-              "body": null
+          "response": []
+        },
+        {
+          "name": "Evolução Mensal (6 Meses)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard/monthly-trend",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "dashboard", "monthly-trend"]
             }
-          ]
+          },
+          "response": []
         }
       ]
     },
     {
-      "name": "7. Redefinir senha",
+      "name": "6. Exportação de Relatórios",
       "item": [
         {
-          "name": "Solicitar Redefinição de Senha",
+          "name": "Exportar Relatório CSV",
           "request": {
             "method": "GET",
-            "header": []
-          },
-          "response": [
-            {
-              "name": "Solicitar Redefinição de Senha",
-              "originalRequest": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\r\n  \"email\": \"elisangela@teste.com\"\r\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/auth/forgot-password",
-    
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-    
-                  "path": [
-                    "api",
-                    "auth",
-                    "forgot-password"
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": null,
-              "header": [
-                {
-                  "key": "X-Powered-By",
-                  "value": "Express"
-                },
-                {
-                  "key": "Access-Control-Allow-Origin",
-                  "value": "*"
-                },
-                {
-                  "key": "RateLimit-Policy",
-                  "value": "10;w=60"
-                },
-                {
-                  "key": "RateLimit",
-                  "value": "limit=10, remaining=9, reset=60"
-                },
-                {
-                  "key": "Content-Type",
-                  "value": "application/json; charset=utf-8"
-                },
-                {
-                  "key": "Content-Length",
-                  "value": "57"
-                },
-                {
-                  "key": "ETag",
-                  "value": "W/\"39-ORZgnQ3weSA+T3gTMfPTTzEX1+A\""
-                },
-                {
-                  "key": "Date",
-                  "value": "Thu, 30 Jul 2026 20:10:08 GMT"
-                },
-                {
-                  "key": "Connection",
-                  "value": "keep-alive"
-                },
-                {
-                  "key": "Keep-Alive",
-                  "value": "timeout=5"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n    \"message\": \"Email de redefinição enviado com sucesso.\"\n}"
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/export/csv",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "export", "csv"]
             }
-          ]
+          },
+          "response": []
         },
         {
-          "name": "Redefinir a Senha",
+          "name": "Exportar Relatório PDF Estilizado",
           "request": {
             "method": "GET",
-            "header": []
-          },
-          "response": [
-            {
-              "name": "Redefinir a Senha",
-              "originalRequest": {
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\r\n  \"resetToken\": \"560682ee2ff1f3985847f79d51ded96db5c1d57a49876cee597a975f5207e73a\",\r\n  \"newPassword\": \"novaSenhaSegura1243\"\r\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                },
-                "url": {
-                  "raw": "{{baseUrl}}/api/auth/reset-password",
-    
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-    
-                  "path": [
-                    "api",
-                    "auth",
-                    "reset-password"
-                  ]
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "_postman_previewlanguage": null,
-              "header": [
-                {
-                  "key": "X-Powered-By",
-                  "value": "Express"
-                },
-                {
-                  "key": "Access-Control-Allow-Origin",
-                  "value": "*"
-                },
-                {
-                  "key": "RateLimit-Policy",
-                  "value": "10;w=60"
-                },
-                {
-                  "key": "RateLimit",
-                  "value": "limit=10, remaining=9, reset=60"
-                },
-                {
-                  "key": "Content-Type",
-                  "value": "application/json; charset=utf-8"
-                },
-                {
-                  "key": "Content-Length",
-                  "value": "42"
-                },
-                {
-                  "key": "ETag",
-                  "value": "W/\"2a-peoEHIVo4FzajTTn03O8sKOhX3s\""
-                },
-                {
-                  "key": "Date",
-                  "value": "Thu, 30 Jul 2026 19:48:57 GMT"
-                },
-                {
-                  "key": "Connection",
-                  "value": "keep-alive"
-                },
-                {
-                  "key": "Keep-Alive",
-                  "value": "timeout=5"
-                }
-              ],
-              "cookie": [],
-              "body": "{\n    \"message\": \"Senha atualizada com sucesso\"\n}"
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/export/pdf",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "export", "pdf"]
             }
-          ]
+          },
+          "response": []
         }
       ]
     }
@@ -1585,18 +426,6 @@
       "key": "baseUrl",
       "value": "http://localhost:3000",
       "type": "string"
-    },
-    {
-      "key": "supabase_service_role_api_key_1cbf",
-      "secret": true
-    },
-    {
-      "key": "auth_secret_1cbf",
-      "secret": true
-    },
-    {
-      "key": "json_web_token_1cbf",
-      "secret": true
     }
   ]
 }
