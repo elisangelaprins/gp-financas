@@ -21,6 +21,10 @@ const buildTransactionWhere = (userId: string, query: Record<string, unknown>): 
 
     if (paymentMethod) whereClause.paymentMethod = paymentMethod as PaymentMethod;
 
+    if (query.isBusiness !== undefined) {
+        whereClause.isBusiness = query.isBusiness === 'true';
+    }
+
     return whereClause;
 };
 

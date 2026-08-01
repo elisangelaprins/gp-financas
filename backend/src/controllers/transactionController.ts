@@ -6,10 +6,15 @@ import type { Prisma } from '@prisma/client';
 export const createTransaction = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const userId = getAuthUserId(req);
-        const { description, amount, date, paymentMethod, transactionType, categoryId } = req.body;
+        const { description, amount, date, paymentMethod, transactionType, categoryId, note, isBusiness, paymentDate, installments } = req.body;
 
         if (!description || !amount || !date || !paymentMethod || !transactionType || !categoryId) {
             res.status(400).json({ error: "Todos os campos são obrigatórios." });
+            return;
+        }
+
+        if (amount <= 0) {
+            res.status(400).json({ error: "O valor da transação deve ser maior que zero." });
             return;
         }
 
@@ -37,7 +42,12 @@ export const createTransaction = async (req: Request, res: Response, next: NextF
                 date: new Date(date),
                 paymentMethod,
                 transactionType,
-                categoryId
+                categoryId,
+                note: note || null,
+                isBusiness: isBusiness || false,
+                paymentDate: paymentDate ? new Date(paymentDate) : null,
+                installments: installments || null
+
             }
         });
 
@@ -74,11 +84,22 @@ export const updateTransaction = async (req: Request, res: Response, next: NextF
         const updateData: Prisma.TransactionUncheckedUpdateInput = {};
 
         if (description) updateData.description = description;
+
         if (note !== undefined) updateData.note = note;
+
+        if (amount !== undefined && amount <= 0) {
+            res.status(400).json({ error: "O valor da transação deve ser maior que zero." });
+            return;
+        }
+
         if (amount) updateData.amount = amount;
+
         if (date) updateData.date = new Date(date);
+
         if (paymentMethod) updateData.paymentMethod = paymentMethod;
+
         if (transactionType) updateData.transactionType = transactionType;
+
         if (categoryId) updateData.categoryId = categoryId;
 
         if (Object.keys(updateData).length === 0) {

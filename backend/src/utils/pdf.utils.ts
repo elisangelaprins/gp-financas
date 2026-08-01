@@ -58,6 +58,13 @@ export const generatePDF = (transactions: TransactionWithCategory[]): Promise<Bu
 
             y += 20;
             doc.moveTo(30, y - 4).lineTo(582, y - 4).strokeColor('#E2E8F0').lineWidth(0.5).stroke();
+
+            
+            if (y > 740) {
+                doc.addPage();
+                y = 50;
+            }
+            
         });
 
         // Resumo Rodapé
