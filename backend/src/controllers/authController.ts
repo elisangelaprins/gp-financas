@@ -5,13 +5,20 @@ import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import { sendPasswordReset } from '../services/email.service.js';
 
+const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/;
+
 export const register = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
 
         if (!req.body.name || !req.body.email || !req.body.password) {
             res.status(400).json({ error: "Todos os campos são obrigatórios." });
             return;
-        }
+        };
+
+        if (!passwordRegex.test(req.body.password)) {
+            res.status(400).json({ error: "A senha deve ter no mínimo 8 caracteres, contendo pelo menos uma letra maiúscula, uma minúscula, um número e um caractere especial." });
+            return;
+        };
 
         const userExists = await prisma.user.findUnique({
             where: { email: req.body.email }
@@ -77,7 +84,7 @@ export const login = async (req: Request, res: Response, next: NextFunction): Pr
         res.cookie('token', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite:  process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
             maxAge: 3600000
         })
 
@@ -109,7 +116,7 @@ export const forgotPassword = async (req: Request, res: Response, next: NextFunc
         });
 
         if (!user) {
-            return res.status(200).json({ message: "Se o e-mail estiver cadastrado, enviamos as instruções para redefinição de senha."  });
+            return res.status(200).json({ message: "Se o e-mail estiver cadastrado, enviamos as instruções para redefinição de senha." });
             return;
         };
 
@@ -140,6 +147,11 @@ export const resetPassword = async (req: Request, res: Response, next: NextFunct
 
         if (!resetToken || !newPassword) {
             res.status(400).json({ error: "Token e senha são obrigatórios" });
+            return;
+        };
+
+        if (!passwordRegex.test(newPassword)) {
+            res.status(400).json({ error: "A senha deve ter no mínimo 8 caracteres, contendo pelo menos uma letra maiúscula, uma minúscula, um número e um caractere especial." });
             return;
         };
 

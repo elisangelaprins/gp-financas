@@ -20,7 +20,7 @@ describe('Módulo de Autenticação API', () => {
     const testUser = {
         name: 'Usuario Teste Jest',
         email: 'jest.user@exemplo.com',
-        password: 'senhaSegura123',
+        password: 'SenhaSegura@123',
     };
 
     it('Deve cadastrar um novo usuário com sucesso (Status 201)', async () => {

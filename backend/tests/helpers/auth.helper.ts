@@ -20,7 +20,7 @@ export async function createTestUserAndLogin(app: Express, emailPrefix: string):
     const testUser = {
         name: `Usuario Teste ${emailPrefix}`,
         email,
-        password: 'senhaSegura123',
+        password: 'SenhaSegura@123',
     };
 
     await prisma.user.deleteMany({ where: { email } });
