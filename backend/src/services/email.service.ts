@@ -1,23 +1,27 @@
 import nodemailer from 'nodemailer';
 
-const mailTransporter = nodemailer.createTransport({
+const isTestEnv = process.env.NODE_ENV === 'test';
+
+const mailTransporter = isTestEnv
+  ? nodemailer.createTransport({ jsonTransport: true })
+  : nodemailer.createTransport({
     host: process.env.SMTP_HOST,
     port: Number(process.env.SMTP_PORT),
     auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS,
     }
-});
+  });
 
 export const sendPasswordReset = async (to: string, token: string, userName?: string) => {
 
-    const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${token}`
+  const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${token}`
 
-    const mailOptions = {
-        from: process.env.EMAIL_FROM,
-        to: to,
-        subject: 'Redefinição de Senha - GP Finanças',
-        html: `
+  const mailOptions = {
+    from: process.env.EMAIL_FROM,
+    to: to,
+    subject: 'Redefinição de Senha - GP Finanças',
+    html: `
       <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f8fafc; padding: 40px 20px; color: #0f172a;">
         <div style="max-width: 520px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05); border: 1px solid #e2e8f0;">
           
@@ -70,8 +74,18 @@ export const sendPasswordReset = async (to: string, token: string, userName?: st
         </div>
       </div>
     `,
-    };
+  };
+
+  try {
 
     await mailTransporter.sendMail(mailOptions);
+
+  } catch {
+
+    console.warn(" [SMTP Warning]: Não foi possível enviar e-mail via SMTP (verifique cota do Mailtrap).");
+
+    console.log(" [DEV Link]: Link de redefinição:", resetUrl);
+
+  };
 
 };
