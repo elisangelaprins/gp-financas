@@ -6,7 +6,7 @@ export interface TestUserContext {
     testUser: {
         name: string;
         email: string;
-        senha: string;
+        password: string;
     };
     
     authCookie: string[];
@@ -20,7 +20,7 @@ export async function createTestUserAndLogin(app: Express, emailPrefix: string):
     const testUser = {
         name: `Usuario Teste ${emailPrefix}`,
         email,
-        senha: 'senhaSegura123',
+        password: 'senhaSegura123',
     };
 
     await prisma.user.deleteMany({ where: { email } });
@@ -29,7 +29,7 @@ export async function createTestUserAndLogin(app: Express, emailPrefix: string):
 
     const loginRes = await request(app).post('/api/auth/login').send({
         email: testUser.email,
-        senha: testUser.senha,
+        password: testUser.password,
     });
 
     const authCookie = loginRes.headers['set-cookie'] as unknown as string[];

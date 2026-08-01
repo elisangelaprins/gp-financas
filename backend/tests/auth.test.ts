@@ -20,7 +20,7 @@ describe('Módulo de Autenticação API', () => {
     const testUser = {
         name: 'Usuario Teste Jest',
         email: 'jest.user@exemplo.com',
-        senha: 'senhaSegura123',
+        password: 'senhaSegura123',
     };
 
     it('Deve cadastrar um novo usuário com sucesso (Status 201)', async () => {
@@ -40,7 +40,7 @@ describe('Módulo de Autenticação API', () => {
             .post('/api/auth/login')
             .send({
                 email: testUser.email,
-                senha: testUser.senha,
+                password: testUser.password,
             });
 
         expect(res.status).toBe(200);
@@ -72,7 +72,7 @@ describe('Módulo de Autenticação API', () => {
             .post('/api/auth/login')
             .send({
                 email: testUser.email,
-                senha: 'senhaIncorreta123',
+                password: 'senhaIncorreta123',
             });
 
         expect(res.status).toBe(400);

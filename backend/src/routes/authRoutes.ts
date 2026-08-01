@@ -18,4 +18,5 @@ router.get('/verify', verifyUser, (req, res) => {
         user: tokenHeader.user
     });
 });
+
 export default router;

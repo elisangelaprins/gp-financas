@@ -1,0 +1,102 @@
+openapi: 3.0.0
+info:
+  title: GP Finanças API
+  description: Documentação oficial da API REST de Gestão Financeira Pessoal e Empresarial.
+  servers:
+    - url: http://localhost:3000
+      description: Servidor Local de Desenvolvimento
+
+  tags:
+    - name: Autenticação
+      description: Endpoints de cadastro, login e redefinição de senha
+    - name: Transações
+      description: Gerenciamento de receitas e despesas
+    - name: Categorias
+      description: Categorias padrão do sistema e personalizadas pelo usuário
+    - name: Orçamentos
+      description: Limites orçamentários mensais
+    - name: Dashboard
+      description: Métricas, resumos e gráficos financeiros
+    - name: Exportação
+      description: Exportação de relatórios em CSV e PDF
+
+paths:
+  /api/auth/register:
+    post:
+      summary: Cadastra um novo usuário
+      tags: [Autenticação]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, email, senha]
+              properties:
+                name:
+                  type: string
+                  example: Rose Prins
+                email:
+                  type: string
+                  example: prins@exemplo.com
+                password:
+                  type: string
+                  example: senhaSegura@123
+        responses:
+          201:
+            description: Usuário cadastrado com sucesso
+          400:
+            description: E-mail já cadastrado ou dados inválidos
+
+  /api/auth/login:
+    post:
+      summary: Realiza o login do usuário            
+      tags: [Autenticação]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  example: prins@exemplo.com
+                password:
+                  type: string
+                  example: senhaSegura@123
+      responses:
+        200:
+          description: Login realizado com sucesso (retorna Cookie HTTP-Only)
+        400:
+          description: Credenciais inválidas
+
+  /api/auth/forgot-password:
+    post:
+      summary: Solicita a redefinição de senha por e-mail
+      tags: [Autenticação]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email]
+              properties:
+                email:
+                  type: string
+                  example: prins@exemplo.com
+      responses:
+        200:
+          description: Instruções enviadas se o e-mail estiver cadastrado
+
+  /api/auth/verify:
+    get:
+      summary: Verifica o status da sessão do usuário autenticado
+      tags: [Autenticação]
+      responses:
+        200:
+          description: Usuário autenticado
+        401:
+          description: Não autorizado          

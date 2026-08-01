@@ -8,7 +8,7 @@ import { sendPasswordReset } from '../services/email.service.js';
 export const register = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
 
-        if (!req.body.name || !req.body.email || !req.body.senha) {
+        if (!req.body.name || !req.body.email || !req.body.password) {
             res.status(400).json({ error: "Todos os campos são obrigatórios." });
             return;
         }
@@ -26,7 +26,7 @@ export const register = async (req: Request, res: Response, next: NextFunction):
             data: {
                 name: req.body.name,
                 email: req.body.email,
-                password: await bcrypt.hash(req.body.senha, 10),
+                password: await bcrypt.hash(req.body.password, 10),
             },
             select: {
                 id: true,
@@ -47,7 +47,7 @@ export const register = async (req: Request, res: Response, next: NextFunction):
 
 export const login = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        if (!req.body.email || !req.body.senha) {
+        if (!req.body.email || !req.body.password) {
             res.status(400).json({ error: "Email e senha são obrigatórios." });
             return;
         }
@@ -61,7 +61,7 @@ export const login = async (req: Request, res: Response, next: NextFunction): Pr
             return;
         }
 
-        const isMatch = await bcrypt.compare(req.body.senha, user.password);
+        const isMatch = await bcrypt.compare(req.body.password, user.password);
 
         if (!isMatch) {
             res.status(400).json({ error: "Email ou senha incorretos." });

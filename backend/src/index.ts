@@ -2,6 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
+import swaggerUi from 'swagger-ui-express';
+import YAML from  'yamljs'
 import dotenv from 'dotenv';
 import prisma from './config/db.js';
 import { apiLimiter, authLimiter } from './middlewares/rateLimitMiddleware.js';
@@ -20,6 +22,7 @@ dotenv.config();
 const app = express();
 app.use(helmet());
 const PORT = process.env.PORT || 3000;
+const swaggerDocument = YAML.load('./src/docs/swagger.yaml');
 
 app.use(cors({
   origin: process.env.FRONTEND_URL || 'http://localhost:5173',
@@ -34,6 +37,7 @@ app.use('/api/categories', apiLimiter, categoryRoutes);
 app.use('/api/dashboard', apiLimiter, dashboardRoutes)
 app.use('/api/budgets', apiLimiter, budgetRoutes);
 app.use('/api/export', apiLimiter, exportRoutes);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.get('/', async (req, res) => {
   try {
