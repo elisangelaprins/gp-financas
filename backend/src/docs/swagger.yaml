@@ -99,4 +99,491 @@ paths:
         200:
           description: Usuário autenticado
         401:
-          description: Não autorizado          
+          description: Não autorizado 
+  /api/transactions:
+    post:
+      summary: Cria uma nova transação (Receita ou Despesa)
+      tags: [Transações]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [description, amount, date, paymentMethod, transactionType, categoryId]
+              properties:
+                description:
+                  type: string
+                  example: Salário Mensal
+                amount:
+                  type: number
+                  example: 5000.00
+                date:
+                  type: string
+                  example: 2026-08-01
+                paymentMethod:
+                  type: string
+                  enum: [PIX, CREDIT_CARD, DEBIT_CARD, CASH, BOLETO]
+                  example: PIX
+                transactionType:
+                  type: string
+                  enum: [INCOME, EXPENSE]
+                  example: INCOME
+                categoryId:
+                  type: string
+                  example: 66a9b1c2d3e4f5a6b7c8d9e0
+                note:
+                  type: string
+                  example: Salário referente ao mês de agosto
+                isBusiness:
+                  type: boolean
+                  example: false
+                paymentDate:
+                  type: string
+                  example: 2026-08-01
+                installments:
+                  type: integer
+                  example: 1
+      responses:
+        201:
+          description: Transação criada com sucesso
+        400:
+          description: Dados obrigatórios ausentes ou valor inválido
+
+    get:
+      summary: Lista todas as transações do usuário autenticado
+      tags: [Transações]
+      responses:
+        200:
+          description: Lista de transações retornada com sucesso
+        401:
+          description: Não autorizado
+
+  /api/transactions/{id}:
+    put:
+      summary: Atualiza uma transação existente pelo ID
+      tags: [Transações]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID da transação
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                description:
+                  type: string
+                amount:
+                  type: number
+                date:
+                  type: string
+                paymentMethod:
+                  type: string
+                transactionType:
+                  type: string
+                categoryId:
+                  type: string
+      responses:
+        200:
+          description: Transação atualizada com sucesso
+        400:
+          description: Nenhum campo informado ou valor <= 0
+        403:
+          description: Sem permissão para alterar esta transação
+        404:
+          description: Transação não encontrada
+
+    delete:
+      summary: Exclui uma transação existente pelo ID
+      tags: [Transações]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID da transação
+      responses:
+        200:
+          description: Transação excluída com sucesso
+        403:
+          description: Sem permissão para excluir esta transação
+        404:
+          description: Transação não encontrada      
+
+  /api/categories:
+    get:
+      summary: Lista todas as categorias (Padrão do sistema + Personalizadas do usuário)
+      tags: [Categorias]
+      responses:
+        200:
+          description: Lista de categorias retornada com sucesso
+        401:
+          description: Não autorizado
+
+    post:
+      summary: Cria uma nova categoria personalizada
+      tags: [Categorias]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name]
+              properties:
+                name:
+                  type: string
+                  example: Viagens & Lazer
+                color:
+                  type: string
+                  example: "#10B981"
+                isBusiness:
+                  type: boolean
+                  example: false
+      responses:
+        201:
+          description: Categoria criada com sucesso
+        400:
+          description: Nome da categoria é obrigatório
+
+  /api/categories/{id}:
+    put:
+      summary: Atualiza uma categoria personalizada pelo ID
+      tags: [Categorias]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                color:
+                  type: string
+      responses:
+        200:
+          description: Categoria atualizada com sucesso
+        403:
+          description: Recusada exclusão/edição de categoria padrão do sistema ou de outro usuário
+        404:
+          description: Categoria não encontrada
+
+    delete:
+      summary: Exclui uma categoria personalizada pelo ID
+      tags: [Categorias]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Categoria excluída com sucesso
+        403:
+          description: Não é permitido excluir categorias padrão do sistema
+        404:
+          description: Categoria não encontrada    
+
+  /api/budgets:
+    post:
+      summary: Cria um novo limite de orçamento mensal para uma categoria
+      tags: [Orçamentos]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [categoryId, amountLimit, month, year]
+              properties:
+                categoryId:
+                  type: string
+                  example: 66a9b1c2d3e4f5a6b7c8d9e0
+                amountLimit:
+                  type: number
+                  example: 1500.00
+                month:
+                  type: integer
+                  example: 8
+                year:
+                  type: integer
+                  example: 2026
+                description:
+                  type: string
+                  example: Orçamento para Alimentação em Agosto
+      responses:
+        201:
+          description: Orçamento criado com sucesso
+        400:
+          description: Dados obrigatórios ausentes ou limite <= 0
+        409:
+          description: Já existe orçamento para esta categoria neste mês/ano
+
+    get:
+      summary: Lista os orçamentos do mês com os gastos acumulados
+      tags: [Orçamentos]
+      parameters:
+        - in: query
+          name: month
+          schema:
+            type: integer
+          description: Mês numérico (1 a 12)
+        - in: query
+          name: year
+          schema:
+            type: integer
+          description: Ano de 4 dígitos (ex 2026)
+        - in: query
+          name: isBusiness
+          schema:
+            type: boolean
+          description: Filtra orçamento por despesas pessoais (false) ou empresariais (true)
+      responses:
+        200:
+          description: Lista de orçamentos calculados com saldo e porcentagem gasta
+
+  /api/budgets/{id}:
+    put:
+      summary: Atualiza o limite ou descrição de um orçamento existente
+      tags: [Orçamentos]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amountLimit:
+                  type: number
+                description:
+                  type: string
+      responses:
+        200:
+          description: Orçamento atualizado com sucesso
+        404:
+          description: Orçamento não encontrado
+
+    delete:
+      summary: Exclui um orçamento pelo ID
+      tags: [Orçamentos]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Orçamento excluído com sucesso
+        403:
+          description: Sem permissão para excluir este orçamento
+        404:
+          description: Orçamento não encontrado
+
+  
+  /api/dashboard/summary:
+    get:
+      summary: Retorna o resumo financeiro (Receitas, Despesas, Saldo e Média Diária)
+      tags: [Dashboard]
+      parameters:
+        - in: query
+          name: month
+          schema:
+            type: integer
+          description: Mês numérico (1 a 12)
+        - in: query
+          name: year
+          schema:
+            type: integer
+          description: Ano (ex 2026)
+        - in: query
+          name: startDate
+          schema:
+            type: string
+          description: Data inicial no formato YYYY-MM-DD
+        - in: query
+          name: endDate
+          schema:
+            type: string
+          description: Data final no formato YYYY-MM-DD
+        - in: query
+          name: isBusiness
+          schema:
+            type: boolean
+          description: Filtra dados pessoais (false) ou empresariais (true)
+      responses:
+        200:
+          description: Resumo financeiro calculado com sucesso
+
+  /api/dashboard/by-category:
+    get:
+      summary: Retorna os totais de gastos agrupados por Categoria
+      tags: [Dashboard]
+      parameters:
+        - in: query
+          name: transactionType
+          schema:
+            type: string
+            enum: [INCOME, EXPENSE]
+          description: Filtra por Receita ou Despesa (Default EXPENSE)
+        - in: query
+          name: isBusiness
+          schema:
+            type: boolean
+          description: Filtra dados pessoais (false) ou empresariais (true)
+        - in: query
+          name: month
+          schema:
+            type: integer
+        - in: query
+          name: year
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Totais por categoria ordenados do maior para o menor
+
+  /api/dashboard/top-expenses:
+    get:
+      summary: Retorna as 5 maiores despesas do período
+      tags: [Dashboard]
+      parameters:
+        - in: query
+          name: isBusiness
+          schema:
+            type: boolean
+          description: Filtra dados pessoais (false) ou empresariais (true)
+        - in: query
+          name: month
+          schema:
+            type: integer
+        - in: query
+          name: year
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Lista das 5 maiores despesas retornada com sucesso
+
+  /api/dashboard/monthly-trend:
+    get:
+      summary: Retorna a evolução mensal de receitas e despesas dos últimos N meses
+      tags: [Dashboard]
+      parameters:
+        - in: query
+          name: months
+          schema:
+            type: integer
+            default: 6
+          description: Quantidade de meses para o histórico (Default 6)
+      responses:
+        200:
+          description: Tendência mensal com histórico de receitas, despesas e saldo
+
+  /api/export/csv:
+    get:
+      summary: Exporta o relatório de transações filtradas em arquivo CSV
+      tags: [Exportação]
+      parameters:
+        - in: query
+          name: startDate
+          schema:
+            type: string
+          description: Data inicial (YYYY-MM-DD)
+        - in: query
+          name: endDate
+          schema:
+            type: string
+          description: Data final (YYYY-MM-DD)
+        - in: query
+          name: categoryId
+          schema:
+            type: string
+          description: ID da categoria específica
+        - in: query
+          name: transactionType
+          schema:
+            type: string
+            enum: [INCOME, EXPENSE]
+        - in: query
+          name: paymentMethod
+          schema:
+            type: string
+            enum: [PIX, CREDIT_CARD, DEBIT_CARD, CASH, BOLETO]
+        - in: query
+          name: isBusiness
+          schema:
+            type: boolean
+          description: Filtra apenas relatórios pessoais (false) ou empresariais (true)
+      responses:
+        200:
+          description: Arquivo CSV retornado com sucesso (Content-Type text/csv)
+          content:
+            text/csv:
+              schema:
+                type: string
+                format: binary
+
+  /api/export/pdf:
+    get:
+      summary: Exporta o relatório de transações filtradas em arquivo PDF paginado
+      tags: [Exportação]
+      parameters:
+        - in: query
+          name: startDate
+          schema:
+            type: string
+          description: Data inicial (YYYY-MM-DD)
+        - in: query
+          name: endDate
+          schema:
+            type: string
+          description: Data final (YYYY-MM-DD)
+        - in: query
+          name: categoryId
+          schema:
+            type: string
+        - in: query
+          name: transactionType
+          schema:
+            type: string
+            enum: [INCOME, EXPENSE]
+        - in: query
+          name: paymentMethod
+          schema:
+            type: string
+            enum: [PIX, CREDIT_CARD, DEBIT_CARD, CASH, BOLETO]
+        - in: query
+          name: isBusiness
+          schema:
+            type: boolean
+          description: Filtra apenas relatórios pessoais (false) ou empresariais (true)
+      responses:
+        200:
+          description: Documento PDF retornado com sucesso (Content-Type application/pdf)
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary                                      

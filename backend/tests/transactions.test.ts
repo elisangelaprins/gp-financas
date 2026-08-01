@@ -73,6 +73,26 @@ describe('Módulo de transações API', () => {
 
     });
 
+    it('Deve criar uma despesa empresarial com isBusiness: true (Status 201)', async () => {
+        const res = await request(app)
+            .post('/api/transactions')
+            .set('Cookie', authCookie)
+            .send({
+                description: 'Servidor em Nuvem Empresarial',
+                amount: 350.0,
+                date: '2026-07-31T00:00:00.000Z',
+                paymentMethod: 'PIX',
+                transactionType: 'EXPENSE',
+                categoryId: categoryId,
+                isBusiness: true,
+                note: 'Licença de TI mensal'
+            });
+
+        expect(res.status).toBe(201);
+        expect(res.body.isBusiness).toBe(true);
+        expect(res.body.note).toBe('Licença de TI mensal');
+    });
+
     it('Deve listar as transações do usuário logado (Status 200)', async () => {
         const res = await request(app)
             .get('/api/transactions')

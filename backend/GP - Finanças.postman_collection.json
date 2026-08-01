@@ -136,7 +136,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"description\": \"Supermercado\",\n  \"amount\": 450.50,\n  \"date\": \"2026-07-31T00:00:00.000Z\",\n  \"paymentMethod\": \"CREDIT_CARD\",\n  \"transactionType\": \"EXPENSE\",\n  \"categoryId\": \"ID_DA_CATEGORIA_AQUI\"\n}"
+              "raw": "{\n  \"description\": \"Supermercado\",\n  \"amount\": 450.50,\n  \"date\": \"2026-07-31T00:00:00.000Z\",\n  \"paymentMethod\": \"CREDIT_CARD\",\n  \"transactionType\": \"EXPENSE\",\n  \"categoryId\": \"ID_DA_CATEGORIA_AQUI\",\n  \"isBusiness\": true,\n  \"note\": \"Despesa corporativa da empresa\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/transactions",

@@ -24,9 +24,25 @@ app.use(helmet());
 const PORT = process.env.PORT || 3000;
 const swaggerDocument = YAML.load('./src/docs/swagger.yaml');
 
+const allowedOrigins = process.env.NODE_ENV === 'production' 
+  ? [process.env.FRONTEND_URL as string]
+  : ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:5173']
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+
+      callback(null, true);
+
+    } else {
+
+      callback(new Error('Bloqueado pelas regras de segurança CORS'));
+
+    }
+  },
+
   credentials: true
+
 }));
 
 app.use(express.json());
@@ -43,8 +59,8 @@ app.get('/', async (req, res) => {
   try {
     await prisma.user.findFirst();
     res.json({ message: "Servidor rodando e conectado ao MongoDB Atlas com sucesso!" });
-  } catch (error) {
-    res.status(500).json({ error: "Erro ao conectar com o banco de dados."});
+  } catch {
+    res.status(500).json({ error: "Erro ao conectar com o banco de dados." });
   }
 });
 
