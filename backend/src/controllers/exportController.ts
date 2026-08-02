@@ -63,7 +63,7 @@ export const exportPDF = async (req: Request, res: Response, next: NextFunction)
         });
 
         res.setHeader('Content-Type', 'application/pdf');
-        res.setHeader('Content-Disposition', 'attachment; filename="transacoes.pdf"');
+        res.setHeader('Content-Disposition', 'inline; filename="transacoes.pdf"');
 
 
         const pdf = await generatePDF(transactions);
