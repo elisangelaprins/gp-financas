@@ -43,6 +43,7 @@ export const exportCSV = async (req: Request, res: Response, next: NextFunction)
 
         res.setHeader('Content-Type', 'text/csv; charset=utf-8');
         res.setHeader('Content-Disposition', 'attachment; filename="transacoes.csv"');
+        res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition');
         res.status(200).send(csv);
 
     } catch (error) {
@@ -63,7 +64,8 @@ export const exportPDF = async (req: Request, res: Response, next: NextFunction)
         });
 
         res.setHeader('Content-Type', 'application/pdf');
-        res.setHeader('Content-Disposition', 'inline; filename="transacoes.pdf"');
+        res.setHeader('Content-Disposition', 'attachment; filename="transacoes.pdf"');
+        res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition');
 
 
         const pdf = await generatePDF(transactions);
