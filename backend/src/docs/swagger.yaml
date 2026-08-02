@@ -539,6 +539,11 @@ paths:
       responses:
         200:
           description: Arquivo CSV retornado com sucesso (Content-Type text/csv)
+          headers:
+            Content-Disposition:
+              schema:
+                type: string
+              example: 'attachment; filename="transacoes.csv"'
           content:
             text/csv:
               schema:
@@ -582,6 +587,11 @@ paths:
       responses:
         200:
           description: Documento PDF retornado com sucesso (Content-Type application/pdf)
+          headers:
+            Content-Disposition:
+              schema:
+                type: string
+              example: 'attachment; filename="transacoes.pdf"'
           content:
             application/pdf:
               schema:
