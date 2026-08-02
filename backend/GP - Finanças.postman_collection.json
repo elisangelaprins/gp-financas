@@ -11,6 +11,24 @@
       "item": [
         {
           "name": "Cadastrar Usuário",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code é 201 (Criado)', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "pm.test('Retorna dados do usuário sem senha', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('id');",
+                  "    pm.expect(jsonData).to.not.have.property('password');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [
@@ -21,7 +39,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Elisangela Prins\",\n  \"email\": \"elisangela@exemplo.com\",\n  \"password\": \"senhaSegura123\"\n}"
+              "raw": "{\n  \"name\": \"Elisangela Prins\",\n  \"email\": \"elisangela@exemplo.com\",\n  \"password\": \"SenhaSegura@123\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/auth/register",
@@ -33,6 +51,24 @@
         },
         {
           "name": "Fazer Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code é 200 (Sucesso)', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Retorna objeto do usuário', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData).to.have.property('user');",
+                  "    pm.expect(jsonData.user).to.have.property('id');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [
@@ -43,7 +79,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"elisangela@exemplo.com\",\n  \"password\": \"senhaSegura123\"\n}"
+              "raw": "{\n  \"email\": \"elisangela@exemplo.com\",\n  \"password\": \"SenhaSegura@123\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/auth/login",
@@ -54,7 +90,50 @@
           "response": []
         },
         {
+          "name": "Verificar Usuário",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code é 200 (Autenticado)', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('Mensagem de sucesso recebida', function () {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.message).to.equal('Usuário verificado com sucesso');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/verify",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "verify"]
+            }
+          },
+          "response": []
+        },
+        {
           "name": "Solicitar Redefinição de Senha",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code é 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [
@@ -77,6 +156,19 @@
         },
         {
           "name": "Redefinir Senha",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Valida tentativa de redefinição de senha', function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 400]);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [
@@ -87,7 +179,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"resetToken\": \"SEU_TOKEN_AQUI\",\n  \"newPassword\": \"novaSenhaSegura123\"\n}"
+              "raw": "{\n  \"resetToken\": \"{{resetToken}}\",\n  \"newPassword\": \"NovaSenhaSegura@123\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/auth/reset-password",
@@ -104,6 +196,23 @@
       "item": [
         {
           "name": "Criar Receita",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code é 201 (Criado)', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData && jsonData.id) {",
+                  "    pm.collectionVariables.set('transactionId', jsonData.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [
@@ -114,7 +223,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"description\": \"Salário Mensal\",\n  \"amount\": 5000.00,\n  \"date\": \"2026-07-31T00:00:00.000Z\",\n  \"paymentMethod\": \"PIX\",\n  \"transactionType\": \"INCOME\",\n  \"categoryId\": \"ID_DA_CATEGORIA_AQUI\"\n}"
+              "raw": "{\n  \"description\": \"Salário Mensal\",\n  \"amount\": 5000.00,\n  \"date\": \"2026-07-31T00:00:00.000Z\",\n  \"paymentMethod\": \"PIX\",\n  \"transactionType\": \"INCOME\",\n  \"categoryId\": \"{{categoryId}}\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/transactions",
@@ -126,6 +235,23 @@
         },
         {
           "name": "Criar Despesa",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code é 201 (Criado)', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData && jsonData.id) {",
+                  "    pm.collectionVariables.set('transactionId', jsonData.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [
@@ -136,7 +262,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"description\": \"Supermercado\",\n  \"amount\": 450.50,\n  \"date\": \"2026-07-31T00:00:00.000Z\",\n  \"paymentMethod\": \"CREDIT_CARD\",\n  \"transactionType\": \"EXPENSE\",\n  \"categoryId\": \"ID_DA_CATEGORIA_AQUI\",\n  \"isBusiness\": true,\n  \"note\": \"Despesa corporativa da empresa\"\n}"
+              "raw": "{\n  \"description\": \"Supermercado\",\n  \"amount\": 450.50,\n  \"date\": \"2026-07-31T00:00:00.000Z\",\n  \"paymentMethod\": \"CREDIT_CARD\",\n  \"transactionType\": \"EXPENSE\",\n  \"categoryId\": \"{{categoryId}}\",\n  \"isBusiness\": true,\n  \"note\": \"Despesa corporativa da empresa\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/transactions",
@@ -148,6 +274,23 @@
         },
         {
           "name": "Listar Transações",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code é 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var jsonData = pm.response.json();",
+                  "if (Array.isArray(jsonData) && jsonData.length > 0) {",
+                  "    pm.collectionVariables.set('transactionId', jsonData[0].id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "GET",
             "header": [],
@@ -161,6 +304,19 @@
         },
         {
           "name": "Atualizar Transação",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code é 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "PUT",
             "header": [
@@ -180,7 +336,7 @@
               "variable": [
                 {
                   "key": "id",
-                  "value": "ID_DA_TRANSACAO"
+                  "value": "{{transactionId}}"
                 }
               ]
             }
@@ -189,6 +345,19 @@
         },
         {
           "name": "Deletar Transação",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code é 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "DELETE",
             "header": [],
@@ -199,7 +368,7 @@
               "variable": [
                 {
                   "key": "id",
-                  "value": "ID_DA_TRANSACAO"
+                  "value": "{{transactionId}}"
                 }
               ]
             }
@@ -213,6 +382,23 @@
       "item": [
         {
           "name": "Listar Categorias",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code é 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var jsonData = pm.response.json();",
+                  "if (Array.isArray(jsonData) && jsonData.length > 0) {",
+                  "    pm.collectionVariables.set('categoryId', jsonData[0].id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "GET",
             "header": [],
@@ -226,6 +412,23 @@
         },
         {
           "name": "Criar Categoria Personalizada",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code é 201 (Criado)', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData && jsonData.id) {",
+                  "    pm.collectionVariables.set('categoryId', jsonData.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [
@@ -245,6 +448,79 @@
             }
           },
           "response": []
+        },
+        {
+          "name": "Atualizar Categoria Personalizada",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code é 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Viagens, Ferias e Lazer\",\n  \"color\": \"#2563EB\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/categories/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "categories", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{categoryId}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Deletar Categoria Personalizada",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code é 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/categories/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "categories", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{categoryId}}"
+                }
+              ]
+            }
+          },
+          "response": []
         }
       ]
     },
@@ -253,6 +529,23 @@
       "item": [
         {
           "name": "Criar/Definir Orçamento",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code é 201 (Criado)', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData && jsonData.id) {",
+                  "    pm.collectionVariables.set('budgetId', jsonData.id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [
@@ -263,7 +556,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"amountLimit\": 1500.00,\n  \"month\": 7,\n  \"year\": 2026,\n  \"categoryId\": \"ID_DA_CATEGORIA_AQUI\"\n}"
+              "raw": "{\n  \"amountLimit\": 1500.00,\n  \"month\": 7,\n  \"year\": 2026,\n  \"categoryId\": \"{{categoryId}}\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/budgets",
@@ -275,6 +568,23 @@
         },
         {
           "name": "Listar Orçamentos por Mês",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code é 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var jsonData = pm.response.json();",
+                  "if (Array.isArray(jsonData) && jsonData.length > 0) {",
+                  "    pm.collectionVariables.set('budgetId', jsonData[0].id);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "GET",
             "header": [],
@@ -298,6 +608,19 @@
         },
         {
           "name": "Atualizar Orçamento",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code é 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "PUT",
             "header": [
@@ -317,7 +640,7 @@
               "variable": [
                 {
                   "key": "id",
-                  "value": "ID_DO_ORCAMENTO"
+                  "value": "{{budgetId}}"
                 }
               ]
             }
@@ -326,6 +649,19 @@
         },
         {
           "name": "Deletar Orçamento",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code é 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "DELETE",
             "header": [],
@@ -336,7 +672,7 @@
               "variable": [
                 {
                   "key": "id",
-                  "value": "ID_DO_ORCAMENTO"
+                  "value": "{{budgetId}}"
                 }
               ]
             }
@@ -350,6 +686,19 @@
       "item": [
         {
           "name": "Resumo Geral",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code é 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "GET",
             "header": [],
@@ -363,6 +712,19 @@
         },
         {
           "name": "Gastos por Categoria",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code é 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "GET",
             "header": [],
@@ -375,7 +737,46 @@
           "response": []
         },
         {
+          "name": "Maiores Despesas",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code é 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/dashboard/top-expenses",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "dashboard", "top-expenses"]
+            }
+          },
+          "response": []
+        },
+        {
           "name": "Evolução Mensal (6 Meses)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code é 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "GET",
             "header": [],
@@ -394,6 +795,19 @@
       "item": [
         {
           "name": "Exportar Relatório CSV",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code é 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "GET",
             "header": [],
@@ -407,6 +821,19 @@
         },
         {
           "name": "Exportar Relatório PDF Estilizado",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code é 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "GET",
             "header": [],
@@ -425,6 +852,26 @@
     {
       "key": "baseUrl",
       "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "categoryId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "transactionId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "budgetId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "resetToken",
+      "value": "",
       "type": "string"
     }
   ]
