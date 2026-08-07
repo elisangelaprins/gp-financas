@@ -11,10 +11,14 @@ Construída para simular um produto real de fintech, com autenticação segura v
 ![Express](https://img.shields.io/badge/Express-000000?style=for-the-badge&logo=express&logoColor=white)
 ![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
 ![Prisma](https://img.shields.io/badge/Prisma-2D3748?style=for-the-badge&logo=prisma&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![Render](https://img.shields.io/badge/Render-46E3B7?style=for-the-badge&logo=render&logoColor=white)
 ![Jest](https://img.shields.io/badge/Jest-C21325?style=for-the-badge&logo=jest&logoColor=white)
 ![Swagger](https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=swagger&logoColor=black)
 
-**✅ 33/33 testes automatizados passando** &nbsp;•&nbsp; **📖 Documentação interativa em `/api-docs`**
+[![Node.js CI](https://github.com/elisangelaprins/gp-financas/actions/workflows/ci.yml/badge.svg)](https://github.com/elisangelaprins/gp-financas/actions)
+&nbsp;•&nbsp;
+**🚀 [API Ao Vivo (Render)](https://gp-financas.onrender.com)** &nbsp;•&nbsp; **📖 [Swagger Interativo (Live)](https://gp-financas.onrender.com/api-docs)**
 
 [Funcionalidades](#-funcionalidades) • [Segurança](#-segurança) • [Como Rodar](#️-como-rodar-localmente) • [Documentação da API](#-documentação-interativa-swagger) • [Testes](#-testes)
 
@@ -22,7 +26,7 @@ Construída para simular um produto real de fintech, com autenticação segura v
 
 ---
 
-> 🚧 **Status:** back-end funcional, testado e documentado. Front-end (React) em desenvolvimento — em breve neste mesmo repositório/organização.
+> 🚀 **Status:** Back-end 100% funcional, testado (33/33 testes), containerizado com **Docker**, integrado com **CI/CD (GitHub Actions)** e publicado na nuvem (**Render**). Front-end (Next.js) em desenvolvimento.
 
 ## 🎯 Sobre o Projeto
 
