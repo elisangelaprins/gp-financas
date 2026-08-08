@@ -42,7 +42,6 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center p-5 bg-[#F1F2ED]">
       <div className="w-full max-w-[860px] min-h-[560px] bg-white rounded-[24px] shadow-[0_30px_70px_rgba(15,90,58,0.16)] grid grid-cols-1 md:grid-cols-2 overflow-hidden border border-slate-200/60">
-        
         <div className="relative bg-gradient-to-br from-[#38B37D] via-[#1B7A4D] to-[#0F5A3A] text-white p-9 md:p-11 flex flex-col justify-between overflow-hidden">
           <div className="relative z-10">
             <div className="flex items-center gap-2.5 mb-14">
@@ -176,7 +175,6 @@ export default function LoginPage() {
             </button>
           </form>
 
-          {/* Dica de Cadastro com espaçamento flexível perfeito */}
           <div className="flex items-center justify-center gap-1.5 text-xs text-[#6B7570] mt-6">
             <span>Novo por aqui?</span>
             <Link href="/register" className="text-[#1B7A4D] hover:underline font-semibold transition">
