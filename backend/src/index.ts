@@ -26,7 +26,7 @@ const swaggerDocument = YAML.load('./src/docs/swagger.yaml');
 
 const allowedOrigins = process.env.NODE_ENV === 'production' 
   ? [process.env.FRONTEND_URL as string]
-  : ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:5173']
+  : ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:5000', 'http://localhost:5173']
 
 app.use(cors({
   origin: (origin, callback) => {

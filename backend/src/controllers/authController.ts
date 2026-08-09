@@ -55,7 +55,10 @@ export const register = async (req: Request, res: Response, next: NextFunction):
 
         });
 
-        await sendAccountVerification(user.email, verificationToken, user.name);
+
+        sendAccountVerification(user.email, verificationToken, user.name).catch(err => {
+            console.warn(" [SMTP Warning]: Erro ao enviar e-mail de verificação:", err);
+        });
 
         res.status(201).json({ message: "Conta criada com sucesso! Enviamos um e-mail de ativação para o seu endereço.", user });
 
@@ -149,7 +152,9 @@ export const forgotPassword = async (req: Request, res: Response, next: NextFunc
             },
         });
 
-        await sendPasswordReset(user.email, resetToken, user.name);
+        sendPasswordReset(user.email, resetToken, user.name).catch(err => {
+            console.warn(" [SMTP Warning]: Erro ao enviar e-mail de redefinição:", err);
+        });
 
         res.json({ message: "Email de redefinição enviado com sucesso." });
 

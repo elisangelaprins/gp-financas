@@ -60,8 +60,8 @@ export default function RegisterPage() {
 
       await register({ name: displayName || fullName, email, password });
 
-      toast.success(`Conta criada com sucesso! Seja bem-vindo(a), ${displayName || fullName}.`);
-      router.push('/dashboard');
+      toast.success('Conta criada com sucesso! Verifique seu e-mail para ativar a conta antes de fazer o login.');
+      router.push('/login');
 
     } catch (err: unknown) {
 

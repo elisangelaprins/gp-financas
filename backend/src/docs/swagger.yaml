@@ -2,23 +2,24 @@ openapi: 3.0.0
 info:
   title: GP Finanças API
   description: Documentação oficial da API REST de Gestão Financeira Pessoal e Empresarial.
-  servers:
-    - url: http://localhost:3000
-      description: Servidor Local de Desenvolvimento
 
-  tags:
-    - name: Autenticação
-      description: Endpoints de cadastro, login e redefinição de senha
-    - name: Transações
-      description: Gerenciamento de receitas e despesas
-    - name: Categorias
-      description: Categorias padrão do sistema e personalizadas pelo usuário
-    - name: Orçamentos
-      description: Limites orçamentários mensais
-    - name: Dashboard
-      description: Métricas, resumos e gráficos financeiros
-    - name: Exportação
-      description: Exportação de relatórios em CSV e PDF
+servers:
+  - url: /
+    description: Servidor Atual (Localhost)
+
+tags:
+  - name: Autenticação
+    description: Endpoints de cadastro, login e redefinição de senha
+  - name: Transações
+    description: Gerenciamento de receitas e despesas
+  - name: Categorias
+    description: Categorias padrão do sistema e personalizadas pelo usuário
+  - name: Orçamentos
+    description: Limites orçamentários mensais
+  - name: Dashboard
+    description: Métricas, resumos e gráficos financeiros
+  - name: Exportação
+    description: Exportação de relatórios em CSV e PDF
 
 paths:
   /api/auth/register:
