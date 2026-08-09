@@ -5,7 +5,8 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import { toast } from 'sonner';
-import { Mail, Lock, Loader2, ShieldCheck, Zap, BarChart3, Target, Eye, EyeClosed } from 'lucide-react';
+import { Mail, Lock, Loader2, ShieldCheck, Zap, BarChart3, Target, Eye, EyeClosed, Wallet } from 'lucide-react';
+import { logError } from '@/utils/logError';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -28,12 +29,21 @@ export default function LoginPage() {
     setIsSubmitting(true);
 
     try {
+
       await login({ email, password });
+
       toast.success('Login realizado com sucesso!');
+
       router.push('/dashboard');
+
     } catch (err: unknown) {
+
+      logError('Login', err);
+
       const error = err as Error;
-      toast.error(error.message || 'Erro ao realizar login.');
+
+      toast.error(error.message || 'E-mail ou senha incorretos.');
+
     } finally {
       setIsSubmitting(false);
     }
@@ -46,9 +56,9 @@ export default function LoginPage() {
           <div className="relative z-10">
             <div className="flex items-center gap-2.5 mb-14">
               <div className="w-[30px] h-[30px] rounded-lg bg-white/15 border border-white/30 flex items-center justify-center font-mono font-semibold text-xs text-white">
-                GP
+                <Wallet className="w-4 h-4 text-white" />
               </div>
-              <span className="font-mono text-xs tracking-wider text-white/90">GP Finanças</span>
+              <span className="font-mono font-bold text-sm tracking-wider text-white">GP Finanças</span>
             </div>
 
             <h1 className="text-3xl md:text-[30px] font-bold leading-tight mb-3 tracking-tight max-w-[260px]">
@@ -59,33 +69,16 @@ export default function LoginPage() {
             </p>
 
             <div className="flex items-center gap-2.5 mt-8">
-              <div 
-                className="w-9 h-9 rounded-full bg-white/15 border border-white/25 flex items-center justify-center text-white/95 backdrop-blur-sm shadow-sm transition-all duration-200 hover:bg-white/30 hover:scale-110 cursor-pointer"
-                title="Conexão Segura HTTP-Only"
-              >
-                <ShieldCheck className="w-4.5 h-4.5" />
-              </div>
-
-              <div 
-                className="w-9 h-9 rounded-full bg-[#38B37D]/30 border border-white/25 flex items-center justify-center text-white/95 backdrop-blur-sm shadow-sm transition-all duration-200 hover:bg-white/30 hover:scale-110 cursor-pointer"
-                title="Exportação de Relatórios PDF & CSV"
-              >
-                <Zap className="w-4.5 h-4.5" />
-              </div>
-
-              <div 
-                className="w-9 h-9 rounded-full bg-white/15 border border-white/25 flex items-center justify-center text-white/95 backdrop-blur-sm shadow-sm transition-all duration-200 hover:bg-white/30 hover:scale-110 cursor-pointer"
-                title="Dashboard Analítico em Tempo Real"
-              >
-                <BarChart3 className="w-4.5 h-4.5" />
-              </div>
-
-              <div 
-                className="w-9 h-9 rounded-full bg-white/15 border border-white/25 flex items-center justify-center text-white/95 backdrop-blur-sm shadow-sm transition-all duration-200 hover:bg-white/30 hover:scale-110 cursor-pointer"
-                title="Gestão de Metas e Orçamentos"
-              >
-                <Target className="w-4.5 h-4.5" />
-              </div>
+              {[
+                { Icon: ShieldCheck, title: 'Conexão Segura HTTP-Only' },
+                { Icon: Zap, title: 'Exportação de Relatórios PDF & CSV' },
+                { Icon: BarChart3, title: 'Dashboard Analítico em Tempo Real' },
+                { Icon: Target, title: 'Gestão de Metas e Orçamentos' },
+              ].map(({ Icon, title }, i) => (
+                <div key={i} title={title} className="w-9 h-9 rounded-full bg-white/15 border border-white/25 flex items-center justify-center text-white/95 backdrop-blur-sm shadow-sm transition-all duration-200 hover:bg-white/30 hover:scale-110 cursor-pointer">
+                  <Icon className="w-4.5 h-4.5" />
+                </div>
+              ))}
             </div>
           </div>
 

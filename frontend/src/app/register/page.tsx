@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import { toast } from 'sonner';
+import { logError } from '@/utils/logError';
 import { Mail, Lock, User, Sparkles, Loader2, ShieldCheck, Zap, BarChart3, Target, Eye, EyeClosed, CheckCircle2, XCircle, Circle, Wallet } from 'lucide-react';
 
 export default function RegisterPage() {
@@ -50,12 +51,20 @@ export default function RegisterPage() {
     setIsSubmitting(true);
 
     try {
+
       await register({ name: displayName || fullName, email, password });
+
       toast.success(`Conta criada com sucesso! Seja bem-vindo(a), ${displayName || fullName}.`);
       router.push('/dashboard');
+
     } catch (err: unknown) {
+
+      logError('Register', err);
+
       const error = err as Error;
+
       toast.error(error.message || 'Erro ao criar conta.');
+
     } finally {
       setIsSubmitting(false);
     }
@@ -81,7 +90,7 @@ export default function RegisterPage() {
               <div className="w-[30px] h-[30px] rounded-lg bg-white/15 border border-white/30 flex items-center justify-center text-white">
                 <Wallet className="w-4 h-4 text-white" />
               </div>
-              <span className="font-sans font-bold text-sm tracking-wide text-white">GP Finanças</span>
+              <span className="font-mono font-bold text-sm tracking-wider text-white">GP Finanças</span>
             </div>
 
             <h1 className="text-3xl md:text-[30px] font-bold leading-tight mb-3 tracking-tight max-w-[260px]">
@@ -92,37 +101,18 @@ export default function RegisterPage() {
             </p>
 
             <div className="flex items-center gap-2.5 mt-10">
-              <div
-                className="w-9 h-9 rounded-full bg-white/15 border border-white/25 flex items-center justify-center text-white/95 backdrop-blur-sm shadow-sm transition-all duration-200 hover:bg-white/30 hover:scale-110 cursor-pointer"
-                title="Conexão Segura HTTP-Only"
-              >
-                <ShieldCheck className="w-4.5 h-4.5" />
-              </div>
-
-              <div
-                className="w-9 h-9 rounded-full bg-[#38B37D]/30 border border-white/25 flex items-center justify-center text-white/95 backdrop-blur-sm shadow-sm transition-all duration-200 hover:bg-white/30 hover:scale-110 cursor-pointer"
-                title="Exportação de Relatórios PDF & CSV"
-              >
-                <Zap className="w-4.5 h-4.5" />
-              </div>
-
-              <div
-                className="w-9 h-9 rounded-full bg-white/15 border border-white/25 flex items-center justify-center text-white/95 backdrop-blur-sm shadow-sm transition-all duration-200 hover:bg-white/30 hover:scale-110 cursor-pointer"
-                title="Dashboard Analítico em Tempo Real"
-              >
-                <BarChart3 className="w-4.5 h-4.5" />
-              </div>
-
-              <div
-                className="w-9 h-9 rounded-full bg-white/15 border border-white/25 flex items-center justify-center text-white/95 backdrop-blur-sm shadow-sm transition-all duration-200 hover:bg-white/30 hover:scale-110 cursor-pointer"
-                title="Gestão de Metas e Orçamentos"
-              >
-                <Target className="w-4.5 h-4.5" />
-              </div>
+              {[
+                { Icon: ShieldCheck, title: 'Conexão Segura HTTP-Only' },
+                { Icon: Zap, title: 'Exportação de Relatórios PDF & CSV' },
+                { Icon: BarChart3, title: 'Dashboard Analítico em Tempo Real' },
+                { Icon: Target, title: 'Gestão de Metas e Orçamentos' },
+              ].map(({ Icon, title }, i) => (
+                <div key={i} title={title} className="w-9 h-9 rounded-full bg-white/15 border border-white/25 flex items-center justify-center text-white/95 backdrop-blur-sm shadow-sm transition-all duration-200 hover:bg-white/30 hover:scale-110 cursor-pointer">
+                  <Icon className="w-4.5 h-4.5" />
+                </div>
+              ))}
             </div>
           </div>
-
-          {/* Rodapé Inspiracional Preenchendo o Painel Verde */}
           <div className="relative z-10 pt-6 border-t border-white/15">
             <p className="text-xs text-white/80 leading-relaxed font-medium">
               Transforme sua relação com o dinheiro hoje mesmo.
@@ -209,7 +199,6 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            {/* Checklist Dinâmico com Texto Neutro (Apenas o Ícone Muda de Cor) */}
             <div className="py-2 px-1 space-y-2 text-xs text-[#6B7570]">
               <div className="flex items-center gap-2">
                 {renderStatusIcon(hasNumber)}
