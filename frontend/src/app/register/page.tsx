@@ -27,6 +27,7 @@ export default function RegisterPage() {
   const hasSpecial = /[@$!%*?&#]/.test(password);
   const isPasswordValid = hasMinLength && hasNumber && hasCapital && hasSpecial;
   const isTypingPassword = password.length > 0;
+  const isEmailValid = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,6 +35,11 @@ export default function RegisterPage() {
     if (!fullName || !email || !password || !confirmPassword) {
       toast.error('Preencha todos os campos obrigatórios.');
       return;
+    }
+
+    if (!isEmailValid) {
+       toast.error('Por favor, insira um e-mail válido (exemplo: usuario@dominio.com).');
+       return;
     }
 
     if (!isPasswordValid) {

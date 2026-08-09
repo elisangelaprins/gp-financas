@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { register, login, forgotPassword, resetPassword } from '../controllers/authController.js';
+import { register, login, forgotPassword, resetPassword, verifyEmail } from '../controllers/authController.js';
 import { verifyUser } from '../middlewares/authMiddleware.js';
 import type { AuthRequest } from '../middlewares/authMiddleware.js';
 
@@ -9,6 +9,7 @@ router.post('/register', register);
 router.post('/login', login);
 router.post('/forgot-password', forgotPassword);
 router.post('/reset-password', resetPassword);
+router.post('/verify-email', verifyEmail);
 
 router.get('/verify', verifyUser, (req, res) => {
     const tokenHeader = req as AuthRequest;

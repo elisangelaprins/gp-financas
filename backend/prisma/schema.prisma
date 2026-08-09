@@ -14,6 +14,8 @@ model User {
   password      String
   resetToken    String?
   resetExpires  DateTime? 
+  isVerified    Boolean       @default(false)
+  verificationToken  String?
   transactions  Transaction[]
   budget        Budget[]
   createdAt     DateTime      @default(now())

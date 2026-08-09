@@ -89,3 +89,47 @@ export const sendPasswordReset = async (to: string, token: string, userName?: st
   };
 
 };
+
+export const sendAccountVerification = async (to: string, token: string, userName?: string) => {
+  const verifyUrl = `${process.env.FRONTEND_URL}/verify-email?token=${token}`;
+
+  const mailOptions = {
+    from: process.env.EMAIL_FROM,
+    to: to,
+    subject: 'Ativação de Conta - GP Finanças',
+    html: `
+      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f8fafc; padding: 40px 20px; color: #0f172a;">
+        <div style="max-width: 520px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05); border: 1px solid #e2e8f0;">
+          <div style="height: 6px; background: linear-gradient(135deg, #38B37D 0%, #1B7A4D 100%);"></div>
+          <div style="padding: 32px;">
+            <div style="text-align: center; margin-bottom: 28px;">
+              <h1 style="font-size: 24px; font-weight: 800; color: #1e293b; letter-spacing: -0.5px; margin: 0;">
+                GP Finanças
+              </h1>
+            </div>
+            <p style="font-size: 16px; font-weight: 600; color: #0f172a; margin-top: 0;">Seja bem-vindo(a), ${userName || 'Usuário'}!</p>
+            <p style="font-size: 15px; line-height: 1.6; color: #334155;">
+              Obrigado por se cadastrar no <strong>GP Finanças</strong>. Para ativar sua conta e começar a gerenciar suas finanças, clique no botão abaixo.
+            </p>
+            <div style="text-align: center; margin: 28px 0;">
+              <a href="${verifyUrl}" style="display: block; width: 100%; box-sizing: border-box; background-color: #1B7A4D; color: #ffffff; text-align: center; padding: 14px 20px; border-radius: 8px; font-weight: 700; text-decoration: none; font-size: 16px; box-shadow: 0 4px 12px rgba(27, 122, 77, 0.25);">
+                Ativar Minha Conta
+              </a>
+            </div>
+            <p style="font-size: 12px; color: #94a3b8; text-align: center; margin-top: 24px; line-height: 1.4; word-break: break-all;">
+              Ou acesse direto pelo link:<br />
+              <a href="${verifyUrl}" style="color: #1B7A4D; text-decoration: underline;">${verifyUrl}</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    `,
+  };
+
+  try {
+    await mailTransporter.sendMail(mailOptions);
+  } catch {
+    console.warn(" [SMTP Warning]: Não foi possível enviar e-mail via SMTP.");
+    console.log(" [DEV Link]: Link de ativação de conta:", verifyUrl);
+  }
+};

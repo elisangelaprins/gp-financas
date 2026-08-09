@@ -27,6 +27,11 @@ export async function createTestUserAndLogin(app: Express, emailPrefix: string):
 
     await request(app).post('/api/auth/register').send(testUser);
 
+    await prisma.user.updateMany({
+        where: { email: testUser.email },
+        data: { isVerified: true },
+    });
+
     const loginRes = await request(app).post('/api/auth/login').send({
         email: testUser.email,
         password: testUser.password,

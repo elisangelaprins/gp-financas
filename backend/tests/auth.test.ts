@@ -29,13 +29,17 @@ describe('Módulo de Autenticação API', () => {
             .send(testUser);
 
         expect(res.status).toBe(201);
-        expect(res.body).toHaveProperty('id');
-        expect(res.body.email).toBe(testUser.email);
+        expect(res.body).toHaveProperty('user');
+        expect(res.body.user.email).toBe(testUser.email);
 
+        // Ativa a conta para permitir o teste de login
+        await prisma.user.updateMany({
+            where: { email: testUser.email },
+            data: { isVerified: true },
+        });
     });
 
-    it('Deve realizar login e retornar e Cookie HttpOnly de sessão(Status 200)', async () => {
-
+    it('Deve realizar login e retornar o Cookie HttpOnly de sessão (Status 200)', async () => {
         const res = await request(app)
             .post('/api/auth/login')
             .send({
@@ -47,7 +51,7 @@ describe('Módulo de Autenticação API', () => {
         expect(res.headers['set-cookie']).toBeDefined();
     });
 
-    it('Deve solicitar o e-mail de redefinição de senha com sucesso (Status200)', async () => {
+    it('Deve solicitar o e-mail de redefinição de senha com sucesso (Status 200)', async () => {
         const res = await request(app)
             .post('/api/auth/forgot-password')
             .send({
@@ -79,4 +83,14 @@ describe('Módulo de Autenticação API', () => {
         expect(res.body).toHaveProperty('error');
     });
 
+    it('Deve recusar verificação com token de e-mail inválido (Status 400)', async () => {
+        const res = await request(app)
+            .post('/api/auth/verify-email')
+            .send({
+                token: 'tokenInvalido123',
+            });
+
+        expect(res.status).toBe(400);
+        expect(res.body).toHaveProperty('error');
+    });
 });

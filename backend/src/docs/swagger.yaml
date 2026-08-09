@@ -23,7 +23,7 @@ info:
 paths:
   /api/auth/register:
     post:
-      summary: Cadastra um novo usuário
+      summary: Cadastra um novo usuário e envia e-mail de verificação
       tags: [Autenticação]
       requestBody:
         required: true
@@ -41,16 +41,37 @@ paths:
                   example: prins@exemplo.com
                 password:
                   type: string
-                  example: senhaSegura@123
+                  example: SenhaSegura@123
         responses:
           201:
-            description: Usuário cadastrado com sucesso
+            description: Conta criada com sucesso (enviado e-mail de ativação)
           400:
-            description: E-mail já cadastrado ou dados inválidos
+            description: Formato de e-mail inválido, e-mail já cadastrado ou dados ausentes
+
+  /api/auth/verify-email:
+    post:
+      summary: Confirma a ativação da conta via token do e-mail
+      tags: [Autenticação]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [token]
+              properties:
+                token:
+                  type: string
+                  example: a1b2c3d4e5f678901234567890123456
+      responses:
+        200:
+          description: Conta verificada com sucesso
+        400:
+          description: Token de verificação inválido ou expirado
 
   /api/auth/login:
     post:
-      summary: Realiza o login do usuário            
+      summary: Realiza o login do usuário autenticado
       tags: [Autenticação]
       requestBody:
         required: true
@@ -65,16 +86,18 @@ paths:
                   example: prins@exemplo.com
                 password:
                   type: string
-                  example: senhaSegura@123
+                  example: SenhaSegura@123
       responses:
         200:
           description: Login realizado com sucesso (retorna Cookie HTTP-Only)
         400:
           description: Credenciais inválidas
+        401:
+          description: Conta ainda não ativada via e-mail
 
   /api/auth/forgot-password:
     post:
-      summary: Solicita a redefinição de senha por e-mail
+      summary: Solicita o envio do e-mail de redefinição de senha
       tags: [Autenticação]
       requestBody:
         required: true
@@ -91,6 +114,30 @@ paths:
         200:
           description: Instruções enviadas se o e-mail estiver cadastrado
 
+  /api/auth/reset-password:
+    post:
+      summary: Redefine a senha do usuário com o token recebido por e-mail
+      tags: [Autenticação]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [resetToken, newPassword]
+              properties:
+                resetToken:
+                  type: string
+                  example: a1b2c3d4e5f678901234567890123456
+                newPassword:
+                  type: string
+                  example: NovaSenhaSegura@123
+      responses:
+        200:
+          description: Senha atualizada com sucesso
+        400:
+          description: Token inválido ou expirado, ou senha fora dos requisitos
+
   /api/auth/verify:
     get:
       summary: Verifica o status da sessão do usuário autenticado
@@ -100,6 +147,7 @@ paths:
           description: Usuário autenticado
         401:
           description: Não autorizado 
+
   /api/transactions:
     post:
       summary: Cria uma nova transação (Receita ou Despesa)

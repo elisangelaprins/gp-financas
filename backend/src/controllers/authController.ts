@@ -3,15 +3,21 @@ import prisma from '../config/db.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
-import { sendPasswordReset } from '../services/email.service.js';
+import { sendPasswordReset, sendAccountVerification } from '../services/email.service.js';
 
 const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/;
+const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 export const register = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
 
         if (!req.body.name || !req.body.email || !req.body.password) {
             res.status(400).json({ error: "Todos os campos são obrigatórios." });
+            return;
+        };
+
+        if (!emailRegex.test(req.body.email)) {
+            res.status(400).json({ error: "Formato de e-mail inválido." });
             return;
         };
 
@@ -29,22 +35,29 @@ export const register = async (req: Request, res: Response, next: NextFunction):
             return;
         }
 
+        const verificationToken = crypto.randomBytes(32).toString('hex');
+
         const user = await prisma.user.create({
             data: {
                 name: req.body.name,
                 email: req.body.email,
                 password: await bcrypt.hash(req.body.password, 10),
+                isVerified: false,
+                verificationToken,
             },
             select: {
                 id: true,
                 name: true,
                 email: true,
+                isVerified: true,
                 createdAt: true,
-                updatedAt: true,
             }
+
         });
 
-        res.status(201).json(user);
+        await sendAccountVerification(user.email, verificationToken, user.name);
+
+        res.status(201).json({ message: "Conta criada com sucesso! Enviamos um e-mail de ativação para o seu endereço.", user });
 
 
     } catch (error) {
@@ -72,6 +85,11 @@ export const login = async (req: Request, res: Response, next: NextFunction): Pr
 
         if (!isMatch) {
             res.status(400).json({ error: "Email ou senha incorretos." });
+            return;
+        }
+
+        if (!user.isVerified) {
+            res.status(401).json({ error: "Sua conta ainda não foi ativada. Verifique seu e-mail para ativá-la." });
             return;
         }
 
@@ -182,4 +200,37 @@ export const resetPassword = async (req: Request, res: Response, next: NextFunct
     } catch (error) {
         next(error)
     }
-}
+};
+
+export const verifyEmail = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { token } = req.body;
+
+        if (!token) {
+            res.status(400).json({ error: "Token de verificação é obrigatório." });
+            return;
+        }
+
+        const user = await prisma.user.findFirst({
+            where: { verificationToken: token }
+        });
+
+        if (!user) {
+            res.status(400).json({ error: "Token de verificação inválido ou expirado." });
+            return;
+        }
+
+        await prisma.user.update({
+            where: { id: user.id },
+            data: {
+                isVerified: true,
+                verificationToken: null
+            }
+        });
+
+        res.status(200).json({ message: "Conta verificada com sucesso! Você já pode fazer login." });
+
+    } catch (error) {
+        next(error);
+    }
+};
