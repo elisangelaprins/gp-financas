@@ -1,10 +1,10 @@
+import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import swaggerUi from 'swagger-ui-express';
-import YAML from  'yamljs'
-import dotenv from 'dotenv';
+import YAML from 'yamljs';
 import prisma from './config/db.js';
 import { apiLimiter, authLimiter } from './middlewares/rateLimitMiddleware.js';
 import { errorHandler } from './middlewares/errorHandler.js';
@@ -13,20 +13,22 @@ import transactionRoutes from './routes/transactionRoutes.js';
 import categoryRoutes from './routes/categoryRoutes.js';
 import dashboardRoutes from './routes/dashboardRoutes.js';
 import budgetRoutes from './routes/budgetRoutes.js';
-import exportRoutes from './routes/exportRoutes.js'
-
-
-
-dotenv.config();
+import exportRoutes from './routes/exportRoutes.js';
 
 const app = express();
+app.set('trust proxy', 1);
 app.use(helmet());
 const PORT = process.env.PORT || 3000;
 const swaggerDocument = YAML.load('./src/docs/swagger.yaml');
 
 const allowedOrigins = process.env.NODE_ENV === 'production' 
-  ? [process.env.FRONTEND_URL as string]
-  : ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:5173']
+  ? [
+      process.env.FRONTEND_URL,
+      process.env.RENDER_EXTERNAL_URL,
+      process.env.BACKEND_URL,
+      'https://gp-financas.onrender.com',
+    ].filter((url): url is string => Boolean(url))
+  : ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:5000', 'http://localhost:5173'];
 
 app.use(cors({
   origin: (origin, callback) => {
@@ -50,7 +52,7 @@ app.use(cookieParser());
 app.use('/api/auth', authLimiter, authRoutes);
 app.use('/api/transactions', apiLimiter, transactionRoutes);
 app.use('/api/categories', apiLimiter, categoryRoutes);
-app.use('/api/dashboard', apiLimiter, dashboardRoutes)
+app.use('/api/dashboard', apiLimiter, dashboardRoutes);
 app.use('/api/budgets', apiLimiter, budgetRoutes);
 app.use('/api/export', apiLimiter, exportRoutes);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
