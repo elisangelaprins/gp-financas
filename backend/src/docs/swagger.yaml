@@ -1,6 +1,7 @@
 openapi: 3.0.0
 info:
   title: GP Finanças API
+  version: 1.0.0
   description: Documentação oficial da API REST de Gestão Financeira Pessoal e Empresarial.
 
 servers:
@@ -43,11 +44,11 @@ paths:
                 password:
                   type: string
                   example: SenhaSegura@123
-        responses:
-          201:
-            description: Conta criada com sucesso (enviado e-mail de ativação)
-          400:
-            description: Formato de e-mail inválido, e-mail já cadastrado ou dados ausentes
+      responses:
+        201:
+          description: Conta criada com sucesso (enviado e-mail de ativação)
+        400:
+          description: Formato de e-mail inválido, e-mail já cadastrado ou dados ausentes
 
   /api/auth/verify-email:
     post:
