@@ -24,3 +24,9 @@ body {
   font-family: var(--font-sora), sans-serif;
   -webkit-font-smoothing: antialiased;
 }
+
+.mono {
+  font-family: var(--font-ibm-mono), monospace;
+  font-feature-settings: "tnum" 1;
+  font-variant-numeric: tabular-nums;
+}

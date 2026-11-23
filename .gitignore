@@ -4,7 +4,7 @@ node_modules/
 # Environment variables (senhas e URLs de banco de dados)
 .env
 .env.*
-git !.env.example
+!.env.example
 
 # Build output
 dist/

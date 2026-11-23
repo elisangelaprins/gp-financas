@@ -1,19 +1,11 @@
 import type { Metadata } from "next";
-import { Sora, IBM_Plex_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
 import { Toaster } from "sonner";
 
-const sora = Sora({
-  variable: "--font-sora",
+const inter = Inter({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
-});
-
-const ibmMono = IBM_Plex_Mono({
-  variable: "--font-ibm-mono",
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
 });
 
 export const metadata: Metadata = {
@@ -27,7 +19,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR" className={`${sora.variable} ${ibmMono.variable} h-full antialiased`}>
+    <html lang="pt-BR" className={`${inter.className} h-full antialiased`}>
       <body className="min-h-full flex flex-col font-sans">
         <AuthProvider>
           <Toaster richColors position="top-right" />
