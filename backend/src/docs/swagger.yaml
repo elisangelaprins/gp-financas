@@ -6,7 +6,14 @@ info:
 
 servers:
   - url: /
-    description: Servidor Atual (Localhost)
+    description: Servidor atual
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: token
 
 tags:
   - name: Autenticação
@@ -25,7 +32,7 @@ tags:
 paths:
   /api/auth/register:
     post:
-      summary: Cadastra um novo usuário e envia e-mail de verificação
+      summary: Cadastra um novo usuário
       tags: [Autenticação]
       requestBody:
         required: true
@@ -46,30 +53,9 @@ paths:
                   example: SenhaSegura@123
       responses:
         201:
-          description: Conta criada com sucesso (enviado e-mail de ativação)
+          description: Usuário cadastrado com sucesso
         400:
-          description: Formato de e-mail inválido, e-mail já cadastrado ou dados ausentes
-
-  /api/auth/verify-email:
-    post:
-      summary: Confirma a ativação da conta via token do e-mail
-      tags: [Autenticação]
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required: [token]
-              properties:
-                token:
-                  type: string
-                  example: a1b2c3d4e5f678901234567890123456
-      responses:
-        200:
-          description: Conta verificada com sucesso
-        400:
-          description: Token de verificação inválido ou expirado
+          description: E-mail já cadastrado, senha fora dos requisitos ou dados ausentes
 
   /api/auth/login:
     post:
@@ -94,8 +80,6 @@ paths:
           description: Login realizado com sucesso (retorna Cookie HTTP-Only)
         400:
           description: Credenciais inválidas
-        401:
-          description: Conta ainda não ativada via e-mail
 
   /api/auth/forgot-password:
     post:
@@ -114,7 +98,7 @@ paths:
                   example: prins@exemplo.com
       responses:
         200:
-          description: Instruções enviadas se o e-mail estiver cadastrado
+          description: Resposta genérica confirmando que, se o e-mail estiver cadastrado, as instruções serão enviadas (válidas por 10 minutos)
 
   /api/auth/reset-password:
     post:
@@ -144,6 +128,8 @@ paths:
     get:
       summary: Verifica o status da sessão do usuário autenticado
       tags: [Autenticação]
+      security:
+        - cookieAuth: []
       responses:
         200:
           description: Usuário autenticado
@@ -154,6 +140,8 @@ paths:
     post:
       summary: Cria uma nova transação (Receita ou Despesa)
       tags: [Transações]
+      security:
+        - cookieAuth: []
       requestBody:
         required: true
         content:
@@ -203,6 +191,8 @@ paths:
     get:
       summary: Lista todas as transações do usuário autenticado
       tags: [Transações]
+      security:
+        - cookieAuth: []
       responses:
         200:
           description: Lista de transações retornada com sucesso
@@ -213,6 +203,8 @@ paths:
     put:
       summary: Atualiza uma transação existente pelo ID
       tags: [Transações]
+      security:
+        - cookieAuth: []
       parameters:
         - in: path
           name: id
@@ -252,6 +244,8 @@ paths:
     delete:
       summary: Exclui uma transação existente pelo ID
       tags: [Transações]
+      security:
+        - cookieAuth: []
       parameters:
         - in: path
           name: id
@@ -271,6 +265,8 @@ paths:
     get:
       summary: Lista todas as categorias (Padrão do sistema + Personalizadas do usuário)
       tags: [Categorias]
+      security:
+        - cookieAuth: []
       responses:
         200:
           description: Lista de categorias retornada com sucesso
@@ -280,6 +276,8 @@ paths:
     post:
       summary: Cria uma nova categoria personalizada
       tags: [Categorias]
+      security:
+        - cookieAuth: []
       requestBody:
         required: true
         content:
@@ -307,6 +305,8 @@ paths:
     put:
       summary: Atualiza uma categoria personalizada pelo ID
       tags: [Categorias]
+      security:
+        - cookieAuth: []
       parameters:
         - in: path
           name: id
@@ -335,6 +335,8 @@ paths:
     delete:
       summary: Exclui uma categoria personalizada pelo ID
       tags: [Categorias]
+      security:
+        - cookieAuth: []
       parameters:
         - in: path
           name: id
@@ -353,6 +355,8 @@ paths:
     post:
       summary: Cria um novo limite de orçamento mensal para uma categoria
       tags: [Orçamentos]
+      security:
+        - cookieAuth: []
       requestBody:
         required: true
         content:
@@ -380,13 +384,15 @@ paths:
         201:
           description: Orçamento criado com sucesso
         400:
-          description: Dados obrigatórios ausentes ou limite <= 0
+          description: Dados obrigatórios ausentes, limite <= 0 ou mês inválido (fora de 1 a 12)
         409:
           description: Já existe orçamento para esta categoria neste mês/ano
 
     get:
       summary: Lista os orçamentos do mês com os gastos acumulados
       tags: [Orçamentos]
+      security:
+        - cookieAuth: []
       parameters:
         - in: query
           name: month
@@ -411,6 +417,8 @@ paths:
     put:
       summary: Atualiza o limite ou descrição de um orçamento existente
       tags: [Orçamentos]
+      security:
+        - cookieAuth: []
       parameters:
         - in: path
           name: id
@@ -437,6 +445,8 @@ paths:
     delete:
       summary: Exclui um orçamento pelo ID
       tags: [Orçamentos]
+      security:
+        - cookieAuth: []
       parameters:
         - in: path
           name: id
@@ -456,6 +466,8 @@ paths:
     get:
       summary: Retorna o resumo financeiro (Receitas, Despesas, Saldo e Média Diária)
       tags: [Dashboard]
+      security:
+        - cookieAuth: []
       parameters:
         - in: query
           name: month
@@ -490,6 +502,8 @@ paths:
     get:
       summary: Retorna os totais de gastos agrupados por Categoria
       tags: [Dashboard]
+      security:
+        - cookieAuth: []
       parameters:
         - in: query
           name: transactionType
@@ -518,6 +532,8 @@ paths:
     get:
       summary: Retorna as 5 maiores despesas do período
       tags: [Dashboard]
+      security:
+        - cookieAuth: []
       parameters:
         - in: query
           name: isBusiness
@@ -540,6 +556,8 @@ paths:
     get:
       summary: Retorna a evolução mensal de receitas e despesas dos últimos N meses
       tags: [Dashboard]
+      security:
+        - cookieAuth: []
       parameters:
         - in: query
           name: months
@@ -555,6 +573,8 @@ paths:
     get:
       summary: Exporta o relatório de transações filtradas em arquivo CSV
       tags: [Exportação]
+      security:
+        - cookieAuth: []
       parameters:
         - in: query
           name: startDate
@@ -604,6 +624,8 @@ paths:
     get:
       summary: Exporta o relatório de transações filtradas em arquivo PDF paginado
       tags: [Exportação]
+      security:
+        - cookieAuth: []
       parameters:
         - in: query
           name: startDate

@@ -47,7 +47,7 @@ describe('Módulo de Autenticação API', () => {
         expect(res.headers['set-cookie']).toBeDefined();
     });
 
-    it('Deve solicitar o e-mail de redefinição de senha com sucesso (Status200)', async () => {
+    it('Deve solicitar o e-mail de redefinição de senha com sucesso (Status 200)', async () => {
         const res = await request(app)
             .post('/api/auth/forgot-password')
             .send({
@@ -55,7 +55,23 @@ describe('Módulo de Autenticação API', () => {
             });
 
         expect(res.status).toBe(200);
-        expect(res.body).toHaveProperty('message');
+        expect(res.body).toHaveProperty(
+            'message',
+            'Se o e-mail informado estiver cadastrado, você receberá em instantes as instruções para redefinir a senha. O link é válido por 10 minutos.'
+        );
+    });
+
+    it('Deve responder igual para e-mail não cadastrado (anti user enumeration)', async () => {
+        const existente = await request(app)
+            .post('/api/auth/forgot-password')
+            .send({ email: testUser.email });
+
+        const inexistente = await request(app)
+            .post('/api/auth/forgot-password')
+            .send({ email: 'nao.existe.jest@exemplo.com' });
+
+        expect(inexistente.status).toBe(existente.status);
+        expect(inexistente.body).toEqual(existente.body);
     });
 
     it('Deve recusar cadastro se o e-mail já estiver registrado (Status 400)', async () => {

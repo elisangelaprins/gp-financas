@@ -8,8 +8,19 @@ export const createBudget = async (req: Request, res: Response, next: NextFuncti
         const userId = getAuthUserId(req);
         const { amountLimit, description, month, year, categoryId } = req.body;
 
-        if (!categoryId || !amountLimit || !month || !year) {
+        if (!categoryId || amountLimit === undefined || amountLimit === null || month === undefined || month === null || !year) {
             res.status(400).json({ message: "Por favor, preencha todos os campos obrigatórios: categoria, limite, mês e ano." });
+            return;
+        }
+
+        if (Number(amountLimit) <= 0 || Number.isNaN(Number(amountLimit))) {
+            res.status(400).json({ message: "O limite do orçamento deve ser maior que zero." });
+            return;
+        }
+
+        const numericMonth = Number(month);
+        if (!Number.isInteger(numericMonth) || numericMonth < 1 || numericMonth > 12) {
+            res.status(400).json({ message: "O mês deve ser um valor inteiro entre 1 e 12." });
             return;
         }
 
@@ -143,7 +154,13 @@ export const updateBudget = async (req: Request, res: Response, next: NextFuncti
 
         if (description !== undefined) updateData.description = description;
 
-        if (amountLimit !== undefined) updateData.amountLimit = Number(amountLimit);
+        if (amountLimit !== undefined) {
+            if (Number(amountLimit) <= 0 || Number.isNaN(Number(amountLimit))) {
+                res.status(400).json({ message: "O limite do orçamento deve ser maior que zero." });
+                return;
+            }
+            updateData.amountLimit = Number(amountLimit);
+        }
 
         const updateBudget = await prisma.budget.update({
             where: { id: String(id) }, 

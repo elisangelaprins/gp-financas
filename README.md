@@ -26,7 +26,9 @@ Construída para simular um produto real de fintech, com autenticação segura v
 
 ---
 
-> 🚀 **Status:** Back-end 100% funcional, testado (33/33 testes), containerizado com **Docker**, integrado com **CI/CD (GitHub Actions)** e publicado na nuvem (**Render**). Front-end (Next.js) em desenvolvimento.
+> 🚀 **Status:** API REST 100% funcional, testada (34/34 testes), containerizada com **Docker**, integrada com **CI/CD (GitHub Actions)** e publicada na nuvem (**Render**).
+>
+> 💡 **Nota sobre a Demo ao Vivo (Render):** Por estar hospedada no plano gratuito do Render, a primeira requisição após um período de inatividade pode levar de **30 a 50 segundos** (*cold start*) até o container acordar. No ambiente de demonstração, o envio de e-mail de recuperação de senha utiliza SMTP de testes (Mailtrap), com fallback do link no log do servidor.
 
 ## 🎯 Sobre o Projeto
 
@@ -42,7 +44,7 @@ O GP Finanças resolve um problema real: organizar receitas, despesas e metas de
 | 🎯 **Orçamentos** | Metas de gasto por categoria/mês, com cálculo automático de percentual utilizado |
 | 📊 **Dashboard** | Resumo geral, totais por categoria, top 5 despesas e tendência mensal |
 | 📁 **Exportações** | Relatórios em **CSV** (compatível com Excel) e **PDF** (extrato formatado com totais) |
-| 📖 **Documentação** | Swagger/OpenAPI interativo disponível em `/api-docs`, com todas as 16 rotas mapeadas |
+| 📖 **Documentação** | Swagger/OpenAPI interativo disponível em `/api-docs`, com todas as 23 rotas mapeadas |
 
 ## 🔒 Segurança
 
@@ -50,9 +52,9 @@ O GP Finanças resolve um problema real: organizar receitas, despesas e metas de
 - **Helmet** ativado globalmente, aplicando headers HTTP de segurança recomendados
 - **Hash de senha com bcrypt** (nunca armazenada em texto plano)
 - **Validação de senha forte** via regex: mínimo 8 caracteres, exigindo maiúscula, minúscula, número e caractere especial
-- **Proteção contra user enumeration**: o endpoint de redefinição de senha sempre retorna a mesma mensagem genérica, independente do e-mail estar cadastrado ou não — evitando que alguém descubra quais e-mails existem na base
+- **Proteção contra user enumeration no reset de senha**: o endpoint `/api/auth/forgot-password` sempre retorna a mesma mensagem genérica, independentemente de o e-mail estar cadastrado ou não (no `/register`, o retorno explícito de e-mail já cadastrado foi mantido como trade-off de usabilidade/UX)
 - **Rate limiting diferenciado**: limite mais restritivo nas rotas de autenticação (10 req/min) do que nas demais rotas da API (50 req/5min), reduzindo a superfície de ataques de força bruta
-- **CORS restrito por ambiente**: em produção, aceita apenas a origin configurada em `FRONTEND_URL`; em desenvolvimento, libera as portas locais comuns
+- **CORS restrito por ambiente**: em produção, aceita apenas as origens autorizadas (`FRONTEND_URL` e a própria URL do serviço no Render via `RENDER_EXTERNAL_URL` / `BACKEND_URL`, permitindo o uso do Swagger interativo na demo ao vivo); em desenvolvimento, libera as portas locais comuns
 
 ## 🛠️ Tecnologias Utilizadas
 
@@ -73,8 +75,8 @@ O GP Finanças resolve um problema real: organizar receitas, despesas e metas de
 
 ```bash
 # Clone o repositório
-git clone https://github.com/seu-usuario/gp-financas.git
-cd gp-financas
+git clone https://github.com/elisangelaprins/gp-financas.git
+cd gp-financas/backend
 
 # Instale as dependências
 npm install
@@ -92,6 +94,12 @@ npm run dev
 
 O servidor sobe em `http://localhost:3000`.
 
+**Alternativa com Docker Compose** (a partir da raiz do repositório, após criar o `backend/.env`):
+
+```bash
+docker compose up --build
+```
+
 <details>
 <summary><strong>📋 Variáveis de ambiente necessárias</strong></summary>
 
@@ -107,7 +115,7 @@ O servidor sobe em `http://localhost:3000`.
 | `EMAIL_FROM` | Remetente exibido nos e-mails enviados |
 | `FRONTEND_URL` | URL usada para montar o link de redefinição de senha e liberada no CORS em produção |
 
-Veja o formato completo em [`.env.example`](./.env.example).
+Veja o formato completo em [`backend/.env.example`](./backend/.env.example).
 
 </details>
 
@@ -119,21 +127,22 @@ Com o servidor rodando, a documentação completa da API está disponível em:
 http://localhost:3000/api-docs
 ```
 
-Todas as **16 rotas** da API estão mapeadas com parâmetros, exemplos de corpo de requisição e possíveis respostas, organizadas por módulo (Autenticação, Transações, Categorias, Orçamentos, Dashboard e Exportação). É possível testar as requisições diretamente pela interface do Swagger UI.
+Todas as **23 rotas** da API estão mapeadas com parâmetros, exemplos de corpo de requisição e possíveis respostas, organizadas por módulo (Autenticação, Transações, Categorias, Orçamentos, Dashboard e Exportação). É possível testar as requisições diretamente pela interface do Swagger UI.
 
 <p align="center">
-    <img src="./backend/docs/images/swagger-ui.png.png" alt="Swagger UI" width="700" />
+    <img src="./backend/docs/images/swagger-ui.png" alt="Swagger UI" width="700" />
 </p>
 
 ## 🧪 Testes
 
 ```bash
+cd backend
 npm test
 ```
 
-**✅ 33/33 testes passando (100%)** — suíte automatizada com **Jest + Supertest** cobrindo:
+**✅ 34/34 testes passando (100%)** — suíte automatizada com **Jest + Supertest** cobrindo:
 
-- Fluxos de autenticação (registro, login, credenciais inválidas, e-mail duplicado)
+- Fluxos de autenticação (registro, login, credenciais inválidas, e-mail duplicado e proteção contra user enumeration no reset de senha)
 - CRUD completo de transações, categorias e orçamentos
 - Regras de negócio (orçamento duplicado → 409, exclusão de categoria padrão → 403)
 - Acesso negado sem autenticação (401) nos módulos de transações, dashboard e exportação
@@ -147,7 +156,7 @@ Cada módulo cria e limpa seus próprios dados de teste automaticamente (`before
 
 ## 📮 Testando a API (Postman)
 
-Uma coleção completa está disponível em [`GP - Finanças.postman_collection.json`](./GP%20-%20Finanças.postman_collection.json), organizada em 7 módulos: Autenticação, Transações, Categorias, Orçamentos, Dashboard, Exportações e Redefinir Senha.
+Uma coleção completa está disponível em [`backend/GP - Finanças.postman_collection.json`](./backend/GP%20-%20Finanças.postman_collection.json), organizada em 7 módulos: Autenticação, Transações, Categorias, Orçamentos, Dashboard, Exportações e Redefinir Senha.
 
 Basta importar no Postman e configurar a variável `baseUrl` (padrão: `http://localhost:3000`).
 
@@ -196,37 +205,40 @@ Basta importar no Postman e configurar a variável `baseUrl` (padrão: `http://l
 <br>
 
 ```
-src/
-├── config/            # Conexão com Prisma/MongoDB
-├── controllers/        # Regras de negócio de cada módulo
-├── docs/
-│   └── swagger.yaml     # Especificação OpenAPI da API
-├── middlewares/         # Autenticação, rate limiting e tratamento de erros
-├── routes/              # Definição das rotas da API
-├── services/             # Envio de e-mail (Nodemailer)
-├── utils/                # Helpers de autenticação, CSV e PDF
-└── index.ts               # Ponto de entrada da aplicação
-
-prisma/
-└── schema.prisma        # Modelagem do banco de dados
-
-tests/
-├── auth.test.ts
-├── transactions.test.ts
-├── categories.test.ts
-├── budgets.test.ts
-├── dashboard.test.ts
-├── export.test.ts
-└── helpers/
-    └── auth.helper.ts    # Helper de criação/limpeza de usuário de teste
+gp-financas/
+├── backend/
+│   ├── src/
+│   │   ├── config/          # Conexão com Prisma/MongoDB
+│   │   ├── controllers/     # Regras de negócio de cada módulo
+│   │   ├── docs/
+│   │   │   └── swagger.yaml # Especificação OpenAPI da API
+│   │   ├── middlewares/     # Autenticação, rate limiting e tratamento de erros
+│   │   ├── routes/          # Definição das rotas da API
+│   │   ├── services/        # Envio de e-mail (Nodemailer)
+│   │   ├── utils/           # Helpers de autenticação, CSV e PDF
+│   │   └── index.ts         # Ponto de entrada da aplicação
+│   ├── prisma/
+│   │   └── schema.prisma    # Modelagem do banco de dados
+│   ├── tests/
+│   │   ├── auth.test.ts
+│   │   ├── transactions.test.ts
+│   │   ├── categories.test.ts
+│   │   ├── budgets.test.ts
+│   │   ├── dashboard.test.ts
+│   │   ├── export.test.ts
+│   │   └── helpers/
+│   │       └── auth.helper.ts # Helper de criação/limpeza de usuário de teste
+│   ├── Dockerfile
+│   └── .env.example
+└── docker-compose.yml
 ```
 
 </details>
 
 ## 🛣️ Roadmap
 
-- [ ] Front-end (React)
-- [ ] Expandir cobertura de testes para novos módulos conforme o projeto crescer
+- [ ] Expandir cobertura de testes para cenários adicionais de borda e validação
+- [ ] Paginação e ordenação customizável na listagem de transações
 
 ## 📝 Licença
 

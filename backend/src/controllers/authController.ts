@@ -6,6 +6,8 @@ import crypto from 'crypto';
 import { sendPasswordReset } from '../services/email.service.js';
 
 const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/;
+const FORGOT_PASSWORD_MESSAGE =
+    "Se o e-mail informado estiver cadastrado, você receberá em instantes as instruções para redefinir a senha. O link é válido por 10 minutos.";
 
 export const register = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
@@ -116,7 +118,7 @@ export const forgotPassword = async (req: Request, res: Response, next: NextFunc
         });
 
         if (!user) {
-            return res.status(200).json({ message: "Se o e-mail estiver cadastrado, enviamos as instruções para redefinição de senha." });
+            res.status(200).json({ message: FORGOT_PASSWORD_MESSAGE });
             return;
         };
 
@@ -131,9 +133,11 @@ export const forgotPassword = async (req: Request, res: Response, next: NextFunc
             },
         });
 
-        await sendPasswordReset(user.email, resetToken, user.name);
+        sendPasswordReset(user.email, resetToken, user.name).catch(err => {
+            console.error("[forgot-password] falha ao enviar e-mail:", err);
+        });
 
-        res.json({ message: "Email de redefinição enviado com sucesso." });
+        res.status(200).json({ message: FORGOT_PASSWORD_MESSAGE });
 
     } catch (error) {
         next(error);
