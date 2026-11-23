@@ -55,7 +55,9 @@ paths:
         201:
           description: Usuário cadastrado com sucesso
         400:
-          description: E-mail já cadastrado, senha fora dos requisitos ou dados ausentes
+          description: Dados obrigatórios ausentes ou senha fora dos requisitos
+        409:
+          description: E-mail já cadastrado
 
   /api/auth/login:
     post:
@@ -79,7 +81,9 @@ paths:
         200:
           description: Login realizado com sucesso (retorna Cookie HTTP-Only)
         400:
-          description: Credenciais inválidas
+          description: E-mail e senha são obrigatórios
+        401:
+          description: Credenciais inválidas (e-mail ou senha incorretos)
 
   /api/auth/forgot-password:
     post:

@@ -74,16 +74,16 @@ describe('Módulo de Autenticação API', () => {
         expect(inexistente.body).toEqual(existente.body);
     });
 
-    it('Deve recusar cadastro se o e-mail já estiver registrado (Status 400)', async () => {
+    it('Deve recusar cadastro se o e-mail já estiver registrado (Status 409)', async () => {
         const res = await request(app)
             .post('/api/auth/register')
             .send(testUser);
 
-        expect(res.status).toBe(400);
+        expect(res.status).toBe(409);
         expect(res.body).toHaveProperty('error');
     });
 
-    it('Deve recusar login se a senha estiver incorreta (Status 400)', async () => {
+    it('Deve recusar login se a senha estiver incorreta (Status 401)', async () => {
         const res = await request(app)
             .post('/api/auth/login')
             .send({
@@ -91,7 +91,7 @@ describe('Módulo de Autenticação API', () => {
                 password: 'senhaIncorreta123',
             });
 
-        expect(res.status).toBe(400);
+        expect(res.status).toBe(401);
         expect(res.body).toHaveProperty('error');
     });
 

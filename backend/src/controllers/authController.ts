@@ -27,7 +27,7 @@ export const register = async (req: Request, res: Response, next: NextFunction):
         });
 
         if (userExists) {
-            res.status(400).json({ error: "Email já cadastrado." });
+            res.status(409).json({ error: "Email já cadastrado." });
             return;
         }
 
@@ -66,14 +66,14 @@ export const login = async (req: Request, res: Response, next: NextFunction): Pr
         });
 
         if (!user) {
-            res.status(400).json({ error: "Email ou senha incorretos." });
+            res.status(401).json({ error: "Email ou senha incorretos." });
             return;
         }
 
         const isMatch = await bcrypt.compare(req.body.password, user.password);
 
         if (!isMatch) {
-            res.status(400).json({ error: "Email ou senha incorretos." });
+            res.status(401).json({ error: "Email ou senha incorretos." });
             return;
         }
 
@@ -123,12 +123,13 @@ export const forgotPassword = async (req: Request, res: Response, next: NextFunc
         };
 
         const resetToken = crypto.randomBytes(32).toString('hex');
+        const resetTokenHash = crypto.createHash('sha256').update(resetToken).digest('hex');
         const resetExpires = new Date(Date.now() + 10 * 60 * 1000);
 
         await prisma.user.update({
             where: { id: user.id },
             data: {
-                resetToken,
+                resetToken: resetTokenHash,
                 resetExpires,
             },
         });
@@ -159,9 +160,11 @@ export const resetPassword = async (req: Request, res: Response, next: NextFunct
             return;
         };
 
+        const resetTokenHash = crypto.createHash('sha256').update(resetToken).digest('hex');
+
         const user = await prisma.user.findFirst({
             where: {
-                resetToken
+                resetToken: resetTokenHash
             }
         });
 
