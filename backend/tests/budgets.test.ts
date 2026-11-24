@@ -10,6 +10,7 @@ describe('Módulo de Orçamentos API', () => {
     let categoryId: string;
     let userEmail: string;
     let budgetId: string;
+    let createdDefaultCategory = false;
 
     beforeAll(async () => {
         const context = await createTestUserAndLogin(app, 'budget');
@@ -25,12 +26,16 @@ describe('Módulo de Orçamentos API', () => {
                     isDefault: true,
                 },
             });
+            createdDefaultCategory = true;
         }
         categoryId = category.id;
     });
 
     afterAll(async () => {
         await cleanupTestUser(userEmail);
+        if (createdDefaultCategory && categoryId) {
+            await prisma.category.deleteMany({ where: { id: categoryId } });
+        }
         await prisma.$disconnect();
     });
 

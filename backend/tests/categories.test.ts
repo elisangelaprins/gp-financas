@@ -10,6 +10,7 @@ describe('Módulo de Categorias API', () => {
     let userEmail: string;
     let defaultCategoryId: string;
     let customCategoryId: string;
+    let createdDefaultCategory = false;
 
     beforeAll(async () => {
         const context = await createTestUserAndLogin(app, 'category');
@@ -21,6 +22,7 @@ describe('Módulo de Categorias API', () => {
             defaultCategory = await prisma.category.create({
                 data: { name: 'Categoria Padrão Jest', isDefault: true },
             });
+            createdDefaultCategory = true;
         }
         defaultCategoryId = defaultCategory.id;
 
@@ -28,6 +30,9 @@ describe('Módulo de Categorias API', () => {
 
     afterAll(async () => {
         await cleanupTestUser(userEmail);
+        if (createdDefaultCategory && defaultCategoryId) {
+            await prisma.category.deleteMany({ where: { id: defaultCategoryId } });
+        }
         await prisma.$disconnect();
     });
 

@@ -9,6 +9,7 @@ describe('Módulo de transações API', () => {
     let categoryId: string;
     let transactionId: string;
     let userEmail: string;
+    let createdDefaultCategory = false;
 
     beforeAll(async () => {
         const context = await createTestUserAndLogin(app, 'transaction');
@@ -26,12 +27,16 @@ describe('Módulo de transações API', () => {
                     isDefault: true,
                 },
             });
+            createdDefaultCategory = true;
         }
         categoryId = category.id;
     });
 
     afterAll(async () => {
         await cleanupTestUser(userEmail);
+        if (createdDefaultCategory && categoryId) {
+            await prisma.category.deleteMany({ where: { id: categoryId } });
+        }
         await prisma.$disconnect();
     });
 
