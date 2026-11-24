@@ -202,12 +202,17 @@ paths:
           name: page
           schema:
             type: integer
-          description: Número da página (ex 1)
+            default: 1
+            minimum: 1
+          description: Número da página (padrão 1)
         - in: query
           name: limit
           schema:
             type: integer
-          description: Quantidade de itens por página (ex 10)
+            default: 20
+            minimum: 1
+            maximum: 100
+          description: Quantidade de itens por página (padrão 20, máximo 100)
         - in: query
           name: transactionType
           schema:

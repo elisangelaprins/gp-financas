@@ -26,7 +26,7 @@ Construída para simular um produto real de fintech, com autenticação segura v
 
 ---
 
-> 🚀 **Status:** API REST 100% funcional, testada (44/44 testes), containerizada com **Docker** (multi-stage build), validada via **CI no GitHub Actions** (lint, build e testes com MongoDB isolado) e com **CD no Render** (deploy automático acionado após aprovação do CI).
+> 🚀 **Status:** API REST 100% funcional, testada (44/44 testes), containerizada com **Docker** (multi-stage build), validada via **CI no GitHub Actions** (lint, build, testes com MongoDB isolado e build Docker) e publicada na nuvem (**Render**).
 >
 > 💡 **Nota sobre a Demo ao Vivo (Render):**
 > - **Cadastro e Login imediatos:** você pode criar uma conta em `/api/auth/register` e fazer login na hora em `/api/auth/login` diretamente pelo [Swagger Interativo](https://gp-financas.onrender.com/api-docs).

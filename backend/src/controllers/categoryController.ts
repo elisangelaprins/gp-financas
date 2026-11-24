@@ -2,7 +2,7 @@ import type { Request, Response, NextFunction } from 'express';
 import { getAuthUserId } from '../utils/auth.utils.js';
 import type { Prisma } from '@prisma/client';
 import prisma from '../config/db.js';
-import { createCategorySchema } from '../utils/validation.schemas.js';
+import { createCategorySchema, updateCategorySchema } from '../utils/validation.schemas.js';
 
 export const createCategory = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -62,7 +62,12 @@ export const updateCategory = async (req: Request, res: Response, next: NextFunc
     try {
         const userId = getAuthUserId(req);
         const { id } = req.params;
-        const { name, color, isBusiness } = req.body;
+        const parsed = updateCategorySchema.safeParse(req.body);
+        if (!parsed.success) {
+            res.status(400).json({ error: parsed.error.issues[0]?.message || "Dados inválidos." });
+            return;
+        }
+        const { name, color, isBusiness } = parsed.data;
         const updateData: Prisma.CategoryUncheckedUpdateInput = {};
 
         if (name) updateData.name = name;

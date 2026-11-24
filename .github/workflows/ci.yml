@@ -51,4 +51,7 @@ jobs:
         run: npm test
         env:
           DATABASE_URL: mongodb://127.0.0.1:27017/gp_financas_test?replicaSet=rs0&directConnection=true
-          JWT_SECRET: ci-test-jwt-secret-key
+          JWT_SECRET: ci-test-jwt-secret-key
+
+      - name: Validar build da imagem Docker
+        run: docker build -t gp-financas-backend .
