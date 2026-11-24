@@ -41,13 +41,13 @@ O GP Finanças resolve um problema real: organizar receitas, despesas e metas de
 
 | Módulo | O que faz |
 |---|---|
-| 🔐 **Autenticação** | Registro, login (JWT em cookie `httpOnly`) e redefinição de senha por e-mail com token expirável |
+| 🔐 **Autenticação** | Registro, login/logout (JWT em cookie `httpOnly`) e redefinição de senha por e-mail com token expirável |
 | 💸 **Transações** | CRUD de receitas/despesas com categoria, forma de pagamento e perfil PF/PJ |
 | 🏷️ **Categorias** | Categorias personalizadas por usuário + categorias padrão do sistema |
 | 🎯 **Orçamentos** | Metas de gasto por categoria/mês, com cálculo automático de percentual utilizado |
 | 📊 **Dashboard** | Resumo geral, totais por categoria, top 5 despesas e tendência mensal |
 | 📁 **Exportações** | Relatórios em **CSV** (compatível com Excel) e **PDF** (extrato formatado com totais) |
-| 📖 **Documentação** | Swagger/OpenAPI interativo disponível em `/api-docs`, com todas as 23 rotas mapeadas |
+| 📖 **Documentação** | Swagger/OpenAPI interativo disponível em `/api-docs`, com todas as 24 rotas mapeadas |
 
 ## 🔒 Segurança
 
@@ -118,6 +118,8 @@ docker compose up --build
 | `SMTP_USER` / `SMTP_PASS` | Credenciais do provedor SMTP |
 | `EMAIL_FROM` | Remetente exibido nos e-mails enviados |
 | `FRONTEND_URL` | URL usada para montar o link de redefinição de senha e liberada no CORS em produção |
+| `NODE_ENV` | *(Opcional)* Ambiente de execução (`development`, `production` ou `test`) |
+| `BACKEND_URL` / `RENDER_EXTERNAL_URL` | *(Opcionais)* URL pública da própria API em produção (liberada no CORS para uso do Swagger UI ao vivo) |
 
 Veja o formato completo em [`backend/.env.example`](./backend/.env.example).
 
@@ -131,7 +133,7 @@ Com o servidor rodando, a documentação completa da API está disponível em:
 http://localhost:3000/api-docs
 ```
 
-Todas as **23 rotas** da API estão mapeadas com parâmetros, exemplos de corpo de requisição e possíveis respostas, organizadas por módulo (Autenticação, Transações, Categorias, Orçamentos, Dashboard e Exportação). É possível testar as requisições diretamente pela interface do Swagger UI.
+Todas as **24 rotas** da API estão mapeadas com parâmetros, exemplos de corpo de requisição e possíveis respostas, organizadas por módulo (Autenticação, Transações, Categorias, Orçamentos, Dashboard e Exportação). É possível testar as requisições diretamente pela interface do Swagger UI.
 
 <p align="center">
     <img src="./backend/docs/images/swagger-ui.png" alt="Swagger UI" width="700" />
@@ -177,6 +179,7 @@ Basta importar no Postman e configurar a variável `baseUrl` (padrão: `http://l
 |--------|------|-----------|:---:|
 | POST | `/api/auth/register` | Cadastrar usuário | ❌ |
 | POST | `/api/auth/login` | Login | ❌ |
+| POST | `/api/auth/logout` | Logout (limpa cookie `httpOnly`) | ❌ |
 | POST | `/api/auth/forgot-password` | Solicitar redefinição de senha | ❌ |
 | POST | `/api/auth/reset-password` | Redefinir senha com token | ❌ |
 | GET | `/api/auth/verify` | Verificar sessão autenticada | ✅ |
