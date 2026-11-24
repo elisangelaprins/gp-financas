@@ -221,7 +221,7 @@ gp-financas/
 │   │   ├── middlewares/     # Autenticação, rate limiting e tratamento de erros
 │   │   ├── routes/          # Definição das rotas da API
 │   │   ├── services/        # Envio de e-mail (Nodemailer)
-│   │   ├── utils/           # Helpers de autenticação, CSV e PDF
+│   │   ├── utils/           # Schemas de validação (Zod) e helpers de autenticação, CSV e PDF
 │   │   └── index.ts         # Ponto de entrada da aplicação
 │   ├── prisma/
 │   │   └── schema.prisma    # Modelagem do banco de dados
