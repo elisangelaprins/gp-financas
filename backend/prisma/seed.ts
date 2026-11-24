@@ -12,38 +12,7 @@ const DEFAULT_CATEGORIES = [
     { name: 'Tecnologia', color: '#3B82F6', isBusiness: true },
 ];
 
-const TEST_CATEGORY_NAMES = [
-    'Categoria Teste Jest',
-    'Categoria Test Jest',
-    'Categoria Padrão Jest',
-    'Categoria Orçamento Jest',
-];
-
 async function main() {
-    // 1. Remove usuário de teste da demo ao vivo (se existir)
-    const demoTestUser = await prisma.user.findUnique({
-        where: { email: 'teste.render.live@exemplo.com' },
-    });
-    if (demoTestUser) {
-        await prisma.transaction.deleteMany({ where: { userId: demoTestUser.id } });
-        await prisma.budget.deleteMany({ where: { userId: demoTestUser.id } });
-        await prisma.category.deleteMany({ where: { userId: demoTestUser.id, isDefault: false } });
-        await prisma.user.delete({ where: { id: demoTestUser.id } });
-    }
-
-    // 2. Limpa categorias residuais de testes antigos (removendo vínculos órfãos antes, se houver)
-    const testCategories = await prisma.category.findMany({
-        where: { name: { in: TEST_CATEGORY_NAMES } },
-    });
-
-    if (testCategories.length > 0) {
-        const testCatIds = testCategories.map((c) => c.id);
-        await prisma.transaction.deleteMany({ where: { categoryId: { in: testCatIds } } });
-        await prisma.budget.deleteMany({ where: { categoryId: { in: testCatIds } } });
-        await prisma.category.deleteMany({ where: { id: { in: testCatIds } } });
-    }
-
-    // 3. Cria ou atualiza as categorias padrão do sistema (convergência garantida)
     for (const cat of DEFAULT_CATEGORIES) {
         const existing = await prisma.category.findFirst({
             where: { name: cat.name, isDefault: true },
