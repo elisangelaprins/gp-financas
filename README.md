@@ -26,7 +26,7 @@ Construída para simular um produto real de fintech, com autenticação segura v
 
 ---
 
-> 🚀 **Status:** API REST 100% funcional, testada (43/43 testes), containerizada com **Docker**, integrada com **CI/CD (GitHub Actions)** e publicada na nuvem (**Render**).
+> 🚀 **Status:** API REST 100% funcional, testada (43/43 testes), containerizada com **Docker** (multi-stage build), validada via **CI no GitHub Actions** (lint, build e testes com MongoDB isolado) e com deploy contínuo no **Render**.
 >
 > 💡 **Nota sobre a Demo ao Vivo (Render):** Por estar hospedada no plano gratuito do Render, a primeira requisição após um período de inatividade pode levar de **30 a 50 segundos** (*cold start*) até o container acordar. No ambiente de demonstração, o envio de e-mail de recuperação de senha utiliza SMTP de testes (Mailtrap), com fallback do link no log do servidor.
 
@@ -71,7 +71,7 @@ O GP Finanças resolve um problema real: organizar receitas, despesas e metas de
 
 ## ⚙️ Como Rodar Localmente
 
-**Pré-requisitos:** Node.js 18+, uma instância MongoDB ([Atlas](https://www.mongodb.com/atlas) funciona bem) e uma conta SMTP de testes (recomendado: [Mailtrap](https://mailtrap.io)).
+**Pré-requisitos:** Node.js 20+, uma instância MongoDB ([Atlas](https://www.mongodb.com/atlas) funciona bem) e uma conta SMTP de testes (recomendado: [Mailtrap](https://mailtrap.io)).
 
 ```bash
 # Clone o repositório
