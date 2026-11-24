@@ -13,7 +13,7 @@ import {
 
 const FORGOT_PASSWORD_MESSAGE =
     "Se o e-mail informado estiver cadastrado, você receberá em instantes as instruções para redefinir a senha. O link é válido por 10 minutos.";
-const DUMMY_PASSWORD_HASH = "$2b$10$CwTycUXWue0Thq9StjUM0uJ8p4K1.X8G3.p4K1.X8G3.p4K1.X8G2";
+const DUMMY_PASSWORD_HASH = bcrypt.hashSync('senha-descartavel', 10);
 
 export const register = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
