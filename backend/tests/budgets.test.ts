@@ -99,4 +99,66 @@ describe('Módulo de Orçamentos API', () => {
         
     });
 
+    it('Deve recusar orçamento com limite negativo ou mês inválido (Status 400)', async () => {
+        const resNegative = await request(app)
+            .post('/api/budgets')
+            .set('Cookie', authCookie)
+            .send({
+                amountLimit: -500,
+                month: 7,
+                year: 2026,
+                categoryId: categoryId,
+            });
+
+        expect(resNegative.status).toBe(400);
+
+        const resInvalidMonth = await request(app)
+            .post('/api/budgets')
+            .set('Cookie', authCookie)
+            .send({
+                amountLimit: 1000,
+                month: 13,
+                year: 2026,
+                categoryId: categoryId,
+            });
+
+        expect(resInvalidMonth.status).toBe(400);
+    });
+
+    it('Não deve permitir que o Usuário A leia, edite ou exclua orçamento do Usuário B (Status 403)', async () => {
+        const userB = await createTestUserAndLogin(app, 'budget.userb');
+
+        try {
+            const createRes = await request(app)
+                .post('/api/budgets')
+                .set('Cookie', userB.authCookie)
+                .send({
+                    amountLimit: 1800,
+                    month: 8,
+                    year: 2026,
+                    categoryId: categoryId,
+                });
+
+            const budgetUserBId = createRes.body.id;
+
+            const listRes = await request(app)
+                .get('/api/budgets?month=8&year=2026')
+                .set('Cookie', authCookie);
+            expect(listRes.body.some((b: { id: string }) => b.id === budgetUserBId)).toBe(false);
+
+            const updateRes = await request(app)
+                .put(`/api/budgets/${budgetUserBId}`)
+                .set('Cookie', authCookie)
+                .send({ amountLimit: 9999 });
+            expect(updateRes.status).toBe(403);
+
+            const deleteRes = await request(app)
+                .delete(`/api/budgets/${budgetUserBId}`)
+                .set('Cookie', authCookie);
+            expect(deleteRes.status).toBe(403);
+        } finally {
+            await cleanupTestUser(userB.testUser.email);
+        }
+    });
+
 });

@@ -3,18 +3,26 @@ import { getAuthUserId } from '../utils/auth.utils.js';
 import prisma from '../config/db.js';
 import type { Prisma } from '@prisma/client';
 
+const VALID_PAYMENT_METHODS = ['PIX', 'CREDIT_CARD', 'DEBIT_CARD', 'CASH', 'BOLETO'];
+const VALID_TRANSACTION_TYPES = ['INCOME', 'EXPENSE'];
+
 export const createTransaction = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const userId = getAuthUserId(req);
         const { description, amount, date, paymentMethod, transactionType, categoryId, note, isBusiness, paymentDate, installments } = req.body;
 
-        if (!description || !amount || !date || !paymentMethod || !transactionType || !categoryId) {
+        if (!description || amount === undefined || amount === null || !date || !paymentMethod || !transactionType || !categoryId) {
             res.status(400).json({ error: "Todos os campos são obrigatórios." });
             return;
         }
 
-        if (amount <= 0) {
+        if (Number(amount) <= 0 || Number.isNaN(Number(amount))) {
             res.status(400).json({ error: "O valor da transação deve ser maior que zero." });
+            return;
+        }
+
+        if (!VALID_PAYMENT_METHODS.includes(paymentMethod) || !VALID_TRANSACTION_TYPES.includes(transactionType)) {
+            res.status(400).json({ error: "Método de pagamento ou tipo de transação inválido." });
             return;
         }
 
@@ -87,7 +95,7 @@ export const updateTransaction = async (req: Request, res: Response, next: NextF
 
         if (note !== undefined) updateData.note = note;
 
-        if (amount !== undefined && amount <= 0) {
+        if (amount !== undefined && (Number(amount) <= 0 || Number.isNaN(Number(amount)))) {
             res.status(400).json({ error: "O valor da transação deve ser maior que zero." });
             return;
         }
@@ -96,9 +104,21 @@ export const updateTransaction = async (req: Request, res: Response, next: NextF
 
         if (date) updateData.date = new Date(date);
 
-        if (paymentMethod) updateData.paymentMethod = paymentMethod;
+        if (paymentMethod) {
+            if (!VALID_PAYMENT_METHODS.includes(paymentMethod)) {
+                res.status(400).json({ error: "Método de pagamento inválido." });
+                return;
+            }
+            updateData.paymentMethod = paymentMethod;
+        }
 
-        if (transactionType) updateData.transactionType = transactionType;
+        if (transactionType) {
+            if (!VALID_TRANSACTION_TYPES.includes(transactionType)) {
+                res.status(400).json({ error: "Tipo de transação inválido." });
+                return;
+            }
+            updateData.transactionType = transactionType;
+        }
 
         if (categoryId) updateData.categoryId = categoryId;
 

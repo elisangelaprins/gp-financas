@@ -141,12 +141,17 @@ export const updateBudget = async (req: Request, res: Response, next: NextFuncti
         const { id } = req.params;
         const { description, amountLimit } = req.body;
 
-        const existingBudget = await prisma.budget.findFirst({
-            where: { id: String(id), userId }
+        const existingBudget = await prisma.budget.findUnique({
+            where: { id: String(id) }
         });
 
         if (!existingBudget) {
             res.status(404).json({ message: "Orçamento não encontrado." })
+            return;
+        }
+
+        if (existingBudget.userId !== userId) {
+            res.status(403).json({ error: "Você não tem permissão para atualizar este orçamento." });
             return;
         }
 

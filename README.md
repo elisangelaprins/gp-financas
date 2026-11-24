@@ -26,7 +26,7 @@ Construída para simular um produto real de fintech, com autenticação segura v
 
 ---
 
-> 🚀 **Status:** API REST 100% funcional, testada (34/34 testes), containerizada com **Docker**, integrada com **CI/CD (GitHub Actions)** e publicada na nuvem (**Render**).
+> 🚀 **Status:** API REST 100% funcional, testada (43/43 testes), containerizada com **Docker**, integrada com **CI/CD (GitHub Actions)** e publicada na nuvem (**Render**).
 >
 > 💡 **Nota sobre a Demo ao Vivo (Render):** Por estar hospedada no plano gratuito do Render, a primeira requisição após um período de inatividade pode levar de **30 a 50 segundos** (*cold start*) até o container acordar. No ambiente de demonstração, o envio de e-mail de recuperação de senha utiliza SMTP de testes (Mailtrap), com fallback do link no log do servidor.
 
@@ -140,10 +140,12 @@ cd backend
 npm test
 ```
 
-**✅ 34/34 testes passando (100%)** — suíte automatizada com **Jest + Supertest** cobrindo:
+**✅ 43/43 testes passando (100%)** — suíte automatizada com **Jest + Supertest** cobrindo:
 
-- Fluxos de autenticação (registro, login, credenciais inválidas, e-mail duplicado e proteção contra user enumeration no reset de senha)
+- Fluxos de autenticação (registro, login, credenciais inválidas → 401, e-mail duplicado → 409, reset de senha com token válido/expirado e proteção contra user enumeration)
 - CRUD completo de transações, categorias e orçamentos
+- Isolamento de dados entre usuários (usuário A bloqueado com 403 ao tentar editar/excluir transações, categorias ou orçamentos do usuário B)
+- Validação de entradas inválidas (ID malformado, enum inválido, valores negativos e mês fora de 1–12 → 400)
 - Regras de negócio (orçamento duplicado → 409, exclusão de categoria padrão → 403)
 - Acesso negado sem autenticação (401) nos módulos de transações, dashboard e exportação
 - Exportação de relatórios em CSV e PDF

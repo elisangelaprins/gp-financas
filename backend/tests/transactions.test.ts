@@ -133,4 +133,83 @@ describe('Módulo de transações API', () => {
         expect(res.status).toBe(401);
     });
 
+    it('Deve recusar transação com valor negativo (Status 400)', async () => {
+        const res = await request(app)
+            .post('/api/transactions')
+            .set('Cookie', authCookie)
+            .send({
+                description: 'Valor Inválido',
+                amount: -100,
+                date: '2026-07-31T00:00:00.000Z',
+                paymentMethod: 'PIX',
+                transactionType: 'EXPENSE',
+                categoryId: categoryId,
+            });
+
+        expect(res.status).toBe(400);
+    });
+
+    it('Deve recusar transação com enum inválido (Status 400)', async () => {
+        const res = await request(app)
+            .post('/api/transactions')
+            .set('Cookie', authCookie)
+            .send({
+                description: 'Enum Inválido',
+                amount: 100,
+                date: '2026-07-31T00:00:00.000Z',
+                paymentMethod: 'METODO_INEXISTENTE',
+                transactionType: 'EXPENSE',
+                categoryId: categoryId,
+            });
+
+        expect(res.status).toBe(400);
+    });
+
+    it('Deve retornar 400 (e não 500) ao enviar um ID malformado (Status 400)', async () => {
+        const res = await request(app)
+            .put('/api/transactions/id-malformado-123')
+            .set('Cookie', authCookie)
+            .send({ description: 'Teste ID Inválido' });
+
+        expect(res.status).toBe(400);
+    });
+
+    it('Não deve permitir que o Usuário A leia, edite ou exclua transação do Usuário B (Status 403)', async () => {
+        const userB = await createTestUserAndLogin(app, 'transaction.userb');
+
+        try {
+            const createRes = await request(app)
+                .post('/api/transactions')
+                .set('Cookie', userB.authCookie)
+                .send({
+                    description: 'Transação Privada Usuário B',
+                    amount: 300,
+                    date: '2026-07-31T00:00:00.000Z',
+                    paymentMethod: 'PIX',
+                    transactionType: 'EXPENSE',
+                    categoryId: categoryId,
+                });
+
+            const txUserBId = createRes.body.id;
+
+            const listRes = await request(app)
+                .get('/api/transactions')
+                .set('Cookie', authCookie);
+            expect(listRes.body.some((t: { id: string }) => t.id === txUserBId)).toBe(false);
+
+            const updateRes = await request(app)
+                .put(`/api/transactions/${txUserBId}`)
+                .set('Cookie', authCookie)
+                .send({ description: 'Tentativa de invasão' });
+            expect(updateRes.status).toBe(403);
+
+            const deleteRes = await request(app)
+                .delete(`/api/transactions/${txUserBId}`)
+                .set('Cookie', authCookie);
+            expect(deleteRes.status).toBe(403);
+        } finally {
+            await cleanupTestUser(userB.testUser.email);
+        }
+    });
+
 });

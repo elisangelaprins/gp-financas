@@ -1,5 +1,6 @@
 import { describe, it, expect, afterAll, beforeAll } from '@jest/globals';
 import request from 'supertest';
+import crypto from 'crypto';
 import app from '../src/index.js';
 import prisma from '../src/config/db.js';
 import { cleanupTestUser } from './helpers/auth.helper.js';
@@ -93,6 +94,56 @@ describe('Módulo de Autenticação API', () => {
 
         expect(res.status).toBe(401);
         expect(res.body).toHaveProperty('error');
+    });
+
+    it('Deve redefinir a senha com sucesso quando o token for válido (Status 200)', async () => {
+        const rawToken = crypto.randomBytes(32).toString('hex');
+        const hashedToken = crypto.createHash('sha256').update(rawToken).digest('hex');
+
+        await prisma.user.update({
+            where: { email: testUser.email },
+            data: {
+                resetToken: hashedToken,
+                resetExpires: new Date(Date.now() + 10 * 60 * 1000),
+            },
+        });
+
+        const res = await request(app)
+            .post('/api/auth/reset-password')
+            .send({
+                resetToken: rawToken,
+                newPassword: 'NovaSenhaSegura@123',
+            });
+
+        expect(res.status).toBe(200);
+        expect(res.body).toHaveProperty('message', 'Senha atualizada com sucesso');
+
+        const updatedUser = await prisma.user.findUnique({ where: { email: testUser.email } });
+        expect(updatedUser?.resetToken).toBeNull();
+        expect(updatedUser?.resetExpires).toBeNull();
+    });
+
+    it('Deve recusar redefinição de senha quando o token estiver expirado (Status 400)', async () => {
+        const expiredRawToken = crypto.randomBytes(32).toString('hex');
+        const expiredHash = crypto.createHash('sha256').update(expiredRawToken).digest('hex');
+
+        await prisma.user.update({
+            where: { email: testUser.email },
+            data: {
+                resetToken: expiredHash,
+                resetExpires: new Date(Date.now() - 60 * 1000),
+            },
+        });
+
+        const res = await request(app)
+            .post('/api/auth/reset-password')
+            .send({
+                resetToken: expiredRawToken,
+                newPassword: 'OutraSenhaSegura@123',
+            });
+
+        expect(res.status).toBe(400);
+        expect(res.body).toHaveProperty('message', 'Dados inválidos ou expirados');
     });
 
 });
