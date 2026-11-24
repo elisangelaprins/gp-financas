@@ -112,6 +112,16 @@ describe('Módulo de transações API', () => {
         expect(Array.isArray(res.body)).toBe(true);
         expect(res.body.length).toBe(1);
         expect(res.body[0].transactionType).toBe('EXPENSE');
+
+        const resPageOnly = await request(app)
+            .get('/api/transactions?page=1')
+            .set('Cookie', authCookie);
+        expect(resPageOnly.status).toBe(200);
+
+        const resOverLimit = await request(app)
+            .get('/api/transactions?limit=101')
+            .set('Cookie', authCookie);
+        expect(resOverLimit.status).toBe(400);
     });
 
     it('Deve atualizar uma transação existente (Status 200)', async () => {
