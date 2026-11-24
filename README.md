@@ -89,8 +89,9 @@ npm install
 cp .env.example .env
 # edite o .env com suas credenciais (veja tabela abaixo)
 
-# Gere o Prisma Client
+# Gere o Prisma Client e popule as categorias padrão do sistema
 npx prisma generate
+npm run seed
 
 # Inicie o servidor em modo desenvolvimento
 npm run dev
@@ -227,7 +228,8 @@ gp-financas/
 │   │   ├── utils/           # Schemas de validação (Zod) e helpers de autenticação, CSV e PDF
 │   │   └── index.ts         # Ponto de entrada da aplicação
 │   ├── prisma/
-│   │   └── schema.prisma    # Modelagem do banco de dados
+│   │   ├── schema.prisma    # Modelagem do banco de dados
+│   │   └── seed.ts          # Seed das categorias padrão do sistema
 │   ├── tests/
 │   │   ├── auth.test.ts
 │   │   ├── transactions.test.ts
