@@ -116,9 +116,10 @@ export const getTransactions = async (req: Request, res: Response, next: NextFun
             include: {
                 category: true
             },
-            orderBy: {
-                date: 'desc'
-            },
+            orderBy: [
+                { date: 'desc' },
+                { id: 'desc' }
+            ],
             skip,
             take
         });
