@@ -2,27 +2,17 @@ import type { Request, Response, NextFunction } from "express";
 import { getAuthUserId } from "../utils/auth.utils.js";
 import type { Prisma } from '@prisma/client';
 import prisma from "../config/db.js";
+import { createBudgetSchema } from "../utils/validation.schemas.js";
 
 export const createBudget = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const userId = getAuthUserId(req);
-        const { amountLimit, description, month, year, categoryId } = req.body;
-
-        if (!categoryId || amountLimit === undefined || amountLimit === null || month === undefined || month === null || !year) {
-            res.status(400).json({ message: "Por favor, preencha todos os campos obrigatórios: categoria, limite, mês e ano." });
+        const parsed = createBudgetSchema.safeParse(req.body);
+        if (!parsed.success) {
+            res.status(400).json({ message: parsed.error.issues[0]?.message || "Dados inválidos." });
             return;
         }
-
-        if (Number(amountLimit) <= 0 || Number.isNaN(Number(amountLimit))) {
-            res.status(400).json({ message: "O limite do orçamento deve ser maior que zero." });
-            return;
-        }
-
-        const numericMonth = Number(month);
-        if (!Number.isInteger(numericMonth) || numericMonth < 1 || numericMonth > 12) {
-            res.status(400).json({ message: "O mês deve ser um valor inteiro entre 1 e 12." });
-            return;
-        }
+        const { amountLimit, description, month, year, categoryId } = parsed.data;
 
         const category = await prisma.category.findFirst({
             where: {

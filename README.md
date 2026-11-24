@@ -26,9 +26,12 @@ Construída para simular um produto real de fintech, com autenticação segura v
 
 ---
 
-> 🚀 **Status:** API REST 100% funcional, testada (43/43 testes), containerizada com **Docker** (multi-stage build), validada via **CI no GitHub Actions** (lint, build e testes com MongoDB isolado) e com deploy contínuo no **Render**.
+> 🚀 **Status:** API REST 100% funcional, testada (44/44 testes), containerizada com **Docker** (multi-stage build), validada via **CI no GitHub Actions** (lint, build e testes com MongoDB isolado) e com **CD no Render** (deploy automático acionado após aprovação do CI).
 >
-> 💡 **Nota sobre a Demo ao Vivo (Render):** Por estar hospedada no plano gratuito do Render, a primeira requisição após um período de inatividade pode levar de **30 a 50 segundos** (*cold start*) até o container acordar. No ambiente de demonstração, o envio de e-mail de recuperação de senha utiliza SMTP de testes (Mailtrap), com fallback do link no log do servidor.
+> 💡 **Nota sobre a Demo ao Vivo (Render):**
+> - **Cadastro e Login imediatos:** você pode criar uma conta em `/api/auth/register` e fazer login na hora em `/api/auth/login` diretamente pelo [Swagger Interativo](https://gp-financas.onrender.com/api-docs).
+> - **Cold Start:** por estar no plano gratuito do Render, a primeira requisição após inatividade pode levar de **30 a 50 segundos** até o container iniciar.
+> - **E-mails:** o fluxo de recuperação de senha (`forgot-password`) envia os e-mails para uma caixa de entrada de testes (Mailtrap).
 
 ## 🎯 Sobre o Projeto
 
@@ -60,6 +63,7 @@ O GP Finanças resolve um problema real: organizar receitas, despesas e metas de
 
 - **Node.js** + **Express** (TypeScript)
 - **Prisma ORM** com **MongoDB**
+- **Zod** para validação de schemas e dados de entrada
 - **JWT** + Cookies HTTP-only para autenticação
 - **bcryptjs** para hash de senhas
 - **Helmet** para headers de segurança HTTP
@@ -140,10 +144,10 @@ cd backend
 npm test
 ```
 
-**✅ 43/43 testes passando (100%)** — suíte automatizada com **Jest + Supertest** cobrindo:
+**✅ 44/44 testes passando (100%)** — suíte automatizada com **Jest + Supertest** cobrindo:
 
 - Fluxos de autenticação (registro, login, credenciais inválidas → 401, e-mail duplicado → 409, reset de senha com token válido/expirado e proteção contra user enumeration)
-- CRUD completo de transações, categorias e orçamentos
+- CRUD completo de transações (com paginação e filtros), categorias e orçamentos
 - Isolamento de dados entre usuários (usuário A bloqueado com 403 ao tentar editar/excluir transações, categorias ou orçamentos do usuário B)
 - Validação de entradas inválidas (ID malformado, enum inválido, valores negativos e mês fora de 1–12 → 400)
 - Regras de negócio (orçamento duplicado → 409, exclusão de categoria padrão → 403)
@@ -158,7 +162,7 @@ Cada módulo cria e limpa seus próprios dados de teste automaticamente (`before
 
 ## 📮 Testando a API (Postman)
 
-Uma coleção completa está disponível em [`backend/GP - Finanças.postman_collection.json`](./backend/GP%20-%20Finanças.postman_collection.json), organizada em 7 módulos: Autenticação, Transações, Categorias, Orçamentos, Dashboard, Exportações e Redefinir Senha.
+Uma coleção completa está disponível em [`backend/GP - Finanças.postman_collection.json`](./backend/GP%20-%20Finanças.postman_collection.json), organizada nos 6 módulos da API: Autenticação (incluindo redefinição de senha), Transações, Categorias, Orçamentos, Dashboard e Exportação de Relatórios.
 
 Basta importar no Postman e configurar a variável `baseUrl` (padrão: `http://localhost:3000`).
 
@@ -237,10 +241,12 @@ gp-financas/
 
 </details>
 
-## 🛣️ Roadmap
+## 🧠 Decisões Técnicas e de Escopo
 
-- [ ] Expandir cobertura de testes para cenários adicionais de borda e validação
-- [ ] Paginação e ordenação customizável na listagem de transações
+- **Escopo focado em Back-end (`/api-docs` como interface):** O repositório é dedicado exclusivamente à arquitetura e engenharia da API REST. Toda a exploração e validação dos endpoints pode ser feita visualmente pela interface interativa do **Swagger UI** (`/api-docs`) ou pela coleção do **Postman**.
+- **Valores monetários em `Float` (Trade-off documentado):** Os campos de valor (`amount` e `amountLimit`) utilizam `Float` no Prisma/MongoDB para simplificar a serialização direta em JSON e as operações nativas de agregação (`_sum`) no dashboard, com arredondamento controlado na aplicação (`.toFixed(2)`). Em um cenário de core bancário em produção, a evolução natural mapeada é armazenar os valores em **centavos como inteiros (`Int`)**, eliminando qualquer imprecisão de ponto flutuante (IEEE 754).
+- **Segurança de Tokens (JWT em Cookie `httpOnly` + Reset com SHA-256):** O token de sessão trafega apenas em cookie `httpOnly` (inacessível via JavaScript no navegador), enquanto o token temporário de recuperação de senha tem apenas seu hash **SHA-256** persistido no banco, garantindo que um eventual acesso de leitura ao banco não exponha tokens válidos.
+- **Testes no CI com MongoDB isolado:** O pipeline do GitHub Actions sobe um container MongoDB em modo *Replica Set* exclusivo para cada execução (além de validar `eslint` e build TypeScript), sem depender nem poluir o banco de dados da demo.
 
 ## 📝 Licença
 

@@ -103,6 +103,17 @@ describe('Módulo de transações API', () => {
 
     });
 
+    it('Deve filtrar e paginar transações com page, limit e transactionType (Status 200)', async () => {
+        const res = await request(app)
+            .get('/api/transactions?transactionType=EXPENSE&page=1&limit=1')
+            .set('Cookie', authCookie);
+
+        expect(res.status).toBe(200);
+        expect(Array.isArray(res.body)).toBe(true);
+        expect(res.body.length).toBe(1);
+        expect(res.body[0].transactionType).toBe('EXPENSE');
+    });
+
     it('Deve atualizar uma transação existente (Status 200)', async () => {
         const res = await request(app)
             .put(`/api/transactions/${transactionId}`)

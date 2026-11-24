@@ -2,16 +2,17 @@ import type { Request, Response, NextFunction } from 'express';
 import { getAuthUserId } from '../utils/auth.utils.js';
 import type { Prisma } from '@prisma/client';
 import prisma from '../config/db.js';
+import { createCategorySchema } from '../utils/validation.schemas.js';
 
 export const createCategory = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const userId = getAuthUserId(req);
-        const { name, color, isBusiness } = req.body;
-
-        if (!name) {
-            res.status(400).json({ error: "O campo 'name' é obrigatório." });
+        const parsed = createCategorySchema.safeParse(req.body);
+        if (!parsed.success) {
+            res.status(400).json({ error: parsed.error.issues[0]?.message || "O campo 'name' é obrigatório." });
             return;
         }
+        const { name, color, isBusiness } = parsed.data;
 
         const category = await prisma.category.create({
             data: {
