@@ -2,16 +2,17 @@ import type { Request, Response, NextFunction } from "express";
 import { getAuthUserId } from "../utils/auth.utils.js";
 import type { Prisma } from '@prisma/client';
 import prisma from "../config/db.js";
+import { createBudgetSchema } from "../utils/validation.schemas.js";
 
 export const createBudget = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const userId = getAuthUserId(req);
-        const { amountLimit, description, month, year, categoryId } = req.body;
-
-        if (!categoryId || !amountLimit || !month || !year) {
-            res.status(400).json({ message: "Por favor, preencha todos os campos obrigatórios: categoria, limite, mês e ano." });
+        const parsed = createBudgetSchema.safeParse(req.body);
+        if (!parsed.success) {
+            res.status(400).json({ message: parsed.error.issues[0]?.message || "Dados inválidos." });
             return;
         }
+        const { amountLimit, description, month, year, categoryId } = parsed.data;
 
         const category = await prisma.category.findFirst({
             where: {
@@ -130,8 +131,8 @@ export const updateBudget = async (req: Request, res: Response, next: NextFuncti
         const { id } = req.params;
         const { description, amountLimit } = req.body;
 
-        const existingBudget = await prisma.budget.findFirst({
-            where: { id: String(id), userId }
+        const existingBudget = await prisma.budget.findUnique({
+            where: { id: String(id) }
         });
 
         if (!existingBudget) {
@@ -139,11 +140,22 @@ export const updateBudget = async (req: Request, res: Response, next: NextFuncti
             return;
         }
 
+        if (existingBudget.userId !== userId) {
+            res.status(403).json({ error: "Você não tem permissão para atualizar este orçamento." });
+            return;
+        }
+
         const updateData: Prisma.BudgetUpdateInput = {};
 
         if (description !== undefined) updateData.description = description;
 
-        if (amountLimit !== undefined) updateData.amountLimit = Number(amountLimit);
+        if (amountLimit !== undefined) {
+            if (Number(amountLimit) <= 0 || Number.isNaN(Number(amountLimit))) {
+                res.status(400).json({ message: "O limite do orçamento deve ser maior que zero." });
+                return;
+            }
+            updateData.amountLimit = Number(amountLimit);
+        }
 
         const updateBudget = await prisma.budget.update({
             where: { id: String(id) }, 

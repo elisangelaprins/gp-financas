@@ -15,7 +15,7 @@ export interface TransactionWithCategory {
 
 interface Column {
     title: string;
-    getItem: (transaction: TransactionWithCategory) => any;
+    getItem: (transaction: TransactionWithCategory) => string | number;
 }
 
 export const generateCSV = (transactions: TransactionWithCategory[]): string => {

@@ -1,22 +1,21 @@
 import type { Request, Response, NextFunction } from 'express';
 import { getAuthUserId } from '../utils/auth.utils.js';
 import prisma from '../config/db.js';
-import type { Prisma } from '@prisma/client';
+import type { Prisma, TransactionType, PaymentMethod } from '@prisma/client';
+import { createTransactionSchema } from '../utils/validation.schemas.js';
+
+const VALID_PAYMENT_METHODS = ['PIX', 'CREDIT_CARD', 'DEBIT_CARD', 'CASH', 'BOLETO'];
+const VALID_TRANSACTION_TYPES = ['INCOME', 'EXPENSE'];
 
 export const createTransaction = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const userId = getAuthUserId(req);
-        const { description, amount, date, paymentMethod, transactionType, categoryId, note, isBusiness, paymentDate, installments } = req.body;
-
-        if (!description || !amount || !date || !paymentMethod || !transactionType || !categoryId) {
-            res.status(400).json({ error: "Todos os campos são obrigatórios." });
+        const parsed = createTransactionSchema.safeParse(req.body);
+        if (!parsed.success) {
+            res.status(400).json({ error: parsed.error.issues[0]?.message || "Dados inválidos." });
             return;
         }
-
-        if (amount <= 0) {
-            res.status(400).json({ error: "O valor da transação deve ser maior que zero." });
-            return;
-        }
+        const { description, amount, date, paymentMethod, transactionType, categoryId, note, isBusiness, paymentDate, installments } = parsed.data;
 
         // Valida se a categoria existe e pertence ao usuário autenticado ou se é padrão do sistema
         const category = await prisma.category.findFirst({
@@ -61,13 +60,60 @@ export const createTransaction = async (req: Request, res: Response, next: NextF
 export const getTransactions = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const userId = getAuthUserId(req);
+        const { startDate, endDate, categoryId, transactionType, paymentMethod, isBusiness, page, limit } = req.query;
+
+        const whereClause: Prisma.TransactionWhereInput = { userId };
+
+        if (startDate || endDate) {
+            whereClause.date = {};
+            if (startDate) whereClause.date.gte = new Date(String(startDate));
+            if (endDate) whereClause.date.lte = new Date(String(endDate));
+        }
+
+        if (categoryId) whereClause.categoryId = String(categoryId);
+
+        if (transactionType) {
+            if (!VALID_TRANSACTION_TYPES.includes(String(transactionType))) {
+                res.status(400).json({ error: "Tipo de transação inválido no filtro." });
+                return;
+            }
+            whereClause.transactionType = String(transactionType) as TransactionType;
+        }
+
+        if (paymentMethod) {
+            if (!VALID_PAYMENT_METHODS.includes(String(paymentMethod))) {
+                res.status(400).json({ error: "Método de pagamento inválido no filtro." });
+                return;
+            }
+            whereClause.paymentMethod = String(paymentMethod) as PaymentMethod;
+        }
+
+        if (isBusiness !== undefined) {
+            whereClause.isBusiness = isBusiness === 'true';
+        }
+
+        const pageNumber = page ? Number(page) : undefined;
+        const limitNumber = limit ? Number(limit) : undefined;
+
+        if ((pageNumber !== undefined && (!Number.isInteger(pageNumber) || pageNumber < 1)) ||
+            (limitNumber !== undefined && (!Number.isInteger(limitNumber) || limitNumber < 1))) {
+            res.status(400).json({ error: "Os parâmetros 'page' e 'limit' devem ser números inteiros maiores que zero." });
+            return;
+        }
+
+        const take = limitNumber;
+        const skip = pageNumber && limitNumber ? (pageNumber - 1) * limitNumber : undefined;
+
         const transactions = await prisma.transaction.findMany({
-            where: {
-                userId: userId
-            },
+            where: whereClause,
             include: {
                 category: true
-            }
+            },
+            orderBy: {
+                date: 'desc'
+            },
+            ...(skip !== undefined ? { skip } : {}),
+            ...(take !== undefined ? { take } : {})
         });
 
         res.status(200).json(transactions);
@@ -87,7 +133,7 @@ export const updateTransaction = async (req: Request, res: Response, next: NextF
 
         if (note !== undefined) updateData.note = note;
 
-        if (amount !== undefined && amount <= 0) {
+        if (amount !== undefined && (Number(amount) <= 0 || Number.isNaN(Number(amount)))) {
             res.status(400).json({ error: "O valor da transação deve ser maior que zero." });
             return;
         }
@@ -96,9 +142,21 @@ export const updateTransaction = async (req: Request, res: Response, next: NextF
 
         if (date) updateData.date = new Date(date);
 
-        if (paymentMethod) updateData.paymentMethod = paymentMethod;
+        if (paymentMethod) {
+            if (!VALID_PAYMENT_METHODS.includes(paymentMethod)) {
+                res.status(400).json({ error: "Método de pagamento inválido." });
+                return;
+            }
+            updateData.paymentMethod = paymentMethod;
+        }
 
-        if (transactionType) updateData.transactionType = transactionType;
+        if (transactionType) {
+            if (!VALID_TRANSACTION_TYPES.includes(transactionType)) {
+                res.status(400).json({ error: "Tipo de transação inválido." });
+                return;
+            }
+            updateData.transactionType = transactionType;
+        }
 
         if (categoryId) updateData.categoryId = categoryId;
 

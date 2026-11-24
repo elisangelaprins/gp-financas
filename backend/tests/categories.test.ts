@@ -90,4 +90,38 @@ describe('Módulo de Categorias API', () => {
         
     });
 
+    it('Não deve permitir que o Usuário A leia, edite ou exclua categoria do Usuário B (Status 403)', async () => {
+        const userB = await createTestUserAndLogin(app, 'category.userb');
+
+        try {
+            const createRes = await request(app)
+                .post('/api/categories')
+                .set('Cookie', userB.authCookie)
+                .send({
+                    name: 'Categoria Privada Usuário B',
+                    color: '#EF4444',
+                });
+
+            const catUserBId = createRes.body.id;
+
+            const listRes = await request(app)
+                .get('/api/categories')
+                .set('Cookie', authCookie);
+            expect(listRes.body.some((c: { id: string }) => c.id === catUserBId)).toBe(false);
+
+            const updateRes = await request(app)
+                .put(`/api/categories/${catUserBId}`)
+                .set('Cookie', authCookie)
+                .send({ name: 'Tentativa de edição' });
+            expect(updateRes.status).toBe(403);
+
+            const deleteRes = await request(app)
+                .delete(`/api/categories/${catUserBId}`)
+                .set('Cookie', authCookie);
+            expect(deleteRes.status).toBe(403);
+        } finally {
+            await cleanupTestUser(userB.testUser.email);
+        }
+    });
+
 });

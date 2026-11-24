@@ -4,36 +4,39 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import { sendPasswordReset } from '../services/email.service.js';
+import {
+    registerSchema,
+    loginSchema,
+    forgotPasswordSchema,
+    resetPasswordSchema,
+} from '../utils/validation.schemas.js';
 
-const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/;
+const FORGOT_PASSWORD_MESSAGE =
+    "Se o e-mail informado estiver cadastrado, você receberá em instantes as instruções para redefinir a senha. O link é válido por 10 minutos.";
 
 export const register = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-
-        if (!req.body.name || !req.body.email || !req.body.password) {
-            res.status(400).json({ error: "Todos os campos são obrigatórios." });
+        const parsed = registerSchema.safeParse(req.body);
+        if (!parsed.success) {
+            res.status(400).json({ error: parsed.error.issues[0]?.message || "Dados inválidos." });
             return;
-        };
-
-        if (!passwordRegex.test(req.body.password)) {
-            res.status(400).json({ error: "A senha deve ter no mínimo 8 caracteres, contendo pelo menos uma letra maiúscula, uma minúscula, um número e um caractere especial." });
-            return;
-        };
+        }
+        const { name, email, password } = parsed.data;
 
         const userExists = await prisma.user.findUnique({
-            where: { email: req.body.email }
+            where: { email }
         });
 
         if (userExists) {
-            res.status(400).json({ error: "Email já cadastrado." });
+            res.status(409).json({ error: "Email já cadastrado." });
             return;
         }
 
         const user = await prisma.user.create({
             data: {
-                name: req.body.name,
-                email: req.body.email,
-                password: await bcrypt.hash(req.body.password, 10),
+                name,
+                email,
+                password: await bcrypt.hash(password, 10),
             },
             select: {
                 id: true,
@@ -54,24 +57,26 @@ export const register = async (req: Request, res: Response, next: NextFunction):
 
 export const login = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        if (!req.body.email || !req.body.password) {
-            res.status(400).json({ error: "Email e senha são obrigatórios." });
+        const parsed = loginSchema.safeParse(req.body);
+        if (!parsed.success) {
+            res.status(400).json({ error: parsed.error.issues[0]?.message || "Email e senha são obrigatórios." });
             return;
         }
+        const { email, password } = parsed.data;
 
         const user = await prisma.user.findUnique({
-            where: { email: req.body.email }
+            where: { email }
         });
 
         if (!user) {
-            res.status(400).json({ error: "Email ou senha incorretos." });
+            res.status(401).json({ error: "Email ou senha incorretos." });
             return;
         }
 
-        const isMatch = await bcrypt.compare(req.body.password, user.password);
+        const isMatch = await bcrypt.compare(password, user.password);
 
         if (!isMatch) {
-            res.status(400).json({ error: "Email ou senha incorretos." });
+            res.status(401).json({ error: "Email ou senha incorretos." });
             return;
         }
 
@@ -104,36 +109,39 @@ export const login = async (req: Request, res: Response, next: NextFunction): Pr
 
 export const forgotPassword = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { email } = req.body;
-
-        if (!email) {
-            res.status(400).json({ error: "O e-mail é obrigatório." });
+        const parsed = forgotPasswordSchema.safeParse(req.body);
+        if (!parsed.success) {
+            res.status(400).json({ error: parsed.error.issues[0]?.message || "O e-mail é obrigatório." });
             return;
-        };
+        }
+        const { email } = parsed.data;
 
         const user = await prisma.user.findUnique({
             where: { email },
         });
 
         if (!user) {
-            return res.status(200).json({ message: "Se o e-mail estiver cadastrado, enviamos as instruções para redefinição de senha." });
+            res.status(200).json({ message: FORGOT_PASSWORD_MESSAGE });
             return;
         };
 
         const resetToken = crypto.randomBytes(32).toString('hex');
+        const resetTokenHash = crypto.createHash('sha256').update(resetToken).digest('hex');
         const resetExpires = new Date(Date.now() + 10 * 60 * 1000);
 
         await prisma.user.update({
             where: { id: user.id },
             data: {
-                resetToken,
+                resetToken: resetTokenHash,
                 resetExpires,
             },
         });
 
-        await sendPasswordReset(user.email, resetToken, user.name);
+        sendPasswordReset(user.email, resetToken, user.name).catch(err => {
+            console.error("[forgot-password] falha ao enviar e-mail:", err);
+        });
 
-        res.json({ message: "Email de redefinição enviado com sucesso." });
+        res.status(200).json({ message: FORGOT_PASSWORD_MESSAGE });
 
     } catch (error) {
         next(error);
@@ -143,21 +151,18 @@ export const forgotPassword = async (req: Request, res: Response, next: NextFunc
 
 export const resetPassword = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { resetToken, newPassword } = req.body;
-
-        if (!resetToken || !newPassword) {
-            res.status(400).json({ error: "Token e senha são obrigatórios" });
+        const parsed = resetPasswordSchema.safeParse(req.body);
+        if (!parsed.success) {
+            res.status(400).json({ error: parsed.error.issues[0]?.message || "Token e senha são obrigatórios" });
             return;
-        };
+        }
+        const { resetToken, newPassword } = parsed.data;
 
-        if (!passwordRegex.test(newPassword)) {
-            res.status(400).json({ error: "A senha deve ter no mínimo 8 caracteres, contendo pelo menos uma letra maiúscula, uma minúscula, um número e um caractere especial." });
-            return;
-        };
+        const resetTokenHash = crypto.createHash('sha256').update(resetToken).digest('hex');
 
         const user = await prisma.user.findFirst({
             where: {
-                resetToken
+                resetToken: resetTokenHash
             }
         });
 

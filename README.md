@@ -26,7 +26,12 @@ Construída para simular um produto real de fintech, com autenticação segura v
 
 ---
 
-> 🚀 **Status:** Back-end 100% funcional, testado (33/33 testes), containerizado com **Docker**, integrado com **CI/CD (GitHub Actions)** e publicado na nuvem (**Render**). Front-end (Next.js) em desenvolvimento.
+> 🚀 **Status:** API REST 100% funcional, testada (44/44 testes), containerizada com **Docker** (multi-stage build), validada via **CI no GitHub Actions** (lint, build e testes com MongoDB isolado) e com **CD no Render** (deploy automático acionado após aprovação do CI).
+>
+> 💡 **Nota sobre a Demo ao Vivo (Render):**
+> - **Cadastro e Login imediatos:** você pode criar uma conta em `/api/auth/register` e fazer login na hora em `/api/auth/login` diretamente pelo [Swagger Interativo](https://gp-financas.onrender.com/api-docs).
+> - **Cold Start:** por estar no plano gratuito do Render, a primeira requisição após inatividade pode levar de **30 a 50 segundos** até o container iniciar.
+> - **E-mails:** o fluxo de recuperação de senha (`forgot-password`) envia os e-mails para uma caixa de entrada de testes (Mailtrap).
 
 ## 🎯 Sobre o Projeto
 
@@ -42,7 +47,7 @@ O GP Finanças resolve um problema real: organizar receitas, despesas e metas de
 | 🎯 **Orçamentos** | Metas de gasto por categoria/mês, com cálculo automático de percentual utilizado |
 | 📊 **Dashboard** | Resumo geral, totais por categoria, top 5 despesas e tendência mensal |
 | 📁 **Exportações** | Relatórios em **CSV** (compatível com Excel) e **PDF** (extrato formatado com totais) |
-| 📖 **Documentação** | Swagger/OpenAPI interativo disponível em `/api-docs`, com todas as 16 rotas mapeadas |
+| 📖 **Documentação** | Swagger/OpenAPI interativo disponível em `/api-docs`, com todas as 23 rotas mapeadas |
 
 ## 🔒 Segurança
 
@@ -50,14 +55,15 @@ O GP Finanças resolve um problema real: organizar receitas, despesas e metas de
 - **Helmet** ativado globalmente, aplicando headers HTTP de segurança recomendados
 - **Hash de senha com bcrypt** (nunca armazenada em texto plano)
 - **Validação de senha forte** via regex: mínimo 8 caracteres, exigindo maiúscula, minúscula, número e caractere especial
-- **Proteção contra user enumeration**: o endpoint de redefinição de senha sempre retorna a mesma mensagem genérica, independente do e-mail estar cadastrado ou não — evitando que alguém descubra quais e-mails existem na base
+- **Proteção contra user enumeration no reset de senha**: o endpoint `/api/auth/forgot-password` sempre retorna a mesma mensagem genérica, independentemente de o e-mail estar cadastrado ou não (no `/register`, o retorno explícito de e-mail já cadastrado foi mantido como trade-off de usabilidade/UX)
 - **Rate limiting diferenciado**: limite mais restritivo nas rotas de autenticação (10 req/min) do que nas demais rotas da API (50 req/5min), reduzindo a superfície de ataques de força bruta
-- **CORS restrito por ambiente**: em produção, aceita apenas a origin configurada em `FRONTEND_URL`; em desenvolvimento, libera as portas locais comuns
+- **CORS restrito por ambiente**: em produção, aceita apenas as origens autorizadas (`FRONTEND_URL` e a própria URL do serviço no Render via `RENDER_EXTERNAL_URL` / `BACKEND_URL`, permitindo o uso do Swagger interativo na demo ao vivo); em desenvolvimento, libera as portas locais comuns
 
 ## 🛠️ Tecnologias Utilizadas
 
 - **Node.js** + **Express** (TypeScript)
 - **Prisma ORM** com **MongoDB**
+- **Zod** para validação de schemas e dados de entrada
 - **JWT** + Cookies HTTP-only para autenticação
 - **bcryptjs** para hash de senhas
 - **Helmet** para headers de segurança HTTP
@@ -69,12 +75,12 @@ O GP Finanças resolve um problema real: organizar receitas, despesas e metas de
 
 ## ⚙️ Como Rodar Localmente
 
-**Pré-requisitos:** Node.js 18+, uma instância MongoDB ([Atlas](https://www.mongodb.com/atlas) funciona bem) e uma conta SMTP de testes (recomendado: [Mailtrap](https://mailtrap.io)).
+**Pré-requisitos:** Node.js 20+, uma instância MongoDB ([Atlas](https://www.mongodb.com/atlas) funciona bem) e uma conta SMTP de testes (recomendado: [Mailtrap](https://mailtrap.io)).
 
 ```bash
 # Clone o repositório
-git clone https://github.com/seu-usuario/gp-financas.git
-cd gp-financas
+git clone https://github.com/elisangelaprins/gp-financas.git
+cd gp-financas/backend
 
 # Instale as dependências
 npm install
@@ -92,6 +98,12 @@ npm run dev
 
 O servidor sobe em `http://localhost:3000`.
 
+**Alternativa com Docker Compose** (a partir da raiz do repositório, após criar o `backend/.env`):
+
+```bash
+docker compose up --build
+```
+
 <details>
 <summary><strong>📋 Variáveis de ambiente necessárias</strong></summary>
 
@@ -107,7 +119,7 @@ O servidor sobe em `http://localhost:3000`.
 | `EMAIL_FROM` | Remetente exibido nos e-mails enviados |
 | `FRONTEND_URL` | URL usada para montar o link de redefinição de senha e liberada no CORS em produção |
 
-Veja o formato completo em [`.env.example`](./.env.example).
+Veja o formato completo em [`backend/.env.example`](./backend/.env.example).
 
 </details>
 
@@ -119,22 +131,25 @@ Com o servidor rodando, a documentação completa da API está disponível em:
 http://localhost:3000/api-docs
 ```
 
-Todas as **16 rotas** da API estão mapeadas com parâmetros, exemplos de corpo de requisição e possíveis respostas, organizadas por módulo (Autenticação, Transações, Categorias, Orçamentos, Dashboard e Exportação). É possível testar as requisições diretamente pela interface do Swagger UI.
+Todas as **23 rotas** da API estão mapeadas com parâmetros, exemplos de corpo de requisição e possíveis respostas, organizadas por módulo (Autenticação, Transações, Categorias, Orçamentos, Dashboard e Exportação). É possível testar as requisições diretamente pela interface do Swagger UI.
 
 <p align="center">
-    <img src="./backend/docs/images/swagger-ui.png.png" alt="Swagger UI" width="700" />
+    <img src="./backend/docs/images/swagger-ui.png" alt="Swagger UI" width="700" />
 </p>
 
 ## 🧪 Testes
 
 ```bash
+cd backend
 npm test
 ```
 
-**✅ 33/33 testes passando (100%)** — suíte automatizada com **Jest + Supertest** cobrindo:
+**✅ 44/44 testes passando (100%)** — suíte automatizada com **Jest + Supertest** cobrindo:
 
-- Fluxos de autenticação (registro, login, credenciais inválidas, e-mail duplicado)
-- CRUD completo de transações, categorias e orçamentos
+- Fluxos de autenticação (registro, login, credenciais inválidas → 401, e-mail duplicado → 409, reset de senha com token válido/expirado e proteção contra user enumeration)
+- CRUD completo de transações (com paginação e filtros), categorias e orçamentos
+- Isolamento de dados entre usuários (usuário A bloqueado com 403 ao tentar editar/excluir transações, categorias ou orçamentos do usuário B)
+- Validação de entradas inválidas (ID malformado, enum inválido, valores negativos e mês fora de 1–12 → 400)
 - Regras de negócio (orçamento duplicado → 409, exclusão de categoria padrão → 403)
 - Acesso negado sem autenticação (401) nos módulos de transações, dashboard e exportação
 - Exportação de relatórios em CSV e PDF
@@ -147,7 +162,7 @@ Cada módulo cria e limpa seus próprios dados de teste automaticamente (`before
 
 ## 📮 Testando a API (Postman)
 
-Uma coleção completa está disponível em [`GP - Finanças.postman_collection.json`](./GP%20-%20Finanças.postman_collection.json), organizada em 7 módulos: Autenticação, Transações, Categorias, Orçamentos, Dashboard, Exportações e Redefinir Senha.
+Uma coleção completa está disponível em [`backend/GP - Finanças.postman_collection.json`](./backend/GP%20-%20Finanças.postman_collection.json), organizada nos 6 módulos da API: Autenticação (incluindo redefinição de senha), Transações, Categorias, Orçamentos, Dashboard e Exportação de Relatórios.
 
 Basta importar no Postman e configurar a variável `baseUrl` (padrão: `http://localhost:3000`).
 
@@ -196,37 +211,42 @@ Basta importar no Postman e configurar a variável `baseUrl` (padrão: `http://l
 <br>
 
 ```
-src/
-├── config/            # Conexão com Prisma/MongoDB
-├── controllers/        # Regras de negócio de cada módulo
-├── docs/
-│   └── swagger.yaml     # Especificação OpenAPI da API
-├── middlewares/         # Autenticação, rate limiting e tratamento de erros
-├── routes/              # Definição das rotas da API
-├── services/             # Envio de e-mail (Nodemailer)
-├── utils/                # Helpers de autenticação, CSV e PDF
-└── index.ts               # Ponto de entrada da aplicação
-
-prisma/
-└── schema.prisma        # Modelagem do banco de dados
-
-tests/
-├── auth.test.ts
-├── transactions.test.ts
-├── categories.test.ts
-├── budgets.test.ts
-├── dashboard.test.ts
-├── export.test.ts
-└── helpers/
-    └── auth.helper.ts    # Helper de criação/limpeza de usuário de teste
+gp-financas/
+├── backend/
+│   ├── src/
+│   │   ├── config/          # Conexão com Prisma/MongoDB
+│   │   ├── controllers/     # Regras de negócio de cada módulo
+│   │   ├── docs/
+│   │   │   └── swagger.yaml # Especificação OpenAPI da API
+│   │   ├── middlewares/     # Autenticação, rate limiting e tratamento de erros
+│   │   ├── routes/          # Definição das rotas da API
+│   │   ├── services/        # Envio de e-mail (Nodemailer)
+│   │   ├── utils/           # Schemas de validação (Zod) e helpers de autenticação, CSV e PDF
+│   │   └── index.ts         # Ponto de entrada da aplicação
+│   ├── prisma/
+│   │   └── schema.prisma    # Modelagem do banco de dados
+│   ├── tests/
+│   │   ├── auth.test.ts
+│   │   ├── transactions.test.ts
+│   │   ├── categories.test.ts
+│   │   ├── budgets.test.ts
+│   │   ├── dashboard.test.ts
+│   │   ├── export.test.ts
+│   │   └── helpers/
+│   │       └── auth.helper.ts # Helper de criação/limpeza de usuário de teste
+│   ├── Dockerfile
+│   └── .env.example
+└── docker-compose.yml
 ```
 
 </details>
 
-## 🛣️ Roadmap
+## 🧠 Decisões Técnicas e de Escopo
 
-- [ ] Front-end (React)
-- [ ] Expandir cobertura de testes para novos módulos conforme o projeto crescer
+- **Escopo focado em Back-end (`/api-docs` como interface):** O repositório é dedicado exclusivamente à arquitetura e engenharia da API REST. Toda a exploração e validação dos endpoints pode ser feita visualmente pela interface interativa do **Swagger UI** (`/api-docs`) ou pela coleção do **Postman**.
+- **Valores monetários em `Float` (Trade-off documentado):** Os campos de valor (`amount` e `amountLimit`) utilizam `Float` no Prisma/MongoDB para simplificar a serialização direta em JSON e as operações nativas de agregação (`_sum`) no dashboard, com arredondamento controlado na aplicação (`.toFixed(2)`). Em um cenário de core bancário em produção, a evolução natural mapeada é armazenar os valores em **centavos como inteiros (`Int`)**, eliminando qualquer imprecisão de ponto flutuante (IEEE 754).
+- **Segurança de Tokens (JWT em Cookie `httpOnly` + Reset com SHA-256):** O token de sessão trafega apenas em cookie `httpOnly` (inacessível via JavaScript no navegador), enquanto o token temporário de recuperação de senha tem apenas seu hash **SHA-256** persistido no banco, garantindo que um eventual acesso de leitura ao banco não exponha tokens válidos.
+- **Testes no CI com MongoDB isolado:** O pipeline do GitHub Actions sobe um container MongoDB em modo *Replica Set* exclusivo para cada execução (além de validar `eslint` e build TypeScript), sem depender nem poluir o banco de dados da demo.
 
 ## 📝 Licença
 
