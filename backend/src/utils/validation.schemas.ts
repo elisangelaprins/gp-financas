@@ -54,3 +54,28 @@ export const createBudgetSchema = z.object({
     year: z.coerce.number({ message: "Por favor, preencha todos os campos obrigatórios: categoria, limite, mês e ano." }).int("Por favor, preencha todos os campos obrigatórios: categoria, limite, mês e ano."),
     description: z.string().nullable().optional(),
 });
+
+export const updateTransactionSchema = z.object({
+    description: z.string().min(1).optional(),
+    note: z.string().nullable().optional(),
+    amount: z.coerce.number({ message: "O valor da transação deve ser maior que zero." }).positive("O valor da transação deve ser maior que zero.").optional(),
+    date: z.string().min(1).optional(),
+    paymentMethod: z.enum(['PIX', 'CREDIT_CARD', 'DEBIT_CARD', 'CASH', 'BOLETO'], {
+        message: "Método de pagamento inválido.",
+    }).optional(),
+    transactionType: z.enum(['INCOME', 'EXPENSE'], {
+        message: "Tipo de transação inválido.",
+    }).optional(),
+    categoryId: z.string().min(1).optional(),
+});
+
+export const updateCategorySchema = z.object({
+    name: z.string().min(1).optional(),
+    color: z.string().optional(),
+    isBusiness: z.boolean().optional(),
+});
+
+export const updateBudgetSchema = z.object({
+    description: z.string().nullable().optional(),
+    amountLimit: z.coerce.number({ message: "O limite do orçamento deve ser maior que zero." }).positive("O limite do orçamento deve ser maior que zero.").optional(),
+});

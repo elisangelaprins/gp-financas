@@ -2,7 +2,7 @@ import type { Request, Response, NextFunction } from 'express';
 import { getAuthUserId } from '../utils/auth.utils.js';
 import prisma from '../config/db.js';
 import type { Prisma, TransactionType, PaymentMethod } from '@prisma/client';
-import { createTransactionSchema } from '../utils/validation.schemas.js';
+import { createTransactionSchema, updateTransactionSchema } from '../utils/validation.schemas.js';
 
 const VALID_PAYMENT_METHODS = ['PIX', 'CREDIT_CARD', 'DEBIT_CARD', 'CASH', 'BOLETO'];
 const VALID_TRANSACTION_TYPES = ['INCOME', 'EXPENSE'];
@@ -92,17 +92,24 @@ export const getTransactions = async (req: Request, res: Response, next: NextFun
             whereClause.isBusiness = isBusiness === 'true';
         }
 
-        const pageNumber = page ? Number(page) : undefined;
-        const limitNumber = limit ? Number(limit) : undefined;
+        const DEFAULT_LIMIT = 20;
+        const MAX_LIMIT = 100;
 
-        if ((pageNumber !== undefined && (!Number.isInteger(pageNumber) || pageNumber < 1)) ||
-            (limitNumber !== undefined && (!Number.isInteger(limitNumber) || limitNumber < 1))) {
-            res.status(400).json({ error: "Os parâmetros 'page' e 'limit' devem ser números inteiros maiores que zero." });
+        const pageNumber = page !== undefined ? Number(page) : 1;
+        const limitNumber = limit !== undefined ? Number(limit) : DEFAULT_LIMIT;
+
+        if (!Number.isInteger(pageNumber) || pageNumber < 1) {
+            res.status(400).json({ error: "O parâmetro 'page' deve ser um número inteiro maior que zero." });
+            return;
+        }
+
+        if (!Number.isInteger(limitNumber) || limitNumber < 1 || limitNumber > MAX_LIMIT) {
+            res.status(400).json({ error: `O parâmetro 'limit' deve ser um número inteiro entre 1 e ${MAX_LIMIT}.` });
             return;
         }
 
         const take = limitNumber;
-        const skip = pageNumber && limitNumber ? (pageNumber - 1) * limitNumber : undefined;
+        const skip = (pageNumber - 1) * limitNumber;
 
         const transactions = await prisma.transaction.findMany({
             where: whereClause,
@@ -112,8 +119,8 @@ export const getTransactions = async (req: Request, res: Response, next: NextFun
             orderBy: {
                 date: 'desc'
             },
-            ...(skip !== undefined ? { skip } : {}),
-            ...(take !== undefined ? { take } : {})
+            skip,
+            take
         });
 
         res.status(200).json(transactions);
@@ -126,37 +133,25 @@ export const updateTransaction = async (req: Request, res: Response, next: NextF
     try {
         const userId = getAuthUserId(req);
         const { id } = req.params;
-        const { description, note, amount, date, paymentMethod, transactionType, categoryId } = req.body;
+        const parsed = updateTransactionSchema.safeParse(req.body);
+        if (!parsed.success) {
+            res.status(400).json({ error: parsed.error.issues[0]?.message || "Dados inválidos." });
+            return;
+        }
+        const { description, note, amount, date, paymentMethod, transactionType, categoryId } = parsed.data;
         const updateData: Prisma.TransactionUncheckedUpdateInput = {};
 
         if (description) updateData.description = description;
 
         if (note !== undefined) updateData.note = note;
 
-        if (amount !== undefined && (Number(amount) <= 0 || Number.isNaN(Number(amount)))) {
-            res.status(400).json({ error: "O valor da transação deve ser maior que zero." });
-            return;
-        }
-
         if (amount) updateData.amount = amount;
 
         if (date) updateData.date = new Date(date);
 
-        if (paymentMethod) {
-            if (!VALID_PAYMENT_METHODS.includes(paymentMethod)) {
-                res.status(400).json({ error: "Método de pagamento inválido." });
-                return;
-            }
-            updateData.paymentMethod = paymentMethod;
-        }
+        if (paymentMethod) updateData.paymentMethod = paymentMethod;
 
-        if (transactionType) {
-            if (!VALID_TRANSACTION_TYPES.includes(transactionType)) {
-                res.status(400).json({ error: "Tipo de transação inválido." });
-                return;
-            }
-            updateData.transactionType = transactionType;
-        }
+        if (transactionType) updateData.transactionType = transactionType;
 
         if (categoryId) updateData.categoryId = categoryId;
 
