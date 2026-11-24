@@ -85,6 +85,14 @@ paths:
         401:
           description: Credenciais inválidas (e-mail ou senha incorretos)
 
+  /api/auth/logout:
+    post:
+      summary: Encerra a sessão do usuário removendo o cookie HTTP-Only
+      tags: [Autenticação]
+      responses:
+        200:
+          description: Logout realizado com sucesso (cookie token limpo)
+
   /api/auth/forgot-password:
     post:
       summary: Solicita o envio do e-mail de redefinição de senha

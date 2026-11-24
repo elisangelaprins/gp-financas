@@ -16,6 +16,9 @@ import budgetRoutes from './routes/budgetRoutes.js';
 import exportRoutes from './routes/exportRoutes.js';
 
 const app = express();
+if (!process.env.JWT_SECRET) {
+  throw new Error('A variável de ambiente obrigatória JWT_SECRET não foi definida.');
+}
 app.set('trust proxy', 1);
 app.use(helmet());
 const PORT = process.env.PORT || 3000;

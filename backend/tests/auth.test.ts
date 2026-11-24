@@ -35,7 +35,7 @@ describe('Módulo de Autenticação API', () => {
 
     });
 
-    it('Deve realizar login e retornar e Cookie HttpOnly de sessão(Status 200)', async () => {
+    it('Deve realizar login, retornar o Cookie HttpOnly de sessão e permitir logout (Status 200)', async () => {
 
         const res = await request(app)
             .post('/api/auth/login')
@@ -46,6 +46,10 @@ describe('Módulo de Autenticação API', () => {
 
         expect(res.status).toBe(200);
         expect(res.headers['set-cookie']).toBeDefined();
+
+        const logoutRes = await request(app).post('/api/auth/logout');
+        expect(logoutRes.status).toBe(200);
+        expect(logoutRes.body).toHaveProperty('message', 'Logout realizado com sucesso.');
     });
 
     it('Deve solicitar o e-mail de redefinição de senha com sucesso (Status 200)', async () => {
