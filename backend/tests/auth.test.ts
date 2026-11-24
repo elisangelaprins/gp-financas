@@ -50,6 +50,7 @@ describe('Módulo de Autenticação API', () => {
         const logoutRes = await request(app).post('/api/auth/logout');
         expect(logoutRes.status).toBe(200);
         expect(logoutRes.body).toHaveProperty('message', 'Logout realizado com sucesso.');
+        expect(String(logoutRes.headers['set-cookie'])).toContain('token=;');
     });
 
     it('Deve solicitar o e-mail de redefinição de senha com sucesso (Status 200)', async () => {
