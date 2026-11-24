@@ -109,6 +109,15 @@ export const login = async (req: Request, res: Response, next: NextFunction): Pr
     }
 };
 
+export const logout = (_req: Request, res: Response): void => {
+    res.clearCookie('token', {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    });
+    res.status(200).json({ message: "Logout realizado com sucesso." });
+};
+
 export const forgotPassword = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const parsed = forgotPasswordSchema.safeParse(req.body);
