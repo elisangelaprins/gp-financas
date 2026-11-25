@@ -165,7 +165,7 @@ Cada módulo cria e limpa seus próprios dados de teste automaticamente (`before
 
 ## 📮 Testando a API (Postman)
 
-Uma coleção completa está disponível em [`backend/GP - Finanças.postman_collection.json`](./backend/GP%20-%20Finanças.postman_collection.json), organizada nos 6 módulos da API: Autenticação (incluindo redefinição de senha), Transações, Categorias, Orçamentos, Dashboard e Exportação de Relatórios.
+Uma coleção completa está disponível em [`backend/GP - Finanças.postman_collection.json`](./backend/GP%20-%20Finanças.postman_collection.json), organizada nos 6 módulos da API: Autenticação (incluindo redefinição de senha), Categorias, Transações, Orçamentos, Dashboard e Exportação de Relatórios.
 
 Basta importar no Postman e configurar a variável `baseUrl` (padrão: `http://localhost:3000`).
 
