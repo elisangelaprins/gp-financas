@@ -51,7 +51,7 @@ O GP Finanças resolve um problema real: organizar receitas, despesas e metas de
 
 ## 🔒 Segurança
 
-- **JWT em cookie `httpOnly`**, com `secure` e `sameSite` ajustados por ambiente, ao invés de armazenar o token em `localStorage` (mitiga XSS)
+- **JWT em cookie `httpOnly`**, com `sameSite: 'lax'` e `secure` ativado em produção, ao invés de armazenar o token em `localStorage` (mitiga XSS e CSRF)
 - **Helmet** ativado globalmente, aplicando headers HTTP de segurança recomendados
 - **Hash de senha com bcrypt** (nunca armazenada em texto plano)
 - **Validação de senha forte** via regex: mínimo 8 caracteres, exigindo maiúscula, minúscula, número e caractere especial
