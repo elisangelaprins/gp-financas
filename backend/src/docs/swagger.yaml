@@ -181,7 +181,8 @@ paths:
                   example: INCOME
                 categoryId:
                   type: string
-                  example: 66a9b1c2d3e4f5a6b7c8d9e0
+                  description: ID da categoria (pré-preenchido com a categoria padrão Salário; consulte GET /api/categories para outras)
+                  example: 6b050cda2e2be1fb11a97724
                 note:
                   type: string
                   example: Salário referente ao mês de agosto
@@ -283,16 +284,24 @@ paths:
               properties:
                 description:
                   type: string
+                  example: Salário Mensal Reajustado
                 amount:
                   type: number
+                  example: 5500.00
                 date:
                   type: string
+                  example: 2026-08-01
                 paymentMethod:
                   type: string
+                  enum: [PIX, CREDIT_CARD, DEBIT_CARD, CASH, BOLETO]
+                  example: PIX
                 transactionType:
                   type: string
+                  enum: [INCOME, EXPENSE]
+                  example: INCOME
                 categoryId:
                   type: string
+                  example: 6b050cda2e2be1fb11a97724
       responses:
         200:
           description: Transação atualizada com sucesso
@@ -384,8 +393,10 @@ paths:
               properties:
                 name:
                   type: string
+                  example: Viagens & Lazer Atualizado
                 color:
                   type: string
+                  example: "#3B82F6"
       responses:
         200:
           description: Categoria atualizada com sucesso
@@ -429,7 +440,8 @@ paths:
               properties:
                 categoryId:
                   type: string
-                  example: 66a9b1c2d3e4f5a6b7c8d9e0
+                  description: ID da categoria (pré-preenchido com a categoria padrão Alimentação; consulte GET /api/categories para outras)
+                  example: 6a6a44bc599a112e0a59d630
                 amountLimit:
                   type: number
                   example: 1500.00
@@ -496,8 +508,10 @@ paths:
               properties:
                 amountLimit:
                   type: number
+                  example: 1800.00
                 description:
                   type: string
+                  example: Orçamento reajustado para Alimentação
       responses:
         200:
           description: Orçamento atualizado com sucesso
