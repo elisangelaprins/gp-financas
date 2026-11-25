@@ -18,7 +18,7 @@ Construída para simular um produto real de fintech, com autenticação segura v
 
 [![Node.js CI](https://github.com/elisangelaprins/gp-financas/actions/workflows/ci.yml/badge.svg)](https://github.com/elisangelaprins/gp-financas/actions)
 &nbsp;•&nbsp;
-**🚀 [API Ao Vivo (Render)](https://gp-financas.onrender.com)** &nbsp;•&nbsp; **📖 [Swagger Interativo (Live)](https://gp-financas.onrender.com/api-docs)**
+**📖 [Documentação Interativa — Swagger UI (Live)](https://gp-financas.onrender.com/api-docs)** &nbsp;•&nbsp; **🩺 [Status da API — Health Check (Render)](https://gp-financas.onrender.com)**
 
 [Funcionalidades](#-funcionalidades) • [Segurança](#-segurança) • [Como Rodar](#️-como-rodar-localmente) • [Documentação da API](#-documentação-interativa-swagger) • [Testes](#-testes)
 
