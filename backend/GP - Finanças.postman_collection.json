@@ -90,32 +90,6 @@
           "response": []
         },
         {
-          "name": "Fazer Logout",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test('Status code é 200 (Logout)', function () {",
-                  "    pm.response.to.have.status(200);",
-                  "});"
-                ],
-                "type": "text/javascript"
-              }
-            }
-          ],
-          "request": {
-            "method": "POST",
-            "header": [],
-            "url": {
-              "raw": "{{baseUrl}}/api/auth/logout",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "auth", "logout"]
-            }
-          },
-          "response": []
-        },
-        {
           "name": "Verificar Usuário",
           "event": [
             {
@@ -211,6 +185,32 @@
               "raw": "{{baseUrl}}/api/auth/reset-password",
               "host": ["{{baseUrl}}"],
               "path": ["api", "auth", "reset-password"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Fazer Logout",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code é 200 (Logout)', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "logout"]
             }
           },
           "response": []
